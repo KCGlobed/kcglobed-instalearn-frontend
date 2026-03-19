@@ -4,7 +4,7 @@ type ButtonProps = {
     title: string;
     onClick?: () => void;
     icon?: React.ReactNode;
-    variant?: "primary" | "secondary";
+    variant?: "primary" | "secondary" | "perple" | "light-gray";
     size?: "sm" | "md" | "lg";
     className?: string;
 };

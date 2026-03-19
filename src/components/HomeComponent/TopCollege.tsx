@@ -32,7 +32,7 @@ const categories = [
 
 const TopCollege = () => {
     return (
-        <section className="w-full bg-[#F5F7FA] py-20 px-6">
+        <section className="w-full bg-[#B8B8B840] py-20 px-6">
             <div className="max-w-[1320px] mx-auto">
                 <h2 className="font-bold text-[#1D2026] mb-10 lg:text-center md:text-left">Browse Top Category</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

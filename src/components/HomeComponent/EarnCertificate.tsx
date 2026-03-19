@@ -1,3 +1,4 @@
+import { ArrowRight } from "lucide-react"
 import Button from "../Button"
 
 const EarnCertificate = () => {
@@ -14,6 +15,7 @@ const EarnCertificate = () => {
                                 title="Explore Programs"
                                 onClick={() => console.log("Explore Programs")}
                                 className="h-[48px] px-6 !rounded-none"
+                                icon={<ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
                             />
                         </div>
                     </div>
