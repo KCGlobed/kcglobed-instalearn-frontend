@@ -1,15 +1,13 @@
-import TopHeader from "./layouts/TopHeader"
-import MainHeader from "./layouts/MainHeader"
 import Home from "./pages/Home/Index"
+import { Route, Routes } from "react-router-dom"
 
 function App() {
 
   return (
     <>
-      <TopHeader />
-      <MainHeader />
-      <Home />
-
+      <Routes>
+           <Route path="/" element={<Home />} />
+      </Routes>
     </>
   )
 }
