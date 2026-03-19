@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@theme {
+  /* Font Family */
+  --font-inter: "Inter", sans-serif;
+
+  /* Colors */
+  --color-primary: #2563eb;
+  --color-secondary: #1e293b;
+  --color-danger: #ef4444;
+  --color-success: #22c55e;
+  --color-dark: #1d2026;
+
+  /* Container */
+  --container-center: true;
+  --container-padding: 1rem;
+  --width-container: 1320px;
+  
+}
+
+@layer utilities {
+  .container {
+    max-width: var(--max-width-container, 1320px);
+        margin-inline: auto;
+    padding-inline: 1rem;
+  }
+}

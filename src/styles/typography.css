@@ -1,0 +1,106 @@
+* {
+  /* margin: 0; */
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+  font-size: 14px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+h1 {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 56px;
+}
+
+h2 {
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 50px;
+}
+
+h3 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+p {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+
+body {
+  font-size: 18px;
+  font-weight: 400;
+  font-family: 'Inter', sans-serif;
+}
+
+
+.small {
+  font-size: 14px;
+}
+
+/*--- Button styles start --- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: none;
+  cursor: pointer;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+/* sizes */
+
+.btn-sm {
+  padding: 8px 14px;
+  font-size: 14px;
+}
+
+.btn-md {
+  padding: 12px 20px;
+  font-size: 16px;
+}
+
+.btn-lg {
+  padding: 16px 26px;
+  font-size: 18px;
+}
+
+/* variants */
+
+.btn-primary {
+  background: #5624D0;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #401B9C;
+}
+
+.btn-secondary {
+  background: #ECEBFF;
+  color: #5624D0;
+}
+
+.btn-secondary:hover {
+  background: #D8D6FF;
+}
+
+.btn-icon {
+  display: flex;
+  align-items: center;
+}
+
+/*---- Button styles End ---- */
