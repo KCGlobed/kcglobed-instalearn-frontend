@@ -1,5 +1,4 @@
 import '../../styles/typography.css';
-import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 const LoginPage = () => {
