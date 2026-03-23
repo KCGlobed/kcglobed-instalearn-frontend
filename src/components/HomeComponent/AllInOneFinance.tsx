@@ -109,7 +109,7 @@ const AllInOneFinance = () => {
         <section className="bg-[#FFFFFE] py-20 px-4 xl:px-0 ">
             <div className="max-w-[1320px] mx-auto">
                 <div className="text-center mb-12">
-                    <h2 className="text-[32px] md:text-[40px] font-bold text-[#1D2026] mb-4">
+                    <h2 className="text-[32px] md:text-[36px] font-bold text-[#1D2026] mb-4">
                         Finance, Accounting & More, All in one place.
                     </h2>
                     <p className="text-[#6E7485] text-[16px]">
