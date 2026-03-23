@@ -75,7 +75,7 @@ const LoginPage = () => {
                                         </span>
                                     </div>
 
-                                    <a href="#" className="text-sm text-[#7367F0]">
+                                    <a href="forgot-password" className="text-sm text-[#7367F0]">
                                         Forgot password?
                                     </a>
                                 </div>

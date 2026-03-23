@@ -6,9 +6,8 @@ import {
     ChevronDown,
     Menu,
     X,
-    BookOpen,
+    BookOpen
 } from "lucide-react";
-import { Search, Bell, Heart, ShoppingCart, ChevronDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import SearchBar from "../components/SearchBar";
