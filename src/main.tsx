@@ -8,13 +8,15 @@ import './styles/global.css'
 import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { store } from "./store/store";
+import { Toaster } from 'react-hot-toast'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider store={store}>
-    <BrowserRouter>
-     <App />
-    </BrowserRouter>
+      <BrowserRouter>
+        <App />
+        <Toaster position="top-right" reverseOrder={false} toastOptions={{ style: { fontSize: "12px" } }} />
+      </BrowserRouter>
     </Provider>
   </StrictMode>,
 )

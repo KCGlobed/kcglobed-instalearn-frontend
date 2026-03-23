@@ -12,6 +12,8 @@ import Button from "../components/Button";
 import SearchBar from "../components/SearchBar";
 import { useSelector } from "react-redux";
 import type { RootState } from "../store/store";
+import { useNavigate } from "react-router-dom";
+
 
 // ─── Browse Dropdown ──────────────────────────────────────────────────────────
 
@@ -105,9 +107,11 @@ const BrowseDropdown = () => {
 const MobileDrawer = ({
     open,
     onClose,
+    onSignIn,
 }: {
     open: boolean;
     onClose: () => void;
+    onSignIn: () => void;
 }) => {
     const { categories } = useSelector((state: RootState) => state.homepageCategory);
 
@@ -183,7 +187,9 @@ const MobileDrawer = ({
                     {/* Auth buttons in drawer */}
                     <div className="flex flex-col gap-3 px-4 mt-4 pb-6">
                         <Button variant="secondary" title="Sign Up" className="w-full h-[44px] !rounded-sm" />
-                        <Button variant="primary" title="Sign In" className="w-full h-[44px] !rounded-sm" />
+                        <Button variant="primary" title="Sign In" className="w-full h-[44px] !rounded-sm"
+                            onClick={onSignIn}
+                        />
                     </div>
                 </div>
             </div>
@@ -195,6 +201,12 @@ const MobileDrawer = ({
 
 const MainHeader = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const navigate = useNavigate();
+
+    const handleSignIn = () => {
+        setDrawerOpen(false); // Close drawer if it's open
+        navigate('/login');
+    };
 
     return (
         <>
@@ -262,7 +274,9 @@ const MainHeader = () => {
                             <ShoppingCart className="w-5 h-5 stroke-[1.5px]" />
                         </button>
                         <Button variant="secondary" title="Sign Up" className="h-[38px] px-4 !rounded-sm text-[13px]" />
-                        <Button variant="primary" title="Sign In" className="h-[38px] px-4 !rounded-sm text-[13px]" />
+                        <Button variant="primary" title="Sign In" className="h-[38px] px-4 !rounded-sm text-[13px]"
+                            onClick={handleSignIn}
+                        />
                     </div>
                 </div>
 
@@ -314,7 +328,7 @@ const MainHeader = () => {
                         <Button
                             variant="primary"
                             title="Sign In"
-                            onClick={() => console.log("Sign In")}
+                            onClick={handleSignIn}
                             className="h-[44px] px-5 !rounded-sm"
                         />
                     </div>
@@ -322,7 +336,7 @@ const MainHeader = () => {
             </header>
 
             {/* Mobile Drawer (rendered outside header to avoid z-index trapping) */}
-            <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+            <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} onSignIn={handleSignIn} />
         </>
     );
 };
