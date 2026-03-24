@@ -13,6 +13,7 @@ import SearchBar from "../components/SearchBar";
 import { useSelector } from "react-redux";
 import type { RootState } from "../store/store";
 import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../hooks/useRedux";
 
 
 // ─── Browse Dropdown ──────────────────────────────────────────────────────────
@@ -186,6 +187,7 @@ const MobileDrawer = ({
 
                     {/* Auth buttons in drawer */}
                     <div className="flex flex-col gap-3 px-4 mt-4 pb-6">
+                        {/* Always show sign up / in on drawer for unauth; mockup profile for auth */}
                         <Button variant="secondary" title="Sign Up" className="w-full h-[44px] !rounded-sm" />
                         <Button variant="primary" title="Sign In" className="w-full h-[44px] !rounded-sm"
                             onClick={onSignIn}
@@ -197,16 +199,99 @@ const MobileDrawer = ({
     );
 };
 
+// ─── Profile Dropdown ────────────────────────────────────────────────────────
+const ProfileDropdown = () => {
+    const [open, setOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    // Close on outside click
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    return (
+        <div className="relative" ref={dropdownRef} style={{ overflow: "visible" }}>
+            <button
+                onClick={() => setOpen(!open)}
+                className="w-10 h-10 rounded-full bg-[#5624D0] text-white flex items-center justify-center font-bold text-[15px] hover:shadow-lg transition-all focus:outline-none focus:ring-2 focus:ring-[#5624D0]/40 shrink-0"
+                aria-expanded={open}
+                aria-haspopup="menu"
+            >
+                JD
+            </button>
+
+            {/* Dropdown Menu */}
+            {open && (
+                <div
+                    className="absolute right-0 top-[calc(100%+8px)] w-[260px] bg-white rounded-[10px] py-1 border border-[#E9EAF0] shadow-[0_12px_40px_rgba(0,0,0,0.12)] z-[9999]"
+                    style={{
+                        animation: "browseDropdownIn 0.18s cubic-bezier(0.4, 0, 0.2, 1) forwards",
+                        transformOrigin: "top right" // expanding out from the avatar
+                    }}
+                >
+                    {/* Header: User Info */}
+                    <div className="px-5 py-4 bg-[#fcfcfd] border-b border-[#E9EAF0] mt-[-4px] rounded-t-[10px] mb-2">
+                        <p className="text-[15px] font-bold text-[#1D2026] leading-tight mb-0.5">John Doe</p>
+                        <p className="text-[13px] text-[#6E7485] font-medium truncate">johndoe@example.com</p>
+                    </div>
+
+                    {/* Group 1 */}
+                    <div className="py-1">
+                        <a href="#" onClick={(e) => e.preventDefault()} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">My Learning</a>
+                        <a href="#" onClick={(e) => e.preventDefault()} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">My Cart</a>
+                        <a href="#" onClick={(e) => e.preventDefault()} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Wishlist</a>
+                    </div>
+
+                    <div className="h-px bg-[#E9EAF0] my-1 mx-5" />
+
+                    {/* Group 2 */}
+                    <div className="py-1">
+                        <a href="#" onClick={(e) => e.preventDefault()} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Refer a Friend</a>
+                        <a href="#" onClick={(e) => e.preventDefault()} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Teach on Platform</a>
+                    </div>
+
+                    <div className="h-px bg-[#E9EAF0] my-1 mx-5" />
+
+                    {/* Group 3 */}
+                    <div className="py-1">
+                        <a href="#" onClick={(e) => e.preventDefault()} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Notifications</a>
+                        <a href="#" onClick={(e) => e.preventDefault()} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Messages</a>
+                    </div>
+
+                    <div className="h-px bg-[#E9EAF0] my-1 mx-5" />
+
+                    {/* Group 4 */}
+                    <div className="py-1 pb-2">
+                        <a href="#" onClick={(e) => e.preventDefault()} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Account Settings</a>
+                        <a href="#" onClick={(e) => e.preventDefault()} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Payment Methods</a>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
 // ─── MainHeader ───────────────────────────────────────────────────────────────
 
 const MainHeader = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const navigate = useNavigate();
+    const { isAuthenticated } = useAppSelector((s: RootState) => s.auth);
+    // Toggle this to test logged in vs logged out UI
+    const isLoggedIn = isAuthenticated;
 
     const handleSignIn = () => {
         setDrawerOpen(false); // Close drawer if it's open
         navigate('/login');
     };
+
+
 
     return (
         <>
@@ -273,10 +358,19 @@ const MainHeader = () => {
                         <button className="p-2 rounded text-[#1D2026] hover:text-[#5624D0] hover:bg-[#F5F4FF] transition-colors">
                             <ShoppingCart className="w-5 h-5 stroke-[1.5px]" />
                         </button>
-                        <Button variant="secondary" title="Sign Up" className="h-[38px] px-4 !rounded-sm text-[13px]" />
-                        <Button variant="primary" title="Sign In" className="h-[38px] px-4 !rounded-sm text-[13px]"
-                            onClick={handleSignIn}
-                        />
+
+                        <div className="w-px h-5 bg-[#E9EAF0] mx-1" />
+
+                        {isLoggedIn ? (
+                            <ProfileDropdown />
+                        ) : (
+                            <>
+                                <Button variant="secondary" title="Sign Up" className="h-[38px] px-4 !rounded-sm text-[13px]" />
+                                <Button variant="primary" title="Sign In" className="h-[38px] px-4 !rounded-sm text-[13px]"
+                                    onClick={handleSignIn}
+                                />
+                            </>
+                        )}
                     </div>
                 </div>
 
@@ -319,18 +413,24 @@ const MainHeader = () => {
 
                         <div className="w-px h-6 bg-[#E9EAF0] mx-2" />
 
-                        <Button
-                            variant="secondary"
-                            title="Sign Up"
-                            onClick={() => console.log("Sign Up")}
-                            className="h-[44px] px-5 !rounded-sm"
-                        />
-                        <Button
-                            variant="primary"
-                            title="Sign In"
-                            onClick={handleSignIn}
-                            className="h-[44px] px-5 !rounded-sm"
-                        />
+                        {isLoggedIn ? (
+                            <ProfileDropdown />
+                        ) : (
+                            <>
+                                <Button
+                                    variant="secondary"
+                                    title="Sign Up"
+                                    onClick={() => console.log("Sign Up")}
+                                    className="h-[44px] px-5 !rounded-sm"
+                                />
+                                <Button
+                                    variant="primary"
+                                    title="Sign In"
+                                    onClick={handleSignIn}
+                                    className="h-[44px] px-5 !rounded-sm"
+                                />
+                            </>
+                        )}
                     </div>
                 </div>
             </header>
