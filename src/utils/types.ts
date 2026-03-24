@@ -31,6 +31,20 @@ export interface ForgotPasswordResponse {
   data: any;
 }
 
+export interface ResetPasswordState {
+  loading: boolean;
+  error: string | null;
+  message: string | null;
+  success: boolean;
+}
+
+export interface ResetPasswordPayload {
+  password:  string;
+  confirm_password: string;
+  uid: string;
+  token: string;
+}
+
 export interface LoginCred {
   email: string;
   password: string;

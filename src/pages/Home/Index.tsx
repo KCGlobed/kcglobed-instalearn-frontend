@@ -6,12 +6,14 @@ import TopHeader from "../../layouts/TopHeader"
 import Footer from "../../layouts/Footer"
 import AllInOneFinance from "../../components/HomeComponent/AllInOneFinance"
 import RecentlyAddedCourses from "../../components/HomeComponent/RecentlyAddedCourses"
+import HomeBanner from "../../components/HomeComponent/HomeBanner"
 
 const HomePage = () => {
     return (
         <>
             <TopHeader />
             <MainHeader />
+            {/* <HomeBanner /> */}
             <EarnCertificate />
             <AllInOneFinance />
             <RecentlyAddedCourses />

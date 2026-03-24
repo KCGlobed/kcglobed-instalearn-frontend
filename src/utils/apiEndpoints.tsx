@@ -4,4 +4,5 @@ export const API_ENDPOINTS = {
     HOMEPAGE_CATEGORY: "course/homepage-category-list/",
     LOGIN: "user/login/",
     FORGOT_PASSWORD: "user/forgot-password/",
+    RESET_PASSWORD: "user/reset-password/",
 }
