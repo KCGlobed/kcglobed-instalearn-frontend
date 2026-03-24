@@ -13,11 +13,11 @@ const HomePage = () => {
         <>
             <TopHeader />
             <MainHeader />
-            {/* <HomeBanner /> */}
-            <EarnCertificate />
+            <HomeBanner />
             <AllInOneFinance />
             <RecentlyAddedCourses />
             <TopCollege />
+            <EarnCertificate />
             <HeroStatsSection />
             <Footer />
         </>
