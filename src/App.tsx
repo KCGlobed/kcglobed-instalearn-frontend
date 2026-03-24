@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom"
 import Testing from "./pages/Testing"
 import LoginPage from "./pages/login"
 import ForgotPassword from "./pages/ForgotPassword/Index"
+import ResetPassword from "./pages/ResetPassword/Index"
 
 function App() {
 
@@ -13,6 +14,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/testing" element={<Testing />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/user/reset" element={<ResetPassword />} />
       </Routes>
     </>
   )

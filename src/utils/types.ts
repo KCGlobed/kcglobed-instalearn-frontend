@@ -14,6 +14,23 @@ export interface RoleName {
   name: string
 }
 
+export interface ForgotPasswordState {
+  loading: boolean;
+  error: string | null;
+  message: string | null;
+  success: boolean;
+}
+
+export interface ForgotPasswordPayload {
+  email: string;
+}
+
+export interface ForgotPasswordResponse {
+  message: string;
+  status: boolean;
+  data: any;
+}
+
 export interface LoginCred {
   email: string;
   password: string;

@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import type { LoginCred } from '../../utils/types';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../store/store';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 const LoginPage = () => {
@@ -144,9 +144,9 @@ const LoginPage = () => {
                                         <input type="checkbox" id="rememberMe" className="w-4 h-4 accent-[#7367F0] cursor-pointer" />
                                         <label htmlFor="rememberMe" className="text-sm text-[#2F2B3DE5] cursor-pointer"> Remember me</label>
                                     </div>
-                                    <a href="/forgot-password" title="Forgot Password" className="text-sm text-[#7367F0] hover:underline">
+                                    <Link to="/forgot-password" title="Forgot Password" className="text-sm text-[#7367F0] hover:underline">
                                         Forgot password?
-                                    </a>
+                                    </Link>
                                 </div>
                                 <button
                                     type="submit"
