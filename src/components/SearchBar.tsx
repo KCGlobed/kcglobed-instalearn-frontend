@@ -5,6 +5,7 @@ import {
   useState,
   type KeyboardEvent,
 } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Search, Clock, ArrowRight, X, BookOpen } from "lucide-react";
 import type { AppDispatch, RootState } from "../store/store";
@@ -57,6 +58,7 @@ function HighlightText({ text, query }: { text: string; query: string }) {
 // ─── SearchBar ────────────────────────────────────────────────────────────────
 
 const SearchBar = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { categories } = useSelector((state: RootState) => state.homepageCategory);
 
@@ -134,7 +136,7 @@ const SearchBar = () => {
     setQuery(term);
     setOpen(false);
     setActiveIdx(-1);
-    console.log("Search:", term);
+    navigate(`/courses?search=${encodeURIComponent(term)}`);
   };
 
   const handleRemoveRecent = (e: React.MouseEvent, term: string) => {

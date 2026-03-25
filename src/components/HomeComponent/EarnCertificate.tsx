@@ -1,7 +1,9 @@
 import { ArrowRight } from "lucide-react"
 import Button from "../Button"
+import { useNavigate } from "react-router-dom"
 
 const EarnCertificate = () => {
+    const navigate = useNavigate();
     return (
         <div>
             <section className="w-full bg-home ">
@@ -13,7 +15,7 @@ const EarnCertificate = () => {
                             <Button
                                 variant="primary"
                                 title="Explore Programs"
-                                onClick={() => console.log("Explore Programs")}
+                                onClick={() => navigate("/courses")}
                                 className="h-[48px] px-6 !rounded-none"
                                 icon={<ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
                             />

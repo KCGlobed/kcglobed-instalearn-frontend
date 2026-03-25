@@ -1,17 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Star } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
+import { fetchTags } from "../../store/slices/tagSlice";
+import SkeltonLoader from "../Loader/SkeltonLoader";
 
-/**
- * AllInOneFinance Component
- * Responsive course grid UI with:
- * - Functional filter tabs (fixed flickering)
- * - Fixed 4-column grid layout (desktop)
- * - Modern card UI with hover effects
- */
+
 const AllInOneFinance = () => {
     const [activeTab, setActiveTab] = useState("Most Popular");
-
-    // Mock course data matching the design screenshot
     const courses = [
         {
             id: 1,
@@ -102,8 +97,26 @@ const AllInOneFinance = () => {
             image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&q=80&w=600"
         }
     ];
-
+    const dispatch = useAppDispatch();
+    const { tags, loading } = useAppSelector((state) => state.tag);
     const tabs = ["Most Popular", "New Courses", "Trending"];
+
+    console.log(tags, "check");
+
+
+
+    useEffect(() => {
+        if (!tags || tags.length === 0) {
+            dispatch(fetchTags());
+        }
+    }, []);
+
+
+
+
+
+
+
 
     return (
         <section className="bg-[#FFFFFE] py-20 px-4 xl:px-0 ">
@@ -118,22 +131,25 @@ const AllInOneFinance = () => {
                 </div>
 
                 {/* Filters - Unified left-aligned tab container */}
-                <div className="flex justify-start items-center mb-10 overflow-x-auto no-scrollbar">
-                    <div className="flex p-1 bg-white border border-[#E9EAF0] rounded-sm">
-                        {tabs.map((tab) => (
-                            <button
-                                key={tab}
-                                onClick={() => setActiveTab(tab)}
-                                className={`px-6 py-2.5 text-sm font-semibold transition-colors duration-200 rounded-[2px] cursor-pointer whitespace-nowrap ${activeTab === tab
-                                    ? "bg-[#EBEBFF] text-[#5624D0]"
-                                    : "text-[#6E7485] hover:bg-gray-50 border border-transparent"
-                                    }`}
-                            >
-                                {tab}
-                            </button>
-                        ))}
+                {loading ? <SkeltonLoader loaderType="tag" /> : (
+                    <div className="flex justify-start items-center mb-10 overflow-x-auto no-scrollbar">
+                        <div className="flex p-1 bg-white border border-[#E9EAF0] rounded-sm">
+                            {tags.map((tab) => (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => setActiveTab(tab.name)}
+                                    className={`px-6 py-2.5 text-sm font-semibold transition-colors duration-200 rounded-[2px] cursor-pointer whitespace-nowrap ${activeTab === tab.name
+                                        ? "bg-[#EBEBFF] text-[#5624D0]"
+                                        : "text-[#6E7485] hover:bg-gray-50 border border-transparent"
+                                        }`}
+                                >
+                                    {tab.name}
+                                </button>
+                            ))}
+                        </div>
                     </div>
-                </div>
+                )}
+
 
                 {/* Course Grid - Fixed 4 in a row */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

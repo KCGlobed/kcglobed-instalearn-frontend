@@ -3,6 +3,7 @@ import homepageCategoryReducer from "./slices/homepageCategorySlice";
 import authReducer from "./slices/authSlice";
 import forgotPasswordReducer from "./slices/forgotpasswordSlice";
 import resetPasswordReducer from "./slices/resetpasswordSlice";
+import tagReducer from "./slices/tagSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     auth: authReducer,
     forgotPassword: forgotPasswordReducer,
     resetPassword: resetPasswordReducer,
+    tag: tagReducer,
   },
 });
 

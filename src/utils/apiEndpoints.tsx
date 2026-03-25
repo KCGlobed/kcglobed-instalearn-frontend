@@ -5,4 +5,5 @@ export const API_ENDPOINTS = {
     LOGIN: "user/login/",
     FORGOT_PASSWORD: "user/forgot-password/",
     RESET_PASSWORD: "user/reset-password/",
+    TAG: "course/homepage-tags/",
 }

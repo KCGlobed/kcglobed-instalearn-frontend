@@ -186,13 +186,13 @@ const MobileDrawer = ({
                     </ul>
 
                     {/* Auth buttons in drawer */}
-                    <div className="flex flex-col gap-3 px-4 mt-4 pb-6">
-                        {/* Always show sign up / in on drawer for unauth; mockup profile for auth */}
+                    {/* <div className="flex flex-col gap-3 px-4 mt-4 pb-6">
+
                         <Button variant="secondary" title="Sign Up" className="w-full h-[44px] !rounded-sm" />
                         <Button variant="primary" title="Sign In" className="w-full h-[44px] !rounded-sm"
                             onClick={onSignIn}
                         />
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </>
@@ -265,6 +265,7 @@ const ProfileDropdown = () => {
                     </div>
 
                     <div className="h-px bg-[#E9EAF0] my-1 mx-5" />
+
 
                     {/* Group 4 */}
                     <div className="py-1 pb-2">
@@ -381,11 +382,13 @@ const MainHeader = () => {
                 >
                     {/* Logo */}
                     <div className="shrink-0">
+
                         <img
                             src="/instalogo.png"
                             alt="KC Globed"
-                            className="h-10 w-auto"
+                            className="h-10 w-auto cursor-pointer"
                             onError={(e) => { e.currentTarget.src = "https://placehold.co/150x40?text=KC+Globed"; }}
+                            onClick={() => navigate('/')}
                         />
                     </div>
 
