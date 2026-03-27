@@ -13,3 +13,7 @@ export const resetPassword = async (payload: any): Promise<any> => {
 export const courseTag = async (): Promise<any> => {
   return await apiRequest(API_ENDPOINTS.TAG, 'GET');
 };
+
+export const courseById = async (payload: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.COURSE_BY_ID}/${payload}`, 'GET');
+};

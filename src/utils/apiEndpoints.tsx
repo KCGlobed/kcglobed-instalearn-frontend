@@ -6,4 +6,5 @@ export const API_ENDPOINTS = {
     FORGOT_PASSWORD: "user/forgot-password/",
     RESET_PASSWORD: "user/reset-password/",
     TAG: "course/homepage-tags/",
+    COURSE_BY_ID: "course/homepage-tag-wise-courses",
 }

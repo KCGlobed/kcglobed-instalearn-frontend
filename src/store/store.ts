@@ -4,6 +4,7 @@ import authReducer from "./slices/authSlice";
 import forgotPasswordReducer from "./slices/forgotpasswordSlice";
 import resetPasswordReducer from "./slices/resetpasswordSlice";
 import tagReducer from "./slices/tagSlice";
+import courseReducer from "./slices/courseSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     forgotPassword: forgotPasswordReducer,
     resetPassword: resetPasswordReducer,
     tag: tagReducer,
+    course: courseReducer,
   },
 });
 

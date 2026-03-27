@@ -5,6 +5,7 @@ import LoginPage from "./pages/login"
 import ForgotPassword from "./pages/ForgotPassword/Index"
 import ResetPassword from "./pages/ResetPassword/Index"
 import Courses from "./pages/Courses"
+import CategoryPage from "./pages/Categories"
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/user/reset" element={<ResetPassword />} />
         <Route path="/courses" element={<Courses />} />
+        <Route path="/categories" element={<CategoryPage />} />
       </Routes>
     </>
   )
