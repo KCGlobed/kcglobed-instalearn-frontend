@@ -7,6 +7,7 @@ import Footer from "../../layouts/Footer"
 import AllInOneFinance from "../../components/HomeComponent/AllInOneFinance"
 import RecentlyAddedCourses from "../../components/HomeComponent/RecentlyAddedCourses"
 import HomeBanner from "../../components/HomeComponent/HomeBanner"
+import LearningFocus from "../../components/HomeComponent/LearningFocus"
 
 const HomePage = () => {
     return (
@@ -18,6 +19,7 @@ const HomePage = () => {
             <RecentlyAddedCourses />
             <TopCollege />
             <EarnCertificate />
+            <LearningFocus />
             <HeroStatsSection />
             <Footer />
         </>

@@ -5,7 +5,6 @@ import TopHeader from "../../layouts/TopHeader"
 
 const Courses = () => {
 
-
     return (
         <div>
             <TopHeader />

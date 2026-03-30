@@ -14,6 +14,8 @@ import { useSelector } from "react-redux";
 import type { RootState } from "../store/store";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../hooks/useRedux";
+import { logout } from "../store/slices/authSlice";
+import { useAppDispatch } from "../hooks/useAppDispatch";
 
 
 // ─── Browse Dropdown ──────────────────────────────────────────────────────────
@@ -199,10 +201,246 @@ const MobileDrawer = ({
     );
 };
 
+// ─── Notification Dropdown ───────────────────────────────────────────────────
+const NotificationDropdown = () => {
+    const [open, setOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const notifications = [
+        { id: 1, title: "Welcome to InstaLearn!", date: "2 hours ago" },
+        { id: 2, title: "New course added: Advanced React Patterns", date: "5 hours ago" },
+        { id: 3, title: "Your payment was successful", date: "Yesterday" },
+    ];
+
+    return (
+        <div className="relative" ref={dropdownRef} style={{ overflow: "visible" }}>
+            <button
+                onClick={() => setOpen(!open)}
+                className={`p-2 rounded transition-all duration-200 relative group ${open ? 'bg-[#F5F4FF] text-[#5624D0]' : 'text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0]'}`}
+                aria-expanded={open}
+                aria-haspopup="menu"
+            >
+                <Bell className={`w-5 h-5 stroke-[1.5px] ${open ? 'fill-[#5624D0]/10' : ''}`} />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#FF4B2B] rounded-full border-2 border-white" />
+            </button>
+
+            {open && (
+                <div
+                    className="absolute right-0 top-[calc(100%+12px)] w-[300px] bg-white rounded-[10px] py-1 border border-[#E9EAF0] shadow-[0_12px_40px_rgba(0,0,0,0.12)] z-[9999]"
+                    style={{
+                        animation: "browseDropdownIn 0.18s cubic-bezier(0.4, 0, 0.2, 1) forwards",
+                        transformOrigin: "top right"
+                    }}
+                >
+                    <div className="px-5 py-4 border-b border-[#E9EAF0] flex justify-between items-center bg-[#fcfcfd] rounded-t-[10px]">
+                        <span className="text-[15px] font-bold text-[#1D2026]">Notifications</span>
+                        <a href="#" className="text-[12px] font-semibold text-[#5624D0] hover:underline" onClick={(e) => e.preventDefault()}>Settings</a>
+                    </div>
+
+                    <div className="max-h-[320px] overflow-y-auto">
+                        {notifications.length > 0 ? (
+                            notifications.map((n) => (
+                                <div key={n.id} className="px-5 py-3.5 border-b border-[#f3f4f6] last:border-0 hover:bg-[#F5F4FF]/50 cursor-pointer transition-colors group">
+                                    <p className="text-[13.5px] font-medium text-[#1D2026] leading-snug group-hover:text-[#5624D0]">{n.title}</p>
+                                    <p className="text-[11.5px] text-[#8C94A3] mt-1">{n.date}</p>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="px-5 py-8 text-center">
+                                <p className="text-[14px] text-[#6E7485]">No notifications yet</p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="p-3 bg-[#fcfcfd] rounded-b-[10px] border-t border-[#E9EAF0]">
+                        <button className="w-full py-2 text-[13px] font-bold text-[#5624D0] hover:bg-[#F5F4FF] rounded transition-colors" onClick={() => setOpen(false)}>
+                            View all notifications
+                        </button>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+// ─── Wishlist Dropdown ───────────────────────────────────────────────────────
+const WishlistDropdown = () => {
+    const [open, setOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const wishlistItems = [
+        { id: 1, title: "UI/UX Design Masterclass 2024", instructor: "Sarah Johnson", price: 89.99, image: "https://placehold.co/80x45" },
+        { id: 2, title: "Modern Web Development with Next.js", instructor: "Mike Ross", price: 129.99, image: "https://placehold.co/80x45" },
+    ];
+
+    return (
+        <div className="relative" ref={dropdownRef} style={{ overflow: "visible" }}>
+            <button
+                onClick={() => setOpen(!open)}
+                className={`p-2 rounded transition-all duration-200 group ${open ? 'bg-[#F5F4FF] text-[#5624D0]' : 'text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0]'}`}
+                aria-expanded={open}
+                aria-haspopup="menu"
+            >
+                <Heart className={`w-5 h-5 stroke-[1.5px] ${open ? 'fill-[#5624D0]/10' : ''}`} />
+            </button>
+
+            {open && (
+                <div
+                    className="absolute right-0 top-[calc(100%+12px)] w-[300px] bg-white rounded-[10px] py-1 border border-[#E9EAF0] shadow-[0_12px_40px_rgba(0,0,0,0.12)] z-[9999]"
+                    style={{
+                        animation: "browseDropdownIn 0.18s cubic-bezier(0.4, 0, 0.2, 1) forwards",
+                        transformOrigin: "top right"
+                    }}
+                >
+                    <div className="px-5 py-4 border-b border-[#E9EAF0] bg-[#fcfcfd] rounded-t-[10px]">
+                        <span className="text-[15px] font-bold text-[#1D2026]">Wishlist</span>
+                    </div>
+
+                    <div className="max-h-[320px] overflow-y-auto">
+                        {wishlistItems.length > 0 ? (
+                            wishlistItems.map((item) => (
+                                <div key={item.id} className="px-5 py-3.5 border-b border-[#f3f4f6] last:border-0 hover:bg-[#F5F4FF]/50 cursor-pointer transition-colors flex gap-3">
+                                    <img src={item.image} alt={item.title} className="w-16 h-9 object-cover rounded bg-[#F5F4FF]" />
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-[13px] font-bold text-[#1D2026] leading-tight truncate">{item.title}</p>
+                                        <p className="text-[11px] text-[#6E7485] mt-0.5 truncate">{item.instructor}</p>
+                                        <p className="text-[13px] font-bold text-[#1D2026] mt-1">${item.price}</p>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="px-5 py-10 text-center">
+                                <p className="text-[14px] text-[#6E7485]">Your wishlist is empty.</p>
+                                <button className="mt-2 text-[#5624D0] text-[13px] font-bold hover:underline" onClick={() => setOpen(false)}>Explore courses</button>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="p-3 bg-[#fcfcfd] rounded-b-[10px] border-t border-[#E9EAF0]">
+                        <button className="w-full py-2.5 text-[14px] font-bold text-white bg-[#5624D0] hover:bg-[#461DA5] rounded transition-colors" onClick={() => setOpen(false)}>
+                            Go to Wishlist
+                        </button>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+// ─── Cart Dropdown ───────────────────────────────────────────────────────────
+const CartDropdown = () => {
+    const [open, setOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const cartItems = [
+        { id: 1, title: "The Ultimate Drawing Course", instructor: "Jaysen Batchelor", price: 10.99, image: "https://placehold.co/80x45" },
+    ];
+
+    return (
+        <div className="relative" ref={dropdownRef} style={{ overflow: "visible" }}>
+            <button
+                onClick={() => setOpen(!open)}
+                className={`p-2 rounded transition-all duration-200 relative group ${open ? 'bg-[#F5F4FF] text-[#5624D0]' : 'text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0]'}`}
+                aria-expanded={open}
+                aria-label="Cart"
+                aria-haspopup="menu"
+            >
+                <ShoppingCart className={`w-5 h-5 stroke-[1.5px] ${open ? 'fill-[#5624D0]/10' : ''}`} />
+                <span className="absolute top-1 right-1 w-4 h-4 bg-[#5624D0] text-white text-[10px] font-bold flex items-center justify-center rounded-full border border-white">
+                    {cartItems.length}
+                </span>
+            </button>
+
+            {open && (
+                <div
+                    className="absolute right-0 top-[calc(100%+12px)] w-[300px] bg-white rounded-[10px] py-1 border border-[#E9EAF0] shadow-[0_12px_40px_rgba(0,0,0,0.12)] z-[9999]"
+                    style={{
+                        animation: "browseDropdownIn 0.18s cubic-bezier(0.4, 0, 0.2, 1) forwards",
+                        transformOrigin: "top right"
+                    }}
+                >
+                    <div className="px-5 py-4 border-b border-[#E9EAF0] bg-[#fcfcfd] rounded-t-[10px]">
+                        <span className="text-[15px] font-bold text-[#1D2026]">Cart</span>
+                    </div>
+
+                    <div className="max-h-[320px] overflow-y-auto">
+                        {cartItems.length > 0 ? (
+                            cartItems.map((item) => (
+                                <div key={item.id} className="px-5 py-3.5 border-b border-[#f3f4f6] last:border-0 hover:bg-[#F5F4FF]/50 cursor-pointer transition-colors flex gap-3">
+                                    <img src={item.image} alt={item.title} className="w-16 h-9 object-cover rounded bg-[#F5F4FF]" />
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-[13px] font-bold text-[#1D2026] leading-tight truncate">{item.title}</p>
+                                        <p className="text-[11px] text-[#6E7485] mt-0.5 truncate">{item.instructor}</p>
+                                        <p className="text-[13px] font-bold text-[#1D2026] mt-1">${item.price}</p>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="px-5 py-10 text-center">
+                                <p className="text-[14px] text-[#6E7485]">Your cart is empty.</p>
+                                <button className="mt-2 text-[#5624D0] text-[13px] font-bold hover:underline" onClick={() => setOpen(false)}>Keep shopping</button>
+                            </div>
+                        )}
+                    </div>
+
+                    {cartItems.length > 0 && (
+                        <div className="p-4 bg-[#fcfcfd] rounded-b-[10px] border-t border-[#E9EAF0]">
+                            <div className="flex justify-between items-center mb-4 px-1">
+                                <span className="text-[14px] font-medium text-[#1D2026]">Total:</span>
+                                <span className="text-[16px] font-bold text-[#1D2026]">$10.99</span>
+                            </div>
+                            <button className="w-full py-2.5 text-[14px] font-bold text-white bg-[#5624D0] hover:bg-[#461DA5] rounded transition-colors" onClick={() => setOpen(false)}>
+                                Go to Cart
+                            </button>
+                        </div>
+                    )}
+                </div>
+            )}
+        </div>
+    );
+};
+
 // ─── Profile Dropdown ────────────────────────────────────────────────────────
 const ProfileDropdown = () => {
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+
+    const onLogoutClick = () => {
+        dispatch(logout());
+        navigate('/');
+    };
 
     // Close on outside click
     useEffect(() => {
@@ -271,6 +509,7 @@ const ProfileDropdown = () => {
                     <div className="py-1 pb-2">
                         <a href="#" onClick={(e) => e.preventDefault()} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Account Settings</a>
                         <a href="#" onClick={(e) => e.preventDefault()} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Payment Methods</a>
+                        <a href="#" onClick={(e) => onLogoutClick()} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Log out</a>
                     </div>
                 </div>
             )}
@@ -320,12 +559,7 @@ const MainHeader = () => {
                     </div>
 
                     {/* Cart */}
-                    <button
-                        className="shrink-0 p-2 rounded text-[#1D2026] hover:text-[#5624D0] hover:bg-[#F5F4FF] transition-colors relative"
-                        aria-label="Cart"
-                    >
-                        <ShoppingCart className="w-5 h-5" />
-                    </button>
+                    <CartDropdown />
                 </div>
 
                 {/* ── Tablet bar (md → lg) ── */}
@@ -350,15 +584,9 @@ const MainHeader = () => {
 
                     {/* Icons */}
                     <div className="flex items-center gap-2 shrink-0">
-                        <button className="p-2 rounded text-[#1D2026] hover:text-[#5624D0] hover:bg-[#F5F4FF] transition-colors">
-                            <Bell className="w-5 h-5 stroke-[1.5px]" />
-                        </button>
-                        <button className="p-2 rounded text-[#1D2026] hover:text-[#5624D0] hover:bg-[#F5F4FF] transition-colors">
-                            <Heart className="w-5 h-5 stroke-[1.5px]" />
-                        </button>
-                        <button className="p-2 rounded text-[#1D2026] hover:text-[#5624D0] hover:bg-[#F5F4FF] transition-colors">
-                            <ShoppingCart className="w-5 h-5 stroke-[1.5px]" />
-                        </button>
+                        <NotificationDropdown />
+                        <WishlistDropdown />
+                        <CartDropdown />
 
                         <div className="w-px h-5 bg-[#E9EAF0] mx-1" />
 
@@ -404,15 +632,9 @@ const MainHeader = () => {
 
                     {/* Right actions */}
                     <div className="flex items-center gap-1 shrink-0 ml-auto">
-                        <button className="p-2 rounded text-[#1D2026] hover:text-[#5624D0] hover:bg-[#F5F4FF] transition-colors">
-                            <Bell className="w-5 h-5 stroke-[1.5px]" />
-                        </button>
-                        <button className="p-2 rounded text-[#1D2026] hover:text-[#5624D0] hover:bg-[#F5F4FF] transition-colors">
-                            <Heart className="w-5 h-5 stroke-[1.5px]" />
-                        </button>
-                        <button className="p-2 rounded text-[#1D2026] hover:text-[#5624D0] hover:bg-[#F5F4FF] transition-colors">
-                            <ShoppingCart className="w-5 h-5 stroke-[1.5px]" />
-                        </button>
+                        <NotificationDropdown />
+                        <WishlistDropdown />
+                        <CartDropdown />
 
                         <div className="w-px h-6 bg-[#E9EAF0] mx-2" />
 

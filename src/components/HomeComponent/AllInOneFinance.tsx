@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import { fetchTags } from "../../store/slices/tagSlice";
 import SkeltonLoader from "../Loader/SkeltonLoader";
 import { fetchCoursesById } from "../../store/slices/courseSlice";
+import { useNavigate } from "react-router-dom";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -24,6 +25,8 @@ interface CourseItem {
 // CourseCard — extracted to avoid re-creating the component on every render
 // ---------------------------------------------------------------------------
 const CourseCard = memo(({ course }: { course: CourseItem }) => {
+    const navigate = useNavigate();
+
     const info = course.courses;
 
     return (
@@ -47,7 +50,7 @@ const CourseCard = memo(({ course }: { course: CourseItem }) => {
                     </span>
                 </div>
 
-                <h3 className="text-[#1D2026] text-sm font-medium mb-4 line-clamp-2 h-10 group-hover:text-[#5624D0] transition-colors leading-[20px]">
+                <h3 onClick={() => navigate(`/courses/detail?courseId=${course.id}`)} className="text-[#1D2026] text-sm font-medium mb-4 line-clamp-2 h-10 group-hover:text-[#5624D0] transition-colors leading-[20px]">
                     {info?.name}
                 </h3>
 

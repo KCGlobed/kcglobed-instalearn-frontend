@@ -6,6 +6,9 @@ import ForgotPassword from "./pages/ForgotPassword/Index"
 import ResetPassword from "./pages/ResetPassword/Index"
 import Courses from "./pages/Courses"
 import CategoryPage from "./pages/Categories"
+import CourseDetail from "./pages/CourseDetail"
+import ComingSoon from "./pages/CommingSoon"
+import WatchCourse from "./pages/WatchCourse"
 
 function App() {
 
@@ -18,7 +21,10 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/user/reset" element={<ResetPassword />} />
         <Route path="/courses" element={<Courses />} />
+        <Route path="/courses/detail" element={<CourseDetail />} />
         <Route path="/categories" element={<CategoryPage />} />
+        <Route path="/coming-soon" element={<ComingSoon />} />
+        <Route path="/watch-course" element={<WatchCourse />} />
       </Routes>
     </>
   )
