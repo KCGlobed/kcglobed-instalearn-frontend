@@ -14,6 +14,7 @@ import {
     ArrowRight,
     Presentation
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const categories = [
     { title: "Label", count: "63,476 Courses", icon: <Cpu className="w-8 h-8" />, bgColor: "bg-[#EBEBFF]", iconColor: "text-[#5624D0]", iconBg: "bg-white" },
@@ -31,6 +32,7 @@ const categories = [
 ];
 
 const TopCollege = () => {
+    const navigate = useNavigate();
     return (
         <section className="w-full bg-[#B8B8B840] py-20 px-6">
             <div className="max-w-[1320px] mx-auto">
@@ -40,6 +42,7 @@ const TopCollege = () => {
                         <div
                             key={index}
                             className={`${cat.bgColor} p-4 flex items-center gap-4 cursor-pointer hover:shadow-md transition-all duration-300 group min-h-[100px]`}
+                            onClick={() => navigate(`/categories`)}
                         >
                             <div className={`${cat.iconBg} w-[60px] h-[60px] min-w-[60px] flex items-center justify-center ${cat.iconColor} group-hover:scale-110 transition-transform duration-300`}>
                                 {cat.icon}

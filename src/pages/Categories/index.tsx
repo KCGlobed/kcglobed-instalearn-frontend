@@ -1,4 +1,5 @@
 import BestCourses from "../../components/CategoryComponent/BestCourses"
+import PopularToolsSlider from "../../components/CategoryComponent/ToolSlider"
 import Footer from "../../layouts/Footer"
 import MainHeader from "../../layouts/MainHeader"
 import TopHeader from "../../layouts/TopHeader"
@@ -10,6 +11,7 @@ const CategoryPage = () => {
             <TopHeader />
             <MainHeader />
             <BestCourses />
+            <PopularToolsSlider />
             <Footer />
         </>
     )
