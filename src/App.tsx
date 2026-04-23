@@ -1,19 +1,22 @@
-import Home from "./pages/Home/Index"
+import React, { Suspense, lazy } from "react"
 import { Route, Routes } from "react-router-dom"
-import Testing from "./pages/Testing"
-import LoginPage from "./pages/login"
-import ForgotPassword from "./pages/ForgotPassword/Index"
-import ResetPassword from "./pages/ResetPassword/Index"
-import Courses from "./pages/Courses"
-import CategoryPage from "./pages/Categories"
-import CourseDetail from "./pages/CourseDetail"
-import ComingSoon from "./pages/CommingSoon"
-import WatchCourse from "./pages/WatchCourse"
+import PageLoader from "./components/Loader/PageLoader"
+
+// Lazy-loaded components
+const Home = lazy(() => import("./pages/Home/Index"))
+const Testing = lazy(() => import("./pages/Testing"))
+const LoginPage = lazy(() => import("./pages/login"))
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword/Index"))
+const ResetPassword = lazy(() => import("./pages/ResetPassword/Index"))
+const Courses = lazy(() => import("./pages/Courses"))
+const CategoryPage = lazy(() => import("./pages/Categories"))
+const CourseDetail = lazy(() => import("./pages/CourseDetail"))
+const ComingSoon = lazy(() => import("./pages/CommingSoon"))
+const WatchCourse = lazy(() => import("./pages/WatchCourse"))
 
 function App() {
-
   return (
-    <>
+    <Suspense fallback={<PageLoader />}>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<LoginPage />} />
@@ -26,7 +29,7 @@ function App() {
         <Route path="/coming-soon" element={<ComingSoon />} />
         <Route path="/watch-course" element={<WatchCourse />} />
       </Routes>
-    </>
+    </Suspense>
   )
 }
 

@@ -52,7 +52,7 @@ const HomeBanner = () => {
                     <div className="banner-image">
                         <div className="relative inline-block h-fit w-full max-w-[350px]">
                             {/* Main Background Image */}
-                            <img src="/hero_banner.png" alt="Banner Image" className="relative z-10 w-full object-cover" />
+                            <img src="/hero_banner.webp" alt="Banner Image" className="relative z-10 w-full object-cover" />
 
                             {/* Floating Card: 250k Assisted Student */}
                             <div className="absolute top-[8%] -left-[25%] z-20 bg-white/95 backdrop-blur-sm shadow-[0_10px_30px_rgba(0,0,0,0.08)] rounded-[14px] p-2 md:p-3 pl-3.5 pr-6 md:pr-8 hidden md:flex items-center gap-2 md:gap-3 " >
