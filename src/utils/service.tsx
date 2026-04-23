@@ -17,3 +17,8 @@ export const courseTag = async (): Promise<any> => {
 export const courseById = async (payload: any): Promise<any> => {
   return await apiRequest(`${API_ENDPOINTS.COURSE_BY_ID}/${payload}`, 'GET');
 };
+
+export const homepageCategoryListApi = async (): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.HOMEPAGE_CATEGORY}`, 'GET');
+}
+

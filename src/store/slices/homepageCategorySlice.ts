@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { API_BASE_URL, API_ENDPOINTS } from "../../utils/apiEndpoints";
+import { homepageCategoryListApi } from "../../utils/service";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -9,6 +10,10 @@ export interface HomepageCategory {
   total_courses: number;
   status: boolean;
   created_at: string;
+  icon: string;
+  bg_code: string,
+  textCode: string,
+
 }
 
 interface HomepageCategoryState {
@@ -33,13 +38,7 @@ export const fetchHomepageCategories = createAsyncThunk<
   { rejectValue: string }
 >("homepageCategory/fetchAll", async (_, { rejectWithValue }) => {
   try {
-    const response = await fetch(API_BASE_URL + API_ENDPOINTS.HOMEPAGE_CATEGORY);
-
-    if (!response.ok) {
-      return rejectWithValue(`Request failed with status ${response.status}`);
-    }
-
-    const json = await response.json();
+    const json = await homepageCategoryListApi();
 
     if (!json.success) {
       return rejectWithValue(json.message ?? "Unknown error from server");
