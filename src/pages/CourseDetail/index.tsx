@@ -5,8 +5,24 @@ import CourseDescription from '../../components/CourseDetail/CourseDescription';
 import CourseSidebar from '../../components/CourseDetail/CourseSidebar';
 import MainHeader from '../../layouts/MainHeader';
 import Footer from '../../layouts/Footer';
+import { useParams } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
+import type { RootState } from '../../store/store';
+import { useEffect } from 'react';
+import { fetchCourseById } from '../../store/slices/courseDetailSlice';
+
 
 const CourseDetail = () => {
+    const { id } = useParams();
+    const { courseDetail, loading, error } = useAppSelector((state: RootState) => state.courseDetail);
+    const dispatch = useAppDispatch();
+
+    console.log(courseDetail, "courseDetail");
+
+    useEffect(() => {
+        dispatch(fetchCourseById(Number(id)));
+    }, [id]);
+
     return (
         <>
             <MainHeader />
