@@ -22,10 +22,12 @@ import {
 import type { RootState } from '../../store/store';
 import { useAppSelector } from '../../hooks/useRedux';
 import toast from 'react-hot-toast';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { addToCart } from '../../store/slices/cartslice';
 
 const CourseSidebar = () => {
     const { courseDetail, loading, error } = useAppSelector((state: RootState) => state.courseDetail);
-
+    const dispatch = useAppDispatch();
     // Safely compute prices — price and discount default to 0 while courseDetail is null
     const price = courseDetail?.price ?? 0;
     const discountPct = courseDetail?.discount ?? 0;
@@ -33,10 +35,22 @@ const CourseSidebar = () => {
 
 
     const handleCopyUrl = useCallback(() => {
-
         navigator.clipboard.writeText(window.location.href);
         toast.success("Link copied to clipboard");
     }, [])
+
+
+
+    const addCourseToCart = () => {
+        if (!courseDetail?.id) return;
+
+        const data = {
+            course_id: courseDetail.id,
+            is_add: true
+        }
+        console.log("data", data);
+        dispatch(addToCart(data));
+    }
 
 
 
@@ -104,7 +118,7 @@ const CourseSidebar = () => {
 
                 {/* Primary Action Buttons */}
                 <div className="grid gap-3 mb-6">
-                    <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98]">
+                    <button onClick={() => addCourseToCart()} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98]">
                         Add To Cart
                     </button>
                     <button className="w-full border-2 border-indigo-600 text-indigo-600 font-bold py-4 rounded-xl hover:bg-indigo-50 transition-all active:scale-[0.98]">
