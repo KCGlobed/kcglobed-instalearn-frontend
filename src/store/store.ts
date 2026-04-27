@@ -7,6 +7,7 @@ import tagReducer from "./slices/tagSlice";
 import courseReducer from "./slices/courseSlice";
 import filterCourseReducer from "./slices/filterCourseSlice";
 import courseDetailReducer from "./slices/courseDetailSlice";
+import homepageRecentlyAddedReducer from "./slices/homepageRecentlyAdded";
 
 export const store = configureStore({
   reducer: {
@@ -18,6 +19,8 @@ export const store = configureStore({
     course: courseReducer,
     filterCourse: filterCourseReducer,
     courseDetail: courseDetailReducer,
+    homepageRecentlyAdded: homepageRecentlyAddedReducer
+
   },
 });
 

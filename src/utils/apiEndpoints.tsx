@@ -11,4 +11,6 @@ export const API_ENDPOINTS = {
     COURSE_DETAIL: "course/course-detail/",
     ADD_TO_CART: "subscription/add-to-cart/",
     CHECK_COURSE_CART: "subscription/check-course-cart/",
+    HOMEPAGE_RECENTLY_ADDED: "course/homepage-recent-courses/",
+
 }
