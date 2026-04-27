@@ -23,7 +23,7 @@ import type { RootState } from '../../store/store';
 import { useAppSelector } from '../../hooks/useRedux';
 import toast from 'react-hot-toast';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
-import { addToCart } from '../../store/slices/cartslice';
+
 
 const CourseSidebar = () => {
     const { courseDetail, loading, error } = useAppSelector((state: RootState) => state.courseDetail);
@@ -49,7 +49,7 @@ const CourseSidebar = () => {
             is_add: true
         }
         console.log("data", data);
-        dispatch(addToCart(data));
+
     }
 
 
