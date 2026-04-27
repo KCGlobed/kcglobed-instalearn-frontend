@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import {
     Clock,
     BarChart,
@@ -19,14 +19,21 @@ import {
     Phone
 } from 'lucide-react';
 
+
 import type { RootState } from '../../store/store';
 import { useAppSelector } from '../../hooks/useRedux';
 import toast from 'react-hot-toast';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
-import { addToCart } from '../../store/slices/cartslice';
+import { addToCartAction, viewCartDetails } from '../../store/slices/courseCartSlice';
+import SkeltonLoader from '../Loader/SkeltonLoader';
+import { useNavigate } from 'react-router-dom';
+
 
 const CourseSidebar = () => {
     const { courseDetail, loading, error } = useAppSelector((state: RootState) => state.courseDetail);
+    const { cartItems, loading: cartLoading, error: cartError } = useAppSelector((state: RootState) => state.cart);
+    const navigate = useNavigate();
+
     const dispatch = useAppDispatch();
     // Safely compute prices — price and discount default to 0 while courseDetail is null
     const price = courseDetail?.price ?? 0;
@@ -43,16 +50,35 @@ const CourseSidebar = () => {
 
     const addCourseToCart = () => {
         if (!courseDetail?.id) return;
-
         const data = {
             course_id: courseDetail.id,
-            is_add: true
         }
-        console.log("data", data);
-        dispatch(addToCart(data));
+        dispatch(addToCartAction(data));
+
     }
 
 
+    console.log(cartItems, "courseDetail");
+
+    const isCart = useMemo(() => {
+        if (!courseDetail?.id || !cartItems?.length) return false;
+        return cartItems.some((item: any) => item?.course_info?.id === courseDetail.id);
+    }, [cartItems, courseDetail?.id]);
+
+
+    useEffect(() => {
+        dispatch(viewCartDetails());
+    }, []);
+
+
+    const gotoCart = () => {
+        navigate('/cart');
+    }
+
+
+    if (loading) {
+        return <SkeltonLoader loaderType="course_detail_sidebar" />
+    }
 
     return (
         <div className="bg-white border rounded-2xl shadow-xl overflow-hidden sticky top-8 max-w-sm ml-auto">
@@ -118,9 +144,23 @@ const CourseSidebar = () => {
 
                 {/* Primary Action Buttons */}
                 <div className="grid gap-3 mb-6">
-                    <button onClick={() => addCourseToCart()} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98]">
-                        Add To Cart
-                    </button>
+                    {
+                        !isCart ?
+
+                            <button onClick={() => addCourseToCart()} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98]">
+                                {cartLoading ?
+                                    <div className="flex items-center gap-2 justify-center">
+                                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                        <span>Adding to cart...</span>
+                                    </div>
+
+                                    : "Add To Cart"}
+                            </button>
+                            :
+                            <button onClick={() => gotoCart()} className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98]">
+                                Go To Cart
+                            </button>
+                    }
                     <button className="w-full border-2 border-indigo-600 text-indigo-600 font-bold py-4 rounded-xl hover:bg-indigo-50 transition-all active:scale-[0.98]">
                         Buy Now
                     </button>

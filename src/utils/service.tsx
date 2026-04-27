@@ -34,7 +34,14 @@ export const checkCourseCart = async (payload: any): Promise<any> => {
   return await apiRequest(API_ENDPOINTS.CHECK_COURSE_CART, 'POST', payload);
 };
 
+export const viewCart = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.VIEW_CART, 'POST', payload);
+};
 
+
+export const homepageRecentlyAddedApi = async (): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.HOMEPAGE_RECENTLY_ADDED}`, 'GET');
+}
 
 
 
