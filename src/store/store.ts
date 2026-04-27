@@ -18,7 +18,6 @@ export const store = configureStore({
     course: courseReducer,
     filterCourse: filterCourseReducer,
     courseDetail: courseDetailReducer,
-    cart: cartReducer,
   },
 });
 
