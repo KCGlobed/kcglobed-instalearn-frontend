@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     SlidersHorizontal, Search, ChevronDown, ChevronUp,
     Cpu, Handshake, CreditCard, Monitor, Briefcase, Book, PenTool,
     Megaphone, Box, Camera, Headphones, HeartPulse
 } from "lucide-react";
 import CoursesCard from "../Cards/CoursesCard";
+import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
+import { fetchCoursesList } from "../../store/slices/filterCourseSlice";
+import { useNavigate } from "react-router-dom";
 
 
 const Sidebar = () => {
@@ -139,6 +142,20 @@ const Sidebar = () => {
 
 const CourseListFilter = () => {
     const [isFilterOpen, setIsFilterOpen] = useState(true);
+    const dispatch = useAppDispatch();
+    const { courses, loading, error } = useAppSelector((state: any) => state.filterCourse);
+    const navigate = useNavigate();
+
+
+    const handleCourseClick = (course: any) => {
+        navigate(`/courses/detail/${course.id}`)
+    }
+
+
+
+    useEffect(() => {
+        dispatch(fetchCoursesList());
+    }, []);
 
     return (
         <section className="bg-white px-4 xl:px-0">
@@ -218,7 +235,7 @@ const CourseListFilter = () => {
 
                 {/* Right Courses Grid */}
                 <div className="flex-1 min-w-0 transition-all duration-300">
-                    <CoursesCard isSidebarOpen={isFilterOpen} />
+                    <CoursesCard onCourseClick={handleCourseClick} isSidebarOpen={isFilterOpen} courses={courses} loading={loading} error={error} />
                 </div>
             </div>
         </section>

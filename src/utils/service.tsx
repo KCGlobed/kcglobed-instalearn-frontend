@@ -17,3 +17,24 @@ export const courseTag = async (): Promise<any> => {
 export const courseById = async (payload: any): Promise<any> => {
   return await apiRequest(`${API_ENDPOINTS.COURSE_BY_ID}/${payload}`, 'GET');
 };
+
+export const courseList = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.COURSE_LIST, 'GET');
+};
+
+export const courseDetailById = async (payload: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.COURSE_DETAIL}${payload}`, 'GET');
+};
+
+export const addToCart = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.ADD_TO_CART, 'POST', payload);
+};
+
+export const checkCourseCart = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.CHECK_COURSE_CART, 'POST', payload);
+};
+
+
+
+
+

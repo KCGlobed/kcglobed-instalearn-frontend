@@ -1,14 +1,20 @@
 import React from 'react';
 import { Play } from 'lucide-react';
+import { useAppSelector } from '../../hooks/useRedux';
+import type { RootState } from '../../store/store';
 
 const CoursePreview = () => {
+    const { courseDetail, loading, error } = useAppSelector((state: RootState) => state.courseDetail);
+
+
     return (
         <div className="relative rounded-2xl overflow-hidden mb-8 group cursor-pointer shadow-lg hover:shadow-xl transition-shadow duration-300">
             {/* Main Preview Image */}
-            <img 
-                src="https://images.unsplash.com/photo-1542744094-24638eff58bb?q=80&w=2000&auto=format&fit=crop" 
-                alt="Course Preview" 
-                className="w-full h-auto object-cover border-4 border-white"
+            <img
+
+                src={courseDetail?.image || "https://images.unsplash.com/photo-1542744094-24638eff58bb?q=80&w=2000&auto=format&fit=crop"}
+                alt="Course Preview"
+                className="w-full h-auto object-cover  border-white"
             />
 
             {/* Play Button Overlay */}

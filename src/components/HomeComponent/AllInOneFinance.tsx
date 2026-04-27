@@ -28,10 +28,13 @@ const CourseCard = memo(({ course }: { course: CourseItem }) => {
     const navigate = useNavigate();
 
     const info = course.courses;
+    const handleNagivate = useCallback(() => {
+        navigate(`/courses/detail/${course.id}`);
+    }, [navigate, course.id]);
 
     return (
         <div className="bg-white group cursor-pointer border border-[#E9EAF0] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] hover:-translate-y-2 transition-all duration-300 rounded-[4px] overflow-hidden">
-            <div className="relative overflow-hidden aspect-[16/10]">
+            <div className="relative overflow-hidden aspect-[16/10]" onClick={handleNagivate}>
                 <img
                     src={info?.image}
                     alt={info?.name}
