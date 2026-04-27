@@ -12,4 +12,6 @@ export const API_ENDPOINTS = {
     ADD_TO_CART: "subscription/add-to-cart/",
     CHECK_COURSE_CART: "subscription/check-course-cart/",
     VIEW_CART: "subscription/view-cart/",
+    HOMEPAGE_RECENTLY_ADDED: "course/homepage-recent-courses/",
+
 }

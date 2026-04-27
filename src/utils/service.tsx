@@ -39,6 +39,9 @@ export const viewCart = async (payload: any): Promise<any> => {
 };
 
 
+export const homepageRecentlyAddedApi = async (): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.HOMEPAGE_RECENTLY_ADDED}`, 'GET');
+}
 
 
 
