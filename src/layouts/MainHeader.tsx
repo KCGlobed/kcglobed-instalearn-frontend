@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../hooks/useRedux";
 import { logout } from "../store/slices/authSlice";
 import { useAppDispatch } from "../hooks/useAppDispatch";
+import { viewCartDetails } from "../store/slices/courseCartSlice";
 
 
 // ─── Browse Dropdown ──────────────────────────────────────────────────────────
@@ -351,6 +352,9 @@ const WishlistDropdown = () => {
 const CartDropdown = () => {
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const { cartItems: cart, loading: cartLoading, error: cartError } = useAppSelector((state: RootState) => state.cart);
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate()
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -366,6 +370,17 @@ const CartDropdown = () => {
         { id: 1, title: "The Ultimate Drawing Course", instructor: "Jaysen Batchelor", price: 10.99, image: "https://placehold.co/80x45" },
     ];
 
+    useEffect(() => {
+        dispatch(viewCartDetails());
+    }, []);
+
+
+    console.log(cart, "cart");
+
+    const handleCartPage = () => {
+        navigate("/cart")
+    }
+
     return (
         <div className="relative" ref={dropdownRef} style={{ overflow: "visible" }}>
             <button
@@ -377,7 +392,7 @@ const CartDropdown = () => {
             >
                 <ShoppingCart className={`w-5 h-5 stroke-[1.5px] ${open ? 'fill-[#5624D0]/10' : ''}`} />
                 <span className="absolute top-1 right-1 w-4 h-4 bg-[#5624D0] text-white text-[10px] font-bold flex items-center justify-center rounded-full border border-white">
-                    {cartItems.length}
+                    {cart.length}
                 </span>
             </button>
 
@@ -394,14 +409,14 @@ const CartDropdown = () => {
                     </div>
 
                     <div className="max-h-[320px] overflow-y-auto">
-                        {cartItems.length > 0 ? (
-                            cartItems.map((item) => (
-                                <div key={item.id} className="px-5 py-3.5 border-b border-[#f3f4f6] last:border-0 hover:bg-[#F5F4FF]/50 cursor-pointer transition-colors flex gap-3">
-                                    <img src={item.image} alt={item.title} className="w-16 h-9 object-cover rounded bg-[#F5F4FF]" />
+                        {cart.length > 0 ? (
+                            cart.map((item: any) => (
+                                <div key={item.course_info?.id} className="px-5 py-3.5 border-b border-[#f3f4f6] last:border-0 hover:bg-[#F5F4FF]/50 cursor-pointer transition-colors flex gap-3">
+                                    <img src={item.course_info?.image} alt={item.course_info?.title} className="w-16 h-9 object-cover rounded bg-[#F5F4FF]" />
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-[13px] font-bold text-[#1D2026] leading-tight truncate">{item.title}</p>
-                                        <p className="text-[11px] text-[#6E7485] mt-0.5 truncate">{item.instructor}</p>
-                                        <p className="text-[13px] font-bold text-[#1D2026] mt-1">${item.price}</p>
+                                        <p className="text-[13px] font-bold text-[#1D2026] leading-tight truncate">{item.course_info?.name}</p>
+                                        <p className="text-[11px] text-[#6E7485] mt-0.5 truncate">{item.course_info?.instructor}</p>
+                                        <p className="text-[13px] font-bold text-[#1D2026] mt-1">₹{item.course_info?.price}</p>
                                     </div>
                                 </div>
                             ))
@@ -413,13 +428,13 @@ const CartDropdown = () => {
                         )}
                     </div>
 
-                    {cartItems.length > 0 && (
+                    {cart.length > 0 && (
                         <div className="p-4 bg-[#fcfcfd] rounded-b-[10px] border-t border-[#E9EAF0]">
                             <div className="flex justify-between items-center mb-4 px-1">
                                 <span className="text-[14px] font-medium text-[#1D2026]">Total:</span>
-                                <span className="text-[16px] font-bold text-[#1D2026]">$10.99</span>
+                                <span className="text-[16px] font-bold text-[#1D2026]">₹{cart.reduce((total, item) => total + item.course_info?.price, 0)}</span>
                             </div>
-                            <button className="w-full py-2.5 text-[14px] font-bold text-white bg-[#5624D0] hover:bg-[#461DA5] rounded transition-colors" onClick={() => setOpen(false)}>
+                            <button onClick={() => { handleCartPage(); setOpen(false) }} className="w-full py-2.5 text-[14px] font-bold text-white bg-[#5624D0] hover:bg-[#461DA5] rounded transition-colors" >
                                 Go to Cart
                             </button>
                         </div>

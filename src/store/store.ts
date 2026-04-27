@@ -7,6 +7,8 @@ import tagReducer from "./slices/tagSlice";
 import courseReducer from "./slices/courseSlice";
 import filterCourseReducer from "./slices/filterCourseSlice";
 import courseDetailReducer from "./slices/courseDetailSlice";
+import cartReducer from "./slices/courseCartSlice";
+
 
 export const store = configureStore({
   reducer: {
@@ -18,6 +20,7 @@ export const store = configureStore({
     course: courseReducer,
     filterCourse: filterCourseReducer,
     courseDetail: courseDetailReducer,
+    cart: cartReducer,
   },
 });
 

@@ -1,6 +1,8 @@
 import React, { Suspense, lazy } from "react"
 import { Route, Routes } from "react-router-dom"
 import PageLoader from "./components/Loader/PageLoader"
+import Cart from "./pages/Cart"
+import PrivateRoute from "./utils/privateRoutes"
 
 // Lazy-loaded components
 const Home = lazy(() => import("./pages/Home/Index"))
@@ -28,6 +30,11 @@ function App() {
         <Route path="/categories" element={<CategoryPage />} />
         <Route path="/coming-soon" element={<ComingSoon />} />
         <Route path="/watch-course" element={<WatchCourse />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route element={<PrivateRoute />}>
+          <Route path="/checkout" element={"hello"} />
+        </Route>
+
       </Routes>
     </Suspense>
   )
