@@ -7,7 +7,6 @@ import tagReducer from "./slices/tagSlice";
 import courseReducer from "./slices/courseSlice";
 import filterCourseReducer from "./slices/filterCourseSlice";
 import courseDetailReducer from "./slices/courseDetailSlice";
-import cartReducer from "./slices/cartslice";
 
 export const store = configureStore({
   reducer: {
