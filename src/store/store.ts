@@ -8,6 +8,8 @@ import courseReducer from "./slices/courseSlice";
 import filterCourseReducer from "./slices/filterCourseSlice";
 import courseDetailReducer from "./slices/courseDetailSlice";
 import homepageRecentlyAddedReducer from "./slices/homepageRecentlyAdded";
+import filterCategoryReducer from "./slices/filterCategorySlice";
+import filterCoursesParamsReducer from "./slices/filterCoursesParamsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -19,7 +21,10 @@ export const store = configureStore({
     course: courseReducer,
     filterCourse: filterCourseReducer,
     courseDetail: courseDetailReducer,
-    homepageRecentlyAdded: homepageRecentlyAddedReducer
+    homepageRecentlyAdded: homepageRecentlyAddedReducer,
+    filterCategory: filterCategoryReducer,
+    filterCourseParams: filterCoursesParamsReducer,
+
 
   },
 });

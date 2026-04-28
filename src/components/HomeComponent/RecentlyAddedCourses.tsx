@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { fetchHomepageRecentlyAdded } from "../../store/slices/homepageRecentlyAdded";
 import { useAppSelector } from "../../hooks/useRedux";
-import RecentlyAddedCourseLoader from "../Loader/RecentlyHomepageLoader";
+import SkeltonLoader from "../Loader/SkeltonLoader";
 
 /**
  * RecentlyAddedCourses Component
@@ -28,14 +28,13 @@ const RecentlyAddedCourses = () => {
         }
     };
 
-    if (loading) return <RecentlyAddedCourseLoader loaderType="recentlyAdded" />
-    if (error) return <div className="text-center py-20 text-red-500 font-medium">{error}</div>
 
     
     
 
     return (
         <section className="bg-white pb-24 px-4 xl:px-0">
+            
             <div className="max-w-[1320px] mx-auto">
                 <div className="text-center mb-8">
                     <h2 className="text-[32px] md:text-[40px] font-bold text-[#1D2026] mb-2">
@@ -43,14 +42,18 @@ const RecentlyAddedCourses = () => {
                     </h2>
                 </div>
 
-                {/* Course Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {courses && courses.length > 0 ? (
-                        courses.map((course: any, index: number) => {
+                {loading ? (
+                    <SkeltonLoader loaderType="recentlyAdded" />
+                ) : error ? (
+                    <div className="text-center py-20 text-red-500 font-medium">{error}</div>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {courses && courses.length > 0 ? (
+                            courses.map((course: any, index: number) => {
                             const category = course.categories?.[0]?.category_info || {
                                 name: "Development",
-                                bg_code: "bg-[#EBEBFF]",
-                                text_code: "text-[#5624D0]"
+                                bg_code: "#EBEBFF",
+                                text_code: "#5624D0"
                             };
 
                             const oldPrice = course.discount > 0
@@ -71,7 +74,7 @@ const RecentlyAddedCourses = () => {
 
                                         <div className="p-4 flex flex-col flex-grow">
                                             <div className="flex justify-between items-center mb-4">
-                                                <span className={`px-2 py-0.5 text-[10px] font-bold uppercase ${category.bg_code} ${category.text_code}`}>
+                                                <span style={{ backgroundColor: category.bg_code, color: category.text_code }} className="px-2 py-0.5 text-[10px] font-bold uppercase w-fit">
                                                     {category.name}
                                                 </span>
                                                 <span className="text-[#FF6636] font-bold text-[18px]">
@@ -119,7 +122,7 @@ const RecentlyAddedCourses = () => {
 
                                         <div className="flex flex-col gap-4">
                                             {/* Category */}
-                                            <span className={`px-2 py-0.5 text-[10px] font-bold uppercase w-fit ${category.bg_code} ${category.text_code}`}>
+                                            <span style={{ backgroundColor: category.bg_code, color: category.text_code }} className="px-2 py-0.5 text-[10px] font-bold uppercase w-fit">
                                                 {category.name}
                                             </span>
 
@@ -216,8 +219,9 @@ const RecentlyAddedCourses = () => {
                         })
                     ) : (
                         <div className="col-span-full text-center py-20 text-[#8C94A3]">No courses found.</div>
-                    )}
-                </div>
+                        )}
+                    </div>
+                )}
 
                 {/* Footer Browse Button */}
                 <div className="mt-16 text-center">

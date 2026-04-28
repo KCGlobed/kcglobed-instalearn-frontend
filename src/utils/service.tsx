@@ -38,5 +38,11 @@ export const homepageRecentlyAddedApi = async (): Promise<any> => {
   return await apiRequest(`${API_ENDPOINTS.HOMEPAGE_RECENTLY_ADDED}`, 'GET');
 }
 
+export const getCategoryFilterApi = async (): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.CATEGORY_FILTER}`, 'GET');
+}
 
+export const getCourseSearchFilteApi = async (params: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.COURSE_SEARCH_FILTER}?${params}`, 'GET');
+}
 

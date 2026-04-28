@@ -11,97 +11,7 @@ interface CoursesCardProps {
 }
 
 const CoursesCard: React.FC<CoursesCardProps> = ({ isSidebarOpen = true, courses, loading, error, onCourseClick }) => {
-    // Mock course data matching the design screenshot
-    // const courses_dummy = [
-    //     {
-    //         id: 1,
-    //         category: "DESIGN",
-    //         categoryBg: "bg-[#FFEEE8]",
-    //         categoryText: "text-[#FF6636]",
-    //         title: "Machine Learning A-Z™: Hands-On Python & R In Data Science",
-    //         price: "57",
-    //         rating: "5.0",
-    //         students: "265.7K",
-    //         image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=600"
-    //     },
-    //     {
-    //         id: 2,
-    //         category: "DEVELOPMENTS",
-    //         categoryBg: "bg-[#EBEBFF]",
-    //         categoryText: "text-[#5624D0]",
-    //         title: "The Complete 2021 Web Development Bootcamp",
-    //         price: "57",
-    //         rating: "5.0",
-    //         students: "265.7K",
-    //         image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=600"
-    //     },
-    //     {
-    //         id: 3,
-    //         category: "BUSINESS",
-    //         categoryBg: "bg-[#E1F7E3]",
-    //         categoryText: "text-[#15711F]",
-    //         title: "Learn Python Programming Masterclass",
-    //         price: "57",
-    //         rating: "5.0",
-    //         students: "265.7K",
-    //         image: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=600"
-    //     },
-    //     {
-    //         id: 4,
-    //         category: "MARKETING",
-    //         categoryBg: "bg-[#FFF2E5]",
-    //         categoryText: "text-[#FD8E1F]",
-    //         title: "The Complete Digital Marketing Course - 12 Courses in 1",
-    //         price: "$57",
-    //         rating: "5.0",
-    //         students: "265.7K",
-    //         image: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?auto=format&fit=crop&q=80&w=600"
-    //     },
-    //     {
-    //         id: 5,
-    //         category: "IT & SOFTWARE",
-    //         categoryBg: "bg-[#FFEEE8]",
-    //         categoryText: "text-[#FF6636]",
-    //         title: "Reiki Level I, II and Master/Teacher Program",
-    //         price: "$57",
-    //         rating: "5.0",
-    //         students: "265.7K",
-    //         image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=600"
-    //     },
-    //     {
-    //         id: 6,
-    //         category: "MUSIC",
-    //         categoryBg: "bg-[#EBEBFF]",
-    //         categoryText: "text-[#5624D0]",
-    //         title: "The Complete Foundation Stock Trading Course",
-    //         price: "$57",
-    //         rating: "5.0",
-    //         students: "265.7K",
-    //         image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&q=80&w=600"
-    //     },
-    //     {
-    //         id: 7,
-    //         category: "MARKETING",
-    //         categoryBg: "bg-[#FFF2E5]",
-    //         categoryText: "text-[#FD8E1F]",
-    //         title: "Beginner to Pro in Excel: Financial Modeling and Valuation",
-    //         price: "$57",
-    //         rating: "5.0",
-    //         students: "265.7K",
-    //         image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=600"
-    //     },
-    //     {
-    //         id: 8,
-    //         category: "HEALTH & FITNESS",
-    //         categoryBg: "bg-[#E1F7E3]",
-    //         categoryText: "text-[#15711F]",
-    //         title: "The Python Mega Course: Build 10 Real World Applications",
-    //         price: "$57",
-    //         rating: "5.0",
-    //         students: "265.7K",
-    //         image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&q=80&w=600"
-    //     }
-    // ];
+
 
     if (loading) {
         return (
@@ -146,11 +56,15 @@ const CoursesCard: React.FC<CoursesCardProps> = ({ isSidebarOpen = true, courses
                         </div>
 
                         <div className="p-4 flex flex-col flex-1">
-                            <div className="flex justify-between items-center mb-4">
-                                <span style={{ backgroundColor: course?.categories?.[0]?.category_info?.bg_code, color: course?.categories?.[0]?.category_info?.text_code }} className={`px-2 py-0.5 text-[10px] font-bold uppercase`}>
-                                    {course?.categories?.[0]?.category_info?.name}
-                                </span>
-                                <span className="text-[#FF6636] font-bold text-[18px]">
+                            <div className="flex justify-between items-start mb-4">
+                                <div className="flex flex-wrap gap-2 flex-1 mr-2">
+                                    {course?.categories?.map((cat: any, index: number) => (
+                                        <span key={index} style={{ backgroundColor: cat?.category_info?.bg_code, color: cat?.category_info?.text_code }} className="px-2 py-0.5 text-[10px] font-bold uppercase w-fit">
+                                            {cat?.category_info?.name}
+                                        </span>
+                                    ))}
+                                </div>
+                                <span className="text-[#FF6636] font-bold text-[18px] shrink-0">
                                     ₹{course?.price}
                                 </span>
                             </div>
