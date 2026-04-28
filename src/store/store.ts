@@ -7,6 +7,8 @@ import tagReducer from "./slices/tagSlice";
 import courseReducer from "./slices/courseSlice";
 import filterCourseReducer from "./slices/filterCourseSlice";
 import courseDetailReducer from "./slices/courseDetailSlice";
+import cartReducer from "./slices/courseCartSlice";
+
 import homepageRecentlyAddedReducer from "./slices/homepageRecentlyAdded";
 import filterCategoryReducer from "./slices/filterCategorySlice";
 import filterCoursesParamsReducer from "./slices/filterCoursesParamsSlice";
@@ -24,7 +26,7 @@ export const store = configureStore({
     homepageRecentlyAdded: homepageRecentlyAddedReducer,
     filterCategory: filterCategoryReducer,
     filterCourseParams: filterCoursesParamsReducer,
-
+    cart: cartReducer,
 
   },
 });
