@@ -366,9 +366,6 @@ const CartDropdown = () => {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    const cartItems = [
-        { id: 1, title: "The Ultimate Drawing Course", instructor: "Jaysen Batchelor", price: 10.99, image: "https://placehold.co/80x45" },
-    ];
 
     useEffect(() => {
         dispatch(viewCartDetails());

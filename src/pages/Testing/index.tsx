@@ -7,9 +7,9 @@ const Testing = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { categories, loading, error } = useSelector((state: RootState) => state.homepageCategory);
 
-  useEffect(() => {
-    dispatch(fetchHomepageCategories());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchHomepageCategories());
+  // }, [dispatch]);
 
   if (loading) return <p>Loading categories…</p>;
   if (error) return <p style={{ color: "red" }}>Error: {error}</p>;

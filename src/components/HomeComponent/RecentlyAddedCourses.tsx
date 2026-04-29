@@ -8,11 +8,7 @@ import { useNavigate } from "react-router-dom";
 import type { RootState } from "../../store/store";
 import { addToCartAction, viewCartDetails } from "../../store/slices/courseCartSlice";
 
-/**
- * RecentlyAddedCourses Component
- * High-fidelity course grid with a pixel-perfect, vertically centered hover tooltip.
- * Designed to match the Figma design exactly with smooth, stable animations.
- */
+
 const RecentlyAddedCourses = () => {
     const { cartItems, loading: cartLoading } = useAppSelector((state: RootState) => state.cart);
     const navigate = useNavigate();
@@ -20,11 +16,10 @@ const RecentlyAddedCourses = () => {
 
     useEffect(() => {
         dispatch(fetchHomepageRecentlyAdded());
-        dispatch(viewCartDetails());
     }, [dispatch]);
 
     const { data: courses, loading, error } = useAppSelector((state: any) => state.homepageRecentlyAdded);
-    
+
     const getLevelText = (level: number) => {
         switch (level) {
             case 1: return "Beginner";
@@ -217,8 +212,8 @@ const RecentlyAddedCourses = () => {
                                             {/* Action Buttons */}
                                             <div className="flex flex-col gap-2 pt-2">
                                                 {!isInCart ? (
-                                                    <button 
-                                                        onClick={() => handleAddToCart(course.id)} 
+                                                    <button
+                                                        onClick={() => handleAddToCart(course.id)}
                                                         disabled={cartLoading}
                                                         className="w-full py-3 bg-[#5624D0] text-white flex items-center justify-center gap-2 font-bold hover:bg-[#481fad] transition-all disabled:bg-gray-400"
                                                     >
@@ -235,8 +230,8 @@ const RecentlyAddedCourses = () => {
                                                         )}
                                                     </button>
                                                 ) : (
-                                                    <button 
-                                                        onClick={() => navigate('/cart')} 
+                                                    <button
+                                                        onClick={() => navigate('/cart')}
                                                         className="w-full py-3 bg-green-600 text-white font-bold hover:bg-green-700 transition-all flex items-center justify-center gap-2"
                                                     >
                                                         <ShoppingCart className="w-5 h-5" />

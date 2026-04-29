@@ -58,17 +58,11 @@ const CourseSidebar = () => {
     }
 
 
-    console.log(cartItems, "courseDetail");
-
     const isCart = useMemo(() => {
         if (!courseDetail?.id || !cartItems?.length) return false;
         return cartItems.some((item: any) => item?.course_info?.id === courseDetail.id);
     }, [cartItems, courseDetail?.id]);
 
-
-    useEffect(() => {
-        dispatch(viewCartDetails());
-    }, []);
 
 
     const gotoCart = () => {

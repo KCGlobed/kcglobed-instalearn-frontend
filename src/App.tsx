@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom"
 import PageLoader from "./components/Loader/PageLoader"
 import Cart from "./pages/Cart"
 import PrivateRoute from "./utils/privateRoutes"
+import MyLearning from "./pages/MyLearning"
 
 // Lazy-loaded components
 const Home = lazy(() => import("./pages/Home/Index"))
@@ -33,6 +34,7 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route element={<PrivateRoute />}>
           <Route path="/checkout" element={"hello"} />
+          <Route path="/my-courses/archived/" element={<MyLearning />} />
         </Route>
 
       </Routes>

@@ -56,7 +56,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({ totalPrice, originalPrice, di
             {isLogin ? (
                 <RazorpayButton
                     userData={userData}
-                    label="Checkout"
+                    label="Proceed to Payment"
                     className="w-full bg-[#a435f0] hover:bg-[#8710d8] text-white font-bold py-3.5 rounded transition-colors text-[16px] active:scale-[0.98] shadow-md mb-6"
                 />
             ) : (
@@ -64,7 +64,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({ totalPrice, originalPrice, di
                     onClick={handleCheckOutLogin}
                     className="w-full bg-[#a435f0] hover:bg-[#8710d8] text-white font-bold py-3.5 rounded transition-colors text-[16px] active:scale-[0.98] shadow-md mb-6"
                 >
-                    Login to Checkout
+                    Proceed to Checkout
                 </button>
             )}
 

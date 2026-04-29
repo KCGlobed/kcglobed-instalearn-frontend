@@ -12,13 +12,13 @@ import { Toaster } from 'react-hot-toast'
 import ScrollToTop from './hooks/ScrollToTop.tsx'
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <Provider store={store}>
-      <BrowserRouter>
-        <App />
-        <Toaster position="top-right" reverseOrder={false} toastOptions={{ style: { fontSize: "12px" } }} />
-        <ScrollToTop />
-      </BrowserRouter>
-    </Provider>
-  </StrictMode>,
+
+  <Provider store={store}>
+    <BrowserRouter>
+      <App />
+      <Toaster position="top-right" reverseOrder={false} toastOptions={{ style: { fontSize: "12px" } }} />
+      <ScrollToTop />
+    </BrowserRouter>
+  </Provider>
+  ,
 )
