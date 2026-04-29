@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 interface CourseItem {
     id: number;
     courses: {
+        id: number;
         image: string;
         name: string;
         price: number | string;
@@ -29,8 +30,9 @@ const CourseCard = memo(({ course }: { course: CourseItem }) => {
 
     const info = course.courses;
     const handleNagivate = useCallback(() => {
-        navigate(`/courses/detail/${course.id}`);
+        navigate(`/courses/detail/${course?.courses?.id}`);
     }, [navigate, course.id]);
+
 
     return (
         <div className="bg-white group cursor-pointer border border-[#E9EAF0] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] hover:-translate-y-2 transition-all duration-300 rounded-[4px] overflow-hidden">
@@ -53,7 +55,7 @@ const CourseCard = memo(({ course }: { course: CourseItem }) => {
                     </span>
                 </div>
 
-                <h3 onClick={() => navigate(`/courses/detail?courseId=${course.id}`)} className="text-[#1D2026] text-sm font-medium mb-4 line-clamp-2 h-10 group-hover:text-[#5624D0] transition-colors leading-[20px]">
+                <h3 onClick={() => handleNagivate()} className="text-[#1D2026] text-sm font-medium mb-4 line-clamp-2 h-10 group-hover:text-[#5624D0] transition-colors leading-[20px]">
                     {info?.name}
                 </h3>
 

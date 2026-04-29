@@ -1,9 +1,12 @@
 import { Star, User, BarChart2, Clock, Check, Heart, ShoppingCart, ChevronRight } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { fetchHomepageRecentlyAdded } from "../../store/slices/homepageRecentlyAdded";
 import { useAppSelector } from "../../hooks/useRedux";
 import RecentlyAddedCourseLoader from "../Loader/RecentlyHomepageLoader";
+import { useNavigate } from "react-router-dom";
+import type { RootState } from "../../store/store";
+import { addToCartAction, viewCartDetails } from "../../store/slices/courseCartSlice";
 
 /**
  * RecentlyAddedCourses Component
@@ -11,14 +14,17 @@ import RecentlyAddedCourseLoader from "../Loader/RecentlyHomepageLoader";
  * Designed to match the Figma design exactly with smooth, stable animations.
  */
 const RecentlyAddedCourses = () => {
-   
+    const { cartItems, loading: cartLoading } = useAppSelector((state: RootState) => state.cart);
+    const navigate = useNavigate();
     const dispatch = useAppDispatch();
 
     useEffect(() => {
         dispatch(fetchHomepageRecentlyAdded());
+        dispatch(viewCartDetails());
     }, [dispatch]);
 
     const { data: courses, loading, error } = useAppSelector((state: any) => state.homepageRecentlyAdded);
+    
     const getLevelText = (level: number) => {
         switch (level) {
             case 1: return "Beginner";
@@ -28,12 +34,19 @@ const RecentlyAddedCourses = () => {
         }
     };
 
+    const handleAddToCart = (courseId: number) => {
+        if (!courseId) return;
+        const data = {
+            course_id: courseId,
+        }
+        dispatch(addToCartAction(data));
+    }
+
+
+
+
     if (loading) return <RecentlyAddedCourseLoader loaderType="recentlyAdded" />
     if (error) return <div className="text-center py-20 text-red-500 font-medium">{error}</div>
-
-    
-    
-
     return (
         <section className="bg-white pb-24 px-4 xl:px-0">
             <div className="max-w-[1320px] mx-auto">
@@ -56,6 +69,8 @@ const RecentlyAddedCourses = () => {
                             const oldPrice = course.discount > 0
                                 ? (course.price / (1 - course.discount / 100)).toFixed(2)
                                 : null;
+
+                            const isInCart = cartItems?.some((item: any) => item?.course_info?.id === course.id);
 
                             return (
                                 <div key={course.id} className="relative group/course">
@@ -201,11 +216,35 @@ const RecentlyAddedCourses = () => {
 
                                             {/* Action Buttons */}
                                             <div className="flex flex-col gap-2 pt-2">
-                                                <button className="w-full py-3 bg-[#5624D0] text-white flex items-center justify-center gap-2 font-bold hover:bg-[#481fad] transition-all">
-                                                    <ShoppingCart className="w-5 h-5" />
-                                                    Add To Cart
-                                                </button>
-                                                <button className="w-full py-3 bg-[#EBEBFF] text-[#5624D0] font-bold hover:bg-white hover:border-[#5624D0] border border-transparent transition-all">
+                                                {!isInCart ? (
+                                                    <button 
+                                                        onClick={() => handleAddToCart(course.id)} 
+                                                        disabled={cartLoading}
+                                                        className="w-full py-3 bg-[#5624D0] text-white flex items-center justify-center gap-2 font-bold hover:bg-[#481fad] transition-all disabled:bg-gray-400"
+                                                    >
+                                                        {cartLoading ? (
+                                                            <div className="flex items-center gap-2">
+                                                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                                                <span>Adding...</span>
+                                                            </div>
+                                                        ) : (
+                                                            <>
+                                                                <ShoppingCart className="w-5 h-5" />
+                                                                Add To Cart
+                                                            </>
+                                                        )}
+                                                    </button>
+                                                ) : (
+                                                    <button 
+                                                        onClick={() => navigate('/cart')} 
+                                                        className="w-full py-3 bg-green-600 text-white font-bold hover:bg-green-700 transition-all flex items-center justify-center gap-2"
+                                                    >
+                                                        <ShoppingCart className="w-5 h-5" />
+                                                        Go to Cart
+                                                    </button>
+                                                )}
+
+                                                <button onClick={() => navigate(`/courses/detail/${course?.id}`)} className="w-full py-3 bg-[#EBEBFF] text-[#5624D0] font-bold hover:bg-white hover:border-[#5624D0] border border-transparent transition-all">
                                                     Course Detail
                                                 </button>
                                             </div>
