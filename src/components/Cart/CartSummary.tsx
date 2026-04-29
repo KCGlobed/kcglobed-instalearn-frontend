@@ -2,6 +2,8 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import type { RootState } from '../../store/store';
+import RazorpayButton from '../Payment/RazorpayButton';
+import { getDeviceId } from '../../store/slices/courseCartSlice';
 
 interface CartSummaryProps {
     totalPrice: number;
@@ -13,17 +15,29 @@ const CartSummary: React.FC<CartSummaryProps> = ({ totalPrice, originalPrice, di
     const navigate = useNavigate()
     const isLogin = useSelector((state: RootState) => state.auth.isAuthenticated);
 
-    const handlePayment = () => {
+    const userID = localStorage.getItem("userID") || "";
+    const deviceID = getDeviceId();
 
-    }
+    // In a real application, these should come from your user profile state/store
+    const userData = {
+        first_name: "Harish", // Should be dynamic
+        last_name: "Kumar",   // Should be dynamic
+        email: "harish.kumar@kcglobed.com", // Should be dynamic
+        phone: "9915039343",  // Should be dynamic
+        user_id: userID,
+        device_id: deviceID,
+        billing_address: "",
+        city: "",
+        state: "",
+        country: "",
+        pincode: ""
+    };
 
-    const handleCheckOutPayment = () => {
+    const handleCheckOutLogin = () => {
         if (!isLogin) {
-            navigate("/login")
-        } else {
-            handlePayment()
+            navigate("/login");
         }
-    }
+    };
 
 
     return (
@@ -39,9 +53,20 @@ const CartSummary: React.FC<CartSummaryProps> = ({ totalPrice, originalPrice, di
                 )}
             </div>
 
-            <button onClick={handleCheckOutPayment} className="w-full bg-[#a435f0] hover:bg-[#8710d8] text-white font-bold py-3.5 rounded transition-colors text-[16px] active:scale-[0.98] shadow-md mb-6">
-                {isLogin ? "Checkout" : "Login to Checkout"}
-            </button>
+            {isLogin ? (
+                <RazorpayButton
+                    userData={userData}
+                    label="Checkout"
+                    className="w-full bg-[#a435f0] hover:bg-[#8710d8] text-white font-bold py-3.5 rounded transition-colors text-[16px] active:scale-[0.98] shadow-md mb-6"
+                />
+            ) : (
+                <button
+                    onClick={handleCheckOutLogin}
+                    className="w-full bg-[#a435f0] hover:bg-[#8710d8] text-white font-bold py-3.5 rounded transition-colors text-[16px] active:scale-[0.98] shadow-md mb-6"
+                >
+                    Login to Checkout
+                </button>
+            )}
 
             <div className="pt-5 border-t border-gray-100">
                 <h3 className="text-[13px] font-bold text-[#1c1d1f] mb-3 uppercase tracking-tight">Promotions</h3>
