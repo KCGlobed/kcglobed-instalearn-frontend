@@ -49,3 +49,7 @@ export const startPayment = async (payload: any): Promise<any> => {
 export const completePayment = async (payload: any): Promise<any> => {
   return await apiRequest(API_ENDPOINTS.COMPLETE_PAYMENT, 'POST', payload);
 }
+
+export const removeFromCartApi = async (id: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.REMOVE_FROM_CART}${id}`, 'DELETE');
+}
