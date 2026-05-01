@@ -89,6 +89,7 @@ export interface CourseDetail {
     original_price?: number;
     language: string;
     subtitle_language: string;
+    enrolled_students: number;
 }
 
 // ── Slice state ───────────────────────────────────────────────────────────────
