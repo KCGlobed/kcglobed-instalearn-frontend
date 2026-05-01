@@ -1,7 +1,6 @@
 import CourseHeader from '../../components/CourseDetail/CourseHeader';
 import CoursePreview from '../../components/CourseDetail/CoursePreview';
 import CourseTabs from '../../components/CourseDetail/CourseTabs';
-import CourseDescription from '../../components/CourseDetail/CourseDescription';
 import CourseSidebar from '../../components/CourseDetail/CourseSidebar';
 import MainHeader from '../../layouts/MainHeader';
 import Footer from '../../layouts/Footer';
@@ -34,7 +33,6 @@ const CourseDetail = () => {
                             <CourseHeader />
                             <CoursePreview />
                             <CourseTabs />
-                            <CourseDescription />
                         </div>
 
                         {/* Right Sidebar (Sticky Sidebar) */}

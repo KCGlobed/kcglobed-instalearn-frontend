@@ -4,22 +4,34 @@ import type { CourseDetail, SampleVideo as SampleVideoType } from '../../store/s
 
 interface SampleVideoProps {
     courseDetail: CourseDetail | null;
+    /**
+     * ID of the video to play on open.
+     * Defaults to the first video in the list.
+     */
+    initialVideoId?: number;
 }
 
-const SampleVideo = ({ courseDetail }: SampleVideoProps) => {
+const SampleVideo = ({ courseDetail, initialVideoId }: SampleVideoProps) => {
     const videos = courseDetail?.sample_videos ?? [];
-    const [activeVideo, setActiveVideo] = useState<SampleVideoType | null>(
-        videos.length > 0 ? videos[0] : null
-    );
+
+    // Resolve the starting video: match initialVideoId if provided, else fall back to [0]
+    const resolveInitial = (): SampleVideoType | null => {
+        if (!videos.length) return null;
+        if (initialVideoId !== undefined) {
+            return videos.find((v) => v.id === initialVideoId) ?? videos[0];
+        }
+        return videos[0];
+    };
+
+    const [activeVideo, setActiveVideo] = useState<SampleVideoType | null>(resolveInitial);
     const videoRef = useRef<HTMLVideoElement>(null);
 
     const handleSelectVideo = (video: SampleVideoType) => {
         setActiveVideo(video);
-        // Give React time to update the src then play
         setTimeout(() => {
             if (videoRef.current) {
                 videoRef.current.load();
-                videoRef.current.play().catch(() => {/* autoplay may be blocked */});
+                videoRef.current.play().catch(() => { /* autoplay may be blocked */ });
             }
         }, 50);
     };
@@ -32,7 +44,7 @@ const SampleVideo = ({ courseDetail }: SampleVideoProps) => {
                     Course Preview
                 </p>
                 <h2 className="text-lg font-bold text-white leading-snug line-clamp-2">
-                    {courseDetail?.name ?? 'Course Preview'}
+                    {activeVideo?.name ?? courseDetail?.name ?? 'Course Preview'}
                 </h2>
             </div>
 
@@ -45,6 +57,7 @@ const SampleVideo = ({ courseDetail }: SampleVideoProps) => {
                         src={activeVideo.videos}
                         poster={activeVideo.thumbnail ?? courseDetail?.image ?? undefined}
                         controls
+                        autoPlay
                         className="w-full max-h-[340px] object-contain"
                         style={{ display: 'block' }}
                     />
@@ -62,7 +75,7 @@ const SampleVideo = ({ courseDetail }: SampleVideoProps) => {
                         Free Sample Videos:
                     </p>
                     <ul className="divide-y divide-white/10">
-                        {videos.map((video, idx) => {
+                        {videos.map((video) => {
                             const isActive = activeVideo?.id === video.id;
                             const durationSec = Number(video.duration);
                             const mins = Math.floor(durationSec / 60);
@@ -76,10 +89,7 @@ const SampleVideo = ({ courseDetail }: SampleVideoProps) => {
                                     <button
                                         onClick={() => handleSelectVideo(video)}
                                         className={`w-full flex items-center gap-3 py-3 text-left transition-colors rounded-lg px-2 group
-                                            ${isActive
-                                                ? 'bg-white/10'
-                                                : 'hover:bg-white/5'
-                                            }`}
+                                            ${isActive ? 'bg-white/10' : 'hover:bg-white/5'}`}
                                     >
                                         {/* Thumbnail */}
                                         <div className="relative w-16 h-12 rounded-md overflow-hidden shrink-0 bg-gray-800">
@@ -104,7 +114,7 @@ const SampleVideo = ({ courseDetail }: SampleVideoProps) => {
                                             </div>
                                         </div>
 
-                                        {/* Title & duration */}
+                                        {/* Title */}
                                         <div className="flex-1 min-w-0">
                                             <p className={`text-sm font-medium leading-snug line-clamp-2
                                                 ${isActive ? 'text-indigo-300' : 'text-gray-200 group-hover:text-white'}`}>
@@ -112,7 +122,7 @@ const SampleVideo = ({ courseDetail }: SampleVideoProps) => {
                                             </p>
                                         </div>
 
-                                        {/* Duration badge */}
+                                        {/* Duration */}
                                         {durationLabel && (
                                             <span className="text-xs text-gray-400 shrink-0 font-mono ml-1">
                                                 {durationLabel}

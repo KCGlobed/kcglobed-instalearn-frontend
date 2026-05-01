@@ -32,6 +32,7 @@ import { useNavigate } from 'react-router-dom';
 const CourseSidebar = () => {
     const { courseDetail, loading, error } = useAppSelector((state: RootState) => state.courseDetail);
     const { cartItems, loading: cartLoading, error: cartError } = useAppSelector((state: RootState) => state.cart);
+    const { isAuthenticated } = useAppSelector((state: RootState) => state.auth);
     const navigate = useNavigate();
 
     const dispatch = useAppDispatch();
@@ -111,7 +112,11 @@ const CourseSidebar = () => {
                             <BarChart className="w-5 h-5" />
                             <span>Course Level</span>
                         </div>
-                        <span className="font-semibold text-gray-800">Beginner and Intermediate</span>
+                        <span className="font-semibold text-gray-800">
+                            {courseDetail?.level === 1 ? 'Beginner' : 
+                             courseDetail?.level === 2 ? 'Intermediate' : 
+                             courseDetail?.level === 3 ? 'Advanced' : 'All Levels'}
+                        </span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center gap-3 text-gray-500">
@@ -158,14 +163,16 @@ const CourseSidebar = () => {
                     <button className="w-full border-2 border-indigo-600 text-indigo-600 font-bold py-4 rounded-xl hover:bg-indigo-50 transition-all active:scale-[0.98]">
                         Buy Now
                     </button>
-                    <div className="flex gap-2">
-                        <button className="flex-1 flex items-center justify-center gap-2 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-all text-sm font-semibold">
-                            <Heart className="w-4 h-4" /> Add To Wishlist
-                        </button>
-                        <button className="flex-1 flex items-center justify-center gap-2 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-all text-sm font-semibold">
-                            <Gift className="w-4 h-4" /> Gift Course
-                        </button>
-                    </div>
+                    {isAuthenticated && (
+                        <div className="flex gap-2">
+                            <button className="flex-1 flex items-center justify-center gap-2 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-all text-sm font-semibold">
+                                <Heart className="w-4 h-4" /> Add To Wishlist
+                            </button>
+                            <button className="flex-1 flex items-center justify-center gap-2 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-all text-sm font-semibold">
+                                <Gift className="w-4 h-4" /> Gift Course
+                            </button>
+                        </div>
+                    )}
                 </div>
 
                 <p className="text-[10px] text-gray-400 text-center mb-8 uppercase tracking-wider font-bold">

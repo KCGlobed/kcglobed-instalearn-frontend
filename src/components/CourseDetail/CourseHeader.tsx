@@ -7,7 +7,7 @@ const CourseHeader = () => {
     return (
         <div className="mb-8">
             {/* Breadcrumb */}
-            <nav className="flex items-center space-x-2 text-sm text-gray-500 mb-6 font-medium">
+            {/* <nav className="flex items-center space-x-2 text-sm text-gray-500 mb-6 font-medium">
                 <span className="hover:text-amber-600 cursor-pointer">Home</span>
                 <span>&gt;</span>
                 <span className="hover:text-amber-600 cursor-pointer">Development</span>
@@ -15,7 +15,30 @@ const CourseHeader = () => {
                 <span className="hover:text-amber-600 cursor-pointer">Web Development</span>
                 <span>&gt;</span>
                 <span className="text-gray-900 border-b border-gray-900">Webflow</span>
-            </nav>
+            </nav> */}
+
+            {/* Category Badges */}
+            {(courseDetail?.categories?.length ?? 0) > 0 && (
+                <div className="flex flex-wrap gap-2 mb-3">
+                    {courseDetail?.categories?.map((cat: any) => {
+                        const info = cat.category_info;
+                        if (!info?.name) return null;
+
+                        return (
+                            <span
+                                key={cat.id}
+                                className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-sm"
+                                style={{
+                                    backgroundColor: info.bg_code || '#EBEBFF',
+                                    color: info.text_code || '#5624D0'
+                                }}
+                            >
+                                {info.name}
+                            </span>
+                        );
+                    })}
+                </div>
+            )}
 
             {/* Course Title */}
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-4">
@@ -31,6 +54,31 @@ const CourseHeader = () => {
                         "3 in 1 Course: Learn to design websites with Figma, build with Webflow, and make a living freelancing."
                 }}
             ></p>
+
+            {/*tags only */}
+            {
+                (courseDetail?.tags?.length ?? 0) > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-3">
+                        {courseDetail?.tags?.map((tag: any) => {
+                            const info = tag.tags;
+                            if (!info?.name) return null;
+                            return (
+                                <span
+                                    key={tag.id}
+                                    className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-sm"
+                                    style={{
+                                        backgroundColor: info.bg_code || '#EBEBFF',
+                                        color: info.text_code || '#5624D0'
+                                    }}
+                                >
+                                    {info.name}
+                                </span>
+                            );
+                        })}
+                    </div>
+                )
+            }
+
 
             {/* Instructor and Rating Section */}
             <div className="flex flex-wrap items-center gap-6">

@@ -74,7 +74,7 @@ export interface CourseDetail {
     feature_json: string[];
     image: string | null;
     banner_image: string | null;
-    categories: CourseCategory[];
+    categories?: CourseCategory[];
     objectives_summary: string[];
     tags: CourseTag[];
     status: boolean;
@@ -84,6 +84,8 @@ export interface CourseDetail {
     avg_rating: number;
     total_reviews: number;
     created_by: CreatedBy;
+    level: number;
+    chapters?: any[];
 }
 
 // ── Slice state ───────────────────────────────────────────────────────────────
