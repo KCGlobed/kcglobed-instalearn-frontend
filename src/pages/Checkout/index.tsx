@@ -67,9 +67,8 @@ const FloatingField: React.FC<FloatingFieldProps> = ({
                 maxLength={maxLength}
                 inputMode={inputMode}
                 onInput={onInput}
-                className={`w-full border-2 p-4 pt-6 pb-2 text-[16px] font-medium rounded-none focus:outline-none focus:border-[#1c1d1f] transition-all peer ${
-                    error ? 'border-red-500' : 'border-gray-300'
-                }`}
+                className={`w-full border-2 p-4 pt-6 pb-2 text-[16px] font-medium rounded-none focus:outline-none focus:border-[#1c1d1f] transition-all peer ${error ? 'border-red-500' : 'border-gray-300'
+                    }`}
                 placeholder=" "
                 autoComplete="off"
             />
@@ -85,6 +84,7 @@ const FloatingField: React.FC<FloatingFieldProps> = ({
         {error && <p className="text-red-500 text-[11px] font-bold mt-1">{error}</p>}
     </div>
 );
+
 
 // ─── CheckoutPage ─────────────────────────────────────────────────────────────
 
