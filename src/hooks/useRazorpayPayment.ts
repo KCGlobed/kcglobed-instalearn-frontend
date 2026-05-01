@@ -82,7 +82,8 @@ export const useRazorpayPayment = () => {
                 toast.success('Payment Verified!');
 
                 // Auto redirect after another 2 seconds
-                setTimeout(() => navigate('/my-courses/archived/'), 2000);
+                const isLoggedIn = !!localStorage.getItem('token');
+                setTimeout(() => navigate(isLoggedIn ? '/my-learning' : '/login'), 2000);
               }, 1500);
             } else {
               throw new Error(verificationResponse?.message || 'Verification failed.');

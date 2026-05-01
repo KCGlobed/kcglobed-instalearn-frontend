@@ -10,14 +10,17 @@ import { Provider } from 'react-redux'
 import { store } from "./store/store";
 import { Toaster } from 'react-hot-toast'
 import ScrollToTop from './hooks/ScrollToTop.tsx'
+import { ModalProvider } from "./components/Modals/ModalContext";
 
 createRoot(document.getElementById('root')!).render(
 
   <Provider store={store}>
     <BrowserRouter>
-      <App />
-      <Toaster position="top-right" reverseOrder={false} toastOptions={{ style: { fontSize: "12px" } }} />
-      <ScrollToTop />
+      <ModalProvider>
+        <App />
+        <Toaster position="top-right" reverseOrder={false} toastOptions={{ style: { fontSize: "12px" } }} />
+        <ScrollToTop />
+      </ModalProvider>
     </BrowserRouter>
   </Provider>
   ,

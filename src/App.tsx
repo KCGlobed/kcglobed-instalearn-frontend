@@ -5,6 +5,8 @@ import Cart from "./pages/Cart"
 import PrivateRoute from "./utils/privateRoutes"
 import MyLearning from "./pages/MyLearning"
 
+import CheckoutPage from "./pages/Checkout"
+
 // Lazy-loaded components
 const Home = lazy(() => import("./pages/Home/Index"))
 const Testing = lazy(() => import("./pages/Testing"))
@@ -32,8 +34,8 @@ function App() {
         <Route path="/coming-soon" element={<ComingSoon />} />
         <Route path="/watch-course" element={<WatchCourse />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
         <Route element={<PrivateRoute />}>
-          <Route path="/checkout" element={"hello"} />
           <Route path="/my-courses/archived/" element={<MyLearning />} />
         </Route>
 
