@@ -11,12 +11,7 @@ import {
     Infinity,
     Smartphone,
     FileText,
-    Award,
-    Copy,
-    Facebook,
-    Twitter,
-    Mail,
-    Phone
+    Award
 } from 'lucide-react';
 
 
@@ -27,6 +22,7 @@ import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { addToCartAction, viewCartDetails } from '../../store/slices/courseCartSlice';
 import SkeltonLoader from '../Loader/SkeltonLoader';
 import { useNavigate } from 'react-router-dom';
+import SocialShare from '../UI/SocialShare';
 
 
 const CourseSidebar = () => {
@@ -40,13 +36,6 @@ const CourseSidebar = () => {
     const price = courseDetail?.price ?? 0;
     const discountPct = courseDetail?.discount ?? 0;
     const discountedPrice = price - (price * discountPct) / 100;
-
-
-    const handleCopyUrl = useCallback(() => {
-        navigator.clipboard.writeText(window.location.href);
-        toast.success("Link copied to clipboard");
-    }, [])
-
 
 
     const addCourseToCart = () => {
@@ -203,16 +192,11 @@ const CourseSidebar = () => {
                 {/* Share Section */}
                 <div className="border-t pt-6">
                     <h3 className="font-bold text-gray-900 mb-4 px-1">Share this course:</h3>
-                    <div className="flex items-center gap-3">
-                        <button onClick={() => handleCopyUrl()} className="flex-1 flex items-center gap-2 bg-gray-50 border border-gray-200 px-3 py-2.5 rounded-lg text-xs font-semibold hover:bg-gray-100 transition-all text-gray-600">
-                            <Copy className="w-4 h-4" /> Copy link
-                        </button>
-                        {[Facebook, Twitter, Mail, Phone].map((Icon, idx) => (
-                            <button key={idx} className="w-10 h-10 flex items-center justify-center bg-gray-50 border border-gray-200 rounded-lg text-gray-600 hover:text-indigo-600 hover:border-indigo-100 hover:bg-indigo-50 transition-all">
-                                <Icon className="w-4 h-4" />
-                            </button>
-                        ))}
-                    </div>
+                    <SocialShare 
+                        title={courseDetail?.name}
+                        description={courseDetail?.short_description}
+                        image={courseDetail?.image || ''}
+                    />
                 </div>
             </div>
         </div>
