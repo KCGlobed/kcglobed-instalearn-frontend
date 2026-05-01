@@ -5,12 +5,15 @@ import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { removeFromCart } from '../../store/slices/courseCartSlice';
 import { removeFromCartApi } from '../../utils/service';
 import toast from 'react-hot-toast';
+import { useAppSelector } from '../../hooks/useRedux';
+import type { RootState } from '../../store/store';
 
 interface CartItemProps {
     item: any;
 }
 
 const CartItem: React.FC<CartItemProps> = ({ item }) => {
+    const { isAuthenticated } = useAppSelector((state: RootState) => state.auth);
 
     const dispatch = useAppDispatch();
 
@@ -65,7 +68,10 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
 
                     <div className="flex gap-2.5 text-[11px]">
                         <button className="text-indigo-600 hover:underline" onClick={() => { handleRemove() }}>Remove</button>
-                        <button className="text-indigo-600 hover:underline hidden sm:block">Wishlist</button>
+                        {
+                            isAuthenticated && <button className="text-indigo-600 hover:underline hidden sm:block">Wishlist</button>
+
+                        }
                     </div>
                 </div>
             </div>

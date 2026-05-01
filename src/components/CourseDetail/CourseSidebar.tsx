@@ -70,10 +70,10 @@ const CourseSidebar = () => {
             <div className="p-6">
                 <div className="flex items-center gap-3 mb-2">
                     <span className="text-3xl font-bold text-gray-900">
-                        {loading ? '—' : `₹${discountedPrice.toFixed(2)}`}
+                        {loading ? '—' : `₹${courseDetail?.price?.toFixed(2)}`}
                     </span>
                     {price > 0 && (
-                        <span className="text-lg text-gray-400 line-through">₹{price.toFixed(2)}</span>
+                        <span className="text-lg text-gray-400 line-through">₹{courseDetail?.original_price?.toFixed(2)}</span>
                     )}
                     {discountPct > 0 && (
                         <span className="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-1 rounded ml-auto">
@@ -102,9 +102,9 @@ const CourseSidebar = () => {
                             <span>Course Level</span>
                         </div>
                         <span className="font-semibold text-gray-800">
-                            {courseDetail?.level === 1 ? 'Beginner' : 
-                             courseDetail?.level === 2 ? 'Intermediate' : 
-                             courseDetail?.level === 3 ? 'Advanced' : 'All Levels'}
+                            {courseDetail?.level === 1 ? 'Beginner' :
+                                courseDetail?.level === 2 ? 'Intermediate' :
+                                    courseDetail?.level === 3 ? 'Advanced' : 'All Levels'}
                         </span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
@@ -119,14 +119,14 @@ const CourseSidebar = () => {
                             <Globe className="w-5 h-5" />
                             <span>Language</span>
                         </div>
-                        <span className="font-semibold text-gray-800">Mandarin</span>
+                        <span className="font-semibold text-gray-800">{courseDetail?.language || 'English'}</span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center gap-3 text-gray-500">
                             <Subtitles className="w-5 h-5" />
                             <span>Subtitle Language</span>
                         </div>
-                        <span className="font-semibold text-gray-800">English</span>
+                        <span className="font-semibold text-gray-800">{courseDetail?.subtitle_language || 'Not Available'}</span>
                     </div>
                 </div>
 
@@ -192,7 +192,7 @@ const CourseSidebar = () => {
                 {/* Share Section */}
                 <div className="border-t pt-6">
                     <h3 className="font-bold text-gray-900 mb-4 px-1">Share this course:</h3>
-                    <SocialShare 
+                    <SocialShare
                         title={courseDetail?.name}
                         description={courseDetail?.short_description}
                         image={courseDetail?.image || ''}
