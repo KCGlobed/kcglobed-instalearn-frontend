@@ -149,9 +149,9 @@ const CourseSidebar = () => {
                                 Go To Cart
                             </button>
                     }
-                    <button className="w-full border-2 border-indigo-600 text-indigo-600 font-bold py-4 rounded-xl hover:bg-indigo-50 transition-all active:scale-[0.98]">
+                    {/* <button className="w-full border-2 border-indigo-600 text-indigo-600 font-bold py-4 rounded-xl hover:bg-indigo-50 transition-all active:scale-[0.98]">
                         Buy Now
-                    </button>
+                    </button> */}
                     {isAuthenticated && (
                         <div className="flex gap-2">
                             <button className="flex-1 flex items-center justify-center gap-2 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-all text-sm font-semibold">
