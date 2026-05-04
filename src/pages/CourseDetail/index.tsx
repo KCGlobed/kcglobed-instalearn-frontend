@@ -1,7 +1,6 @@
 import CourseHeader from '../../components/CourseDetail/CourseHeader';
 import CoursePreview from '../../components/CourseDetail/CoursePreview';
 import CourseTabs from '../../components/CourseDetail/CourseTabs';
-import CourseDescription from '../../components/CourseDetail/CourseDescription';
 import CourseSidebar from '../../components/CourseDetail/CourseSidebar';
 import MainHeader from '../../layouts/MainHeader';
 import Footer from '../../layouts/Footer';
@@ -15,6 +14,7 @@ import { fetchCourseById } from '../../store/slices/courseDetailSlice';
 const CourseDetail = () => {
     const { id } = useParams();
     const { courseDetail, loading, error } = useAppSelector((state: RootState) => state.courseDetail);
+
     const dispatch = useAppDispatch();
 
     console.log(courseDetail, "courseDetail");
@@ -22,6 +22,8 @@ const CourseDetail = () => {
     useEffect(() => {
         dispatch(fetchCourseById(Number(id)));
     }, [id]);
+
+
 
     return (
         <>
@@ -34,7 +36,6 @@ const CourseDetail = () => {
                             <CourseHeader />
                             <CoursePreview />
                             <CourseTabs />
-                            <CourseDescription />
                         </div>
 
                         {/* Right Sidebar (Sticky Sidebar) */}

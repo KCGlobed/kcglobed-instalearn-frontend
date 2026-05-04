@@ -85,6 +85,11 @@ const cartSlice = createSlice({
         },
         updateItemCount: (state, action: PayloadAction<number>) => {
             state.itemCount = action.payload;
+        },
+        removeFromCart: (state, action: PayloadAction<number>) => {
+            console.log("id", action.payload);
+            state.cartItems = state.cartItems.filter((item: any) => item.id !== action.payload);
+            state.itemCount = state.cartItems.length;
         }
     },
     extraReducers: (builder) => {
@@ -127,5 +132,5 @@ const cartSlice = createSlice({
     },
 });
 
-export const { clearCartStatus, updateItemCount } = cartSlice.actions;
+export const { clearCartStatus, updateItemCount, removeFromCart } = cartSlice.actions;
 export default cartSlice.reducer;

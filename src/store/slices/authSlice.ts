@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { storeToken, storeRefreshToken, getToken, clearToken, storeUserID, storeUserRole } from "../../utils/tokenStorage"; // utils to persist tokens
+import { storeToken, storeRefreshToken, getToken, clearToken, storeUserID, storeUserRole, storeUserProfile } from "../../utils/tokenStorage"; // utils to persist tokens
 import { apiRequest } from "../../utils/apiRequest"; // centralized API request handler
 import type { AuthState, LoginCred } from "../../utils/types";
 import { API_ENDPOINTS } from "../../utils/apiEndpoints";
@@ -36,6 +36,7 @@ export const loginUser = createAsyncThunk(
       storeRefreshToken(refresh);
       storeUserID(response.data.user_id);
       storeUserRole(response.data.user_role); // Store user role in localStorage
+      storeUserProfile(JSON.stringify(response.data));
       return access;
     } catch (error: any) {
       return rejectWithValue(error.message || "Login failed");

@@ -2,13 +2,22 @@ import React from 'react';
 import { Play } from 'lucide-react';
 import { useAppSelector } from '../../hooks/useRedux';
 import type { RootState } from '../../store/store';
+import { useModal } from '../Modals/ModalContext';
+import SampleVideo from '../Modals/SampleVideo';
 
 const CoursePreview = () => {
     const { courseDetail, loading, error } = useAppSelector((state: RootState) => state.courseDetail);
+    const { showModal, hideModal } = useModal();
 
-
+    const handlePlayVideo = () => {
+        showModal({
+            content: <SampleVideo courseDetail={courseDetail} />,
+            size: "lg",
+            type: "custom",
+        })
+    }
     return (
-        <div className="relative rounded-2xl overflow-hidden mb-8 group cursor-pointer shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <div onClick={handlePlayVideo} className="relative rounded-2xl overflow-hidden mb-8 group cursor-pointer shadow-lg hover:shadow-xl transition-shadow duration-300">
             {/* Main Preview Image */}
             <img
 

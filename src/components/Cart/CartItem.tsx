@@ -1,18 +1,39 @@
 import React from 'react';
 import { Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { removeFromCart } from '../../store/slices/courseCartSlice';
+import { removeFromCartApi } from '../../utils/service';
+import toast from 'react-hot-toast';
+import { useAppSelector } from '../../hooks/useRedux';
+import type { RootState } from '../../store/store';
 
 interface CartItemProps {
     item: any;
 }
 
 const CartItem: React.FC<CartItemProps> = ({ item }) => {
+    const { isAuthenticated } = useAppSelector((state: RootState) => state.auth);
+
+    const dispatch = useAppDispatch();
+
+    const handleRemove = async () => {
+        try {
+            await removeFromCartApi(item.id)
+            dispatch(removeFromCart(item.id));
+            toast.success("Removed from cart");
+        } catch (error) {
+            toast.error("Failed to remove from cart");
+        }
+
+
+    };
     return (
         <div className="flex flex-col sm:flex-row gap-4 py-4 group">
             <Link to={`/course/${item.course_info?.id}`} className="w-full sm:w-[100px] aspect-video bg-gray-50 rounded-sm overflow-hidden flex-shrink-0 border border-gray-50">
-                <img 
-                    src={item.course_info?.image || "https://placehold.co/100x56?text=Course"} 
-                    alt={item.course_info?.name} 
+                <img
+                    src={item.course_info?.image || "https://placehold.co/100x56?text=Course"}
+                    alt={item.course_info?.name}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
             </Link>
@@ -25,7 +46,7 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
                         </h3>
                     </Link>
                     <p className="text-[11px] text-[#6a6f73] mb-1">By {item.course_info?.instructor || "Expert Instructor"}</p>
-                    
+
                     <div className="flex items-center gap-1 mb-1">
                         <span className="text-[11px] font-bold text-[#b4690e]">4.5</span>
                         <Star className="w-2.5 h-2.5 fill-[#b4690e] text-[#b4690e]" />
@@ -44,10 +65,13 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
                         <p className="text-[14px] font-bold text-indigo-600">₹{item.course_info?.price}</p>
                         <p className="text-[11px] text-gray-400 line-through">₹{Math.round(item.course_info?.price * 1.8)}</p>
                     </div>
-                    
+
                     <div className="flex gap-2.5 text-[11px]">
-                        <button className="text-indigo-600 hover:underline">Remove</button>
-                        <button className="text-indigo-600 hover:underline hidden sm:block">Wishlist</button>
+                        <button className="text-indigo-600 hover:underline" onClick={() => { handleRemove() }}>Remove</button>
+                        {
+                            isAuthenticated && <button className="text-indigo-600 hover:underline hidden sm:block">Wishlist</button>
+
+                        }
                     </div>
                 </div>
             </div>
