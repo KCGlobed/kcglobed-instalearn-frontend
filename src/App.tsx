@@ -36,7 +36,7 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route element={<PrivateRoute />}>
-          <Route path="/my-courses/archived/" element={<MyLearning />} />
+          <Route path="/my-learning" element={<MyLearning />} />
         </Route>
 
       </Routes>

@@ -351,7 +351,7 @@ const WishlistDropdown = () => {
 
                     {wishListItems.length > 0 && (
                         <div className="p-3 bg-[#fcfcfd] rounded-b-[10px] border-t border-[#E9EAF0]">
-                            <button className="w-full py-2.5 text-[14px] font-bold text-white bg-[#5624D0] hover:bg-[#461DA5] rounded transition-colors" onClick={() => setOpen(false)}>
+                            <button className="w-full py-2.5 text-[14px] font-bold text-white bg-[#5624D0] hover:bg-[#461DA5] rounded transition-colors" onClick={() => { navigate('/my-learning?tab=wishlist'); setOpen(false); }}>
                                 Go to Wishlist
                             </button>
                         </div>
@@ -507,9 +507,9 @@ const ProfileDropdown = () => {
 
                     {/* Group 1 */}
                     <div className="py-1">
-                        <a href="#" onClick={(e) => e.preventDefault()} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">My Learning</a>
-                        <a href="#" onClick={(e) => e.preventDefault()} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">My Cart</a>
-                        <a href="#" onClick={(e) => e.preventDefault()} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Wishlist</a>
+                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/my-learning'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">My Learning</a>
+                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/cart'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">My Cart</a>
+                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/my-learning?tab=wishlist'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Wishlist</a>
                     </div>
 
                     <div className="h-px bg-[#E9EAF0] my-1 mx-5" />
