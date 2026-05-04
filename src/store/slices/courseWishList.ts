@@ -57,7 +57,11 @@ const courseWishListSlice = createSlice({
             state.itemCount = action.payload;
         },
         removeFromWishList: (state, action: PayloadAction<number>) => {
-            state.wishListItems = state.wishListItems.filter((item: any) => item.id !== action.payload && item.course_id !== action.payload);
+            state.wishListItems = state.wishListItems.filter((item: any) => 
+                item.id !== action.payload && 
+                item.course_info?.id !== action.payload && 
+                item.course_id !== action.payload
+            );
             state.itemCount = state.wishListItems.length;
         }
     },
@@ -72,6 +76,23 @@ const courseWishListSlice = createSlice({
                 state.loading = false;
                 state.success = true;
                 state.message = action.payload?.message || "Wishlist toggled successfully";
+                
+                const courseId = Number(action.meta.arg.course_id);
+                const responseData = action.payload?.data;
+
+                // Trust the server response:
+                // 1. Remove the course from the local list first to avoid duplicates
+                state.wishListItems = state.wishListItems.filter((item: any) => 
+                    (item.course_info?.id || item.course_id) !== courseId
+                );
+
+                // 2. If the response contains the course object (ADD), push it back to the list
+                // If it's empty {} (REMOVE), we leave it removed
+                if (responseData && Object.keys(responseData).length > 0) {
+                    state.wishListItems.push(responseData);
+                }
+
+                state.itemCount = state.wishListItems.length;
             })
             .addCase(toggleWishlistAction.rejected, (state, action: PayloadAction<string | undefined>) => {
                 state.loading = false;

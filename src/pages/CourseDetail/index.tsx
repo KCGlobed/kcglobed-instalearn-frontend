@@ -14,6 +14,7 @@ import { fetchCourseById } from '../../store/slices/courseDetailSlice';
 const CourseDetail = () => {
     const { id } = useParams();
     const { courseDetail, loading, error } = useAppSelector((state: RootState) => state.courseDetail);
+
     const dispatch = useAppDispatch();
 
     console.log(courseDetail, "courseDetail");
@@ -21,6 +22,8 @@ const CourseDetail = () => {
     useEffect(() => {
         dispatch(fetchCourseById(Number(id)));
     }, [id]);
+
+
 
     return (
         <>

@@ -29,7 +29,7 @@ import { toggleCourseWishlistStatus } from '../../store/slices/courseDetailSlice
 const CourseSidebar = () => {
     const { courseDetail, loading, error } = useAppSelector((state: RootState) => state.courseDetail);
     const { cartItems, loading: cartLoading, error: cartError } = useAppSelector((state: RootState) => state.cart);
-    const { loading: wishlistLoading } = useAppSelector((state: RootState) => state.wishList);
+    const { wishListItems, loading: wishlistLoading } = useAppSelector((state: RootState) => state.wishList);
     const { isAuthenticated } = useAppSelector((state: RootState) => state.auth);
     const navigate = useNavigate();
 
@@ -55,6 +55,11 @@ const CourseSidebar = () => {
         return cartItems.some((item: any) => item?.course_info?.id === courseDetail.id);
     }, [cartItems, courseDetail?.id]);
 
+    const isWishlist = useMemo(() => {
+        if (!courseDetail?.id || !wishListItems?.length) return false;
+        return wishListItems.some((item: any) => item?.course_info?.id === courseDetail.id);
+    }, [wishListItems, courseDetail?.id]);
+
 
     const handleWishList = async () => {
         try {
@@ -68,6 +73,8 @@ const CourseSidebar = () => {
             toast.error(error as string);
         }
     }
+
+
 
 
 
@@ -170,13 +177,13 @@ const CourseSidebar = () => {
                     </button> */}
                     {isAuthenticated && (
                         <div className="flex gap-2">
-                            <button onClick={() => handleWishList()} disabled={wishlistLoading} className={`flex-1 flex items-center justify-center gap-2 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-all text-sm font-semibold ${courseDetail?.is_in_wishlist ? 'text-rose-600' : 'text-gray-700'}`}>
+                            <button onClick={() => handleWishList()} disabled={wishlistLoading} className={`flex-1 flex items-center justify-center gap-2 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-all text-sm font-semibold ${isWishlist ? 'text-rose-600' : 'text-gray-700'}`}>
                                 {wishlistLoading ? (
                                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600"></div>
                                 ) : (
-                                    <Heart className={`w-4 h-4 ${courseDetail?.is_in_wishlist ? 'fill-current' : ''}`} /> 
+                                    <Heart className={`w-4 h-4 ${isWishlist ? 'fill-current' : ''}`} />
                                 )}
-                                {courseDetail?.is_in_wishlist ? 'Wishlisted' : 'Add To Wishlist'}
+                                {isWishlist ? 'Wishlisted' : 'Add To Wishlist'}
                             </button>
                             <button disabled={true} className="flex-1 flex items-center justify-center gap-2 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-all text-sm font-semibold">
                                 <Gift className="w-4 h-4" /> Gift Course
