@@ -24,6 +24,7 @@ const MyLearning = () => {
         setSearchParams({ tab: key });
     };
 
+
     return (
         <div className="min-h-screen bg-white font-inter">
             <TopHeader />
@@ -34,9 +35,9 @@ const MyLearning = () => {
             </div>
 
             <div className="max-w-[1340px] mx-auto px-6">
-                <Tabs 
-                    tabs={tabConfig} 
-                    activeTab={activeTabKey} 
+                <Tabs
+                    tabs={tabConfig}
+                    activeTab={activeTabKey}
                     onChange={handleTabChange}
                     variant="light"
                 />
