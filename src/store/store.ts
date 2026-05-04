@@ -10,6 +10,7 @@ import courseDetailReducer from "./slices/courseDetailSlice";
 import cartReducer from "./slices/courseCartSlice";
 
 import homepageRecentlyAddedReducer from "./slices/homepageRecentlyAdded";
+import wishListReducer from "./slices/courseWishList";
 
 export const store = configureStore({
   reducer: {
@@ -22,7 +23,8 @@ export const store = configureStore({
     filterCourse: filterCourseReducer,
     courseDetail: courseDetailReducer,
     cart: cartReducer,
-    homepageRecentlyAdded: homepageRecentlyAddedReducer
+    homepageRecentlyAdded: homepageRecentlyAddedReducer,
+    wishList: wishListReducer
 
   },
 });

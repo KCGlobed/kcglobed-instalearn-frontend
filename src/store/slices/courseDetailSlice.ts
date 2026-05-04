@@ -90,6 +90,8 @@ export interface CourseDetail {
     language: string;
     subtitle_language: string;
     enrolled_students: number;
+    course_includes?: any[];
+    is_in_wishlist?: boolean;
 }
 
 // ── Slice state ───────────────────────────────────────────────────────────────
@@ -141,6 +143,11 @@ const courseDetailSlice = createSlice({
             state.loading = false;
             state.error = null;
         },
+        toggleCourseWishlistStatus: (state) => {
+            if (state.courseDetail) {
+                state.courseDetail.is_in_wishlist = !state.courseDetail.is_in_wishlist;
+            }
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -162,5 +169,5 @@ const courseDetailSlice = createSlice({
     },
 });
 
-export const { clearCourseDetail } = courseDetailSlice.actions;
+export const { clearCourseDetail, toggleCourseWishlistStatus } = courseDetailSlice.actions;
 export default courseDetailSlice.reducer;

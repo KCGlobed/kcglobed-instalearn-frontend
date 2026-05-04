@@ -16,4 +16,6 @@ export const API_ENDPOINTS = {
     START_PAYMENT: "subscription/start-course-payment/",
     COMPLETE_PAYMENT: "subscription/complete-course-payment/",
     REMOVE_FROM_CART: "subscription/remove-to-cart/",
+    WISHLIST: "user_study/get-user-wishlist/",
+    TOGGLE_WISHLIST: "user_study/update-wishlist/",
 }

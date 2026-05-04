@@ -17,6 +17,7 @@ import { useAppSelector } from "../hooks/useRedux";
 import { logout } from "../store/slices/authSlice";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { viewCartDetails } from "../store/slices/courseCartSlice";
+import { viewWishlistAction } from "../store/slices/courseWishList";
 
 
 // ─── Browse Dropdown ──────────────────────────────────────────────────────────
@@ -278,6 +279,9 @@ const NotificationDropdown = () => {
 const WishlistDropdown = () => {
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const { wishListItems, loading } = useAppSelector((state: RootState) => state.wishList);
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -289,20 +293,24 @@ const WishlistDropdown = () => {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    const wishlistItems = [
-        { id: 1, title: "UI/UX Design Masterclass 2024", instructor: "Sarah Johnson", price: 89.99, image: "https://placehold.co/80x45" },
-        { id: 2, title: "Modern Web Development with Next.js", instructor: "Mike Ross", price: 129.99, image: "https://placehold.co/80x45" },
-    ];
+    useEffect(() => {
+        dispatch(viewWishlistAction());
+    }, [dispatch]);
 
     return (
         <div className="relative" ref={dropdownRef} style={{ overflow: "visible" }}>
             <button
                 onClick={() => setOpen(!open)}
-                className={`p-2 rounded transition-all duration-200 group ${open ? 'bg-[#F5F4FF] text-[#5624D0]' : 'text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0]'}`}
+                className={`p-2 rounded transition-all duration-200 relative group ${open ? 'bg-[#F5F4FF] text-[#5624D0]' : 'text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0]'}`}
                 aria-expanded={open}
                 aria-haspopup="menu"
             >
                 <Heart className={`w-5 h-5 stroke-[1.5px] ${open ? 'fill-[#5624D0]/10' : ''}`} />
+                {wishListItems.length > 0 && (
+                    <span className="absolute top-1 right-1 w-4 h-4 bg-[#FF4B2B] text-white text-[10px] font-bold flex items-center justify-center rounded-full border border-white">
+                        {wishListItems.length}
+                    </span>
+                )}
             </button>
 
             {open && (
@@ -318,14 +326,18 @@ const WishlistDropdown = () => {
                     </div>
 
                     <div className="max-h-[320px] overflow-y-auto">
-                        {wishlistItems.length > 0 ? (
-                            wishlistItems.map((item) => (
-                                <div key={item.id} className="px-5 py-3.5 border-b border-[#f3f4f6] last:border-0 hover:bg-[#F5F4FF]/50 cursor-pointer transition-colors flex gap-3">
-                                    <img src={item.image} alt={item.title} className="w-16 h-9 object-cover rounded bg-[#F5F4FF]" />
+                        {loading ? (
+                            <div className="px-5 py-10 text-center">
+                                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#5624D0] mx-auto mb-2"></div>
+                                <p className="text-[14px] text-[#6E7485]">Loading...</p>
+                            </div>
+                        ) : wishListItems.length > 0 ? (
+                            wishListItems.map((item: any) => (
+                                <div key={item.id} onClick={() => { navigate(`/courses/detail/${item.course_info?.id}`); setOpen(false); }} className="px-5 py-3.5 border-b border-[#f3f4f6] last:border-0 hover:bg-[#F5F4FF]/50 cursor-pointer transition-colors flex gap-3">
+                                    <img src={item.course_info?.image} alt={item.course_info?.name} className="w-16 h-9 object-cover rounded bg-[#F5F4FF]" />
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-[13px] font-bold text-[#1D2026] leading-tight truncate">{item.title}</p>
-                                        <p className="text-[11px] text-[#6E7485] mt-0.5 truncate">{item.instructor}</p>
-                                        <p className="text-[13px] font-bold text-[#1D2026] mt-1">${item.price}</p>
+                                        <p className="text-[13px] font-bold text-[#1D2026] leading-tight truncate">{item.course_info?.name}</p>
+                                        <p className="text-[13px] font-bold text-[#1D2026] mt-1">₹{item.course_info?.price}</p>
                                     </div>
                                 </div>
                             ))
@@ -337,11 +349,13 @@ const WishlistDropdown = () => {
                         )}
                     </div>
 
-                    <div className="p-3 bg-[#fcfcfd] rounded-b-[10px] border-t border-[#E9EAF0]">
-                        <button className="w-full py-2.5 text-[14px] font-bold text-white bg-[#5624D0] hover:bg-[#461DA5] rounded transition-colors" onClick={() => setOpen(false)}>
-                            Go to Wishlist
-                        </button>
-                    </div>
+                    {wishListItems.length > 0 && (
+                        <div className="p-3 bg-[#fcfcfd] rounded-b-[10px] border-t border-[#E9EAF0]">
+                            <button className="w-full py-2.5 text-[14px] font-bold text-white bg-[#5624D0] hover:bg-[#461DA5] rounded transition-colors" onClick={() => setOpen(false)}>
+                                Go to Wishlist
+                            </button>
+                        </div>
+                    )}
                 </div>
             )}
         </div>

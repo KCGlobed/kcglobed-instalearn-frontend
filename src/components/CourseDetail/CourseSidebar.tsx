@@ -23,11 +23,13 @@ import { addToCartAction, viewCartDetails } from '../../store/slices/courseCartS
 import SkeltonLoader from '../Loader/SkeltonLoader';
 import { useNavigate } from 'react-router-dom';
 import SocialShare from '../UI/SocialShare';
-
+import { toggleWishlistAction } from '../../store/slices/courseWishList';
+import { toggleCourseWishlistStatus } from '../../store/slices/courseDetailSlice';
 
 const CourseSidebar = () => {
     const { courseDetail, loading, error } = useAppSelector((state: RootState) => state.courseDetail);
     const { cartItems, loading: cartLoading, error: cartError } = useAppSelector((state: RootState) => state.cart);
+    const { loading: wishlistLoading } = useAppSelector((state: RootState) => state.wishList);
     const { isAuthenticated } = useAppSelector((state: RootState) => state.auth);
     const navigate = useNavigate();
 
@@ -52,6 +54,20 @@ const CourseSidebar = () => {
         if (!courseDetail?.id || !cartItems?.length) return false;
         return cartItems.some((item: any) => item?.course_info?.id === courseDetail.id);
     }, [cartItems, courseDetail?.id]);
+
+
+    const handleWishList = async () => {
+        try {
+            if (!courseDetail?.id) return;
+            const data = {
+                course_id: courseDetail.id,
+            }
+            await dispatch(toggleWishlistAction(data)).unwrap();
+            dispatch(toggleCourseWishlistStatus());
+        } catch (error) {
+            toast.error(error as string);
+        }
+    }
 
 
 
@@ -154,10 +170,15 @@ const CourseSidebar = () => {
                     </button> */}
                     {isAuthenticated && (
                         <div className="flex gap-2">
-                            <button className="flex-1 flex items-center justify-center gap-2 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-all text-sm font-semibold">
-                                <Heart className="w-4 h-4" /> Add To Wishlist
+                            <button onClick={() => handleWishList()} disabled={wishlistLoading} className={`flex-1 flex items-center justify-center gap-2 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-all text-sm font-semibold ${courseDetail?.is_in_wishlist ? 'text-rose-600' : 'text-gray-700'}`}>
+                                {wishlistLoading ? (
+                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600"></div>
+                                ) : (
+                                    <Heart className={`w-4 h-4 ${courseDetail?.is_in_wishlist ? 'fill-current' : ''}`} /> 
+                                )}
+                                {courseDetail?.is_in_wishlist ? 'Wishlisted' : 'Add To Wishlist'}
                             </button>
-                            <button className="flex-1 flex items-center justify-center gap-2 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-all text-sm font-semibold">
+                            <button disabled={true} className="flex-1 flex items-center justify-center gap-2 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-all text-sm font-semibold">
                                 <Gift className="w-4 h-4" /> Gift Course
                             </button>
                         </div>
@@ -169,10 +190,12 @@ const CourseSidebar = () => {
                 </p>
 
                 {/* Course Includes Section */}
-                <div className="mb-8">
-                    <h3 className="font-bold text-gray-900 mb-4 px-1">This course includes:</h3>
-                    <div className="space-y-4">
-                        {[
+                {
+                    courseDetail?.course_includes && courseDetail?.course_includes.length > 0 &&
+                    <div className="mb-8">
+                        <h3 className="font-bold text-gray-900 mb-4 px-1">This course includes:</h3>
+                        <div className="space-y-4">
+                            {/* {[
                             { icon: Infinity, text: "Lifetime access", color: "text-orange-500" },
                             { icon: CheckCircle2, text: "30-days money-back guarantee", color: "text-orange-500" },
                             { icon: FileText, text: "Free exercises file & downloadable resources", color: "text-orange-500" },
@@ -185,9 +208,19 @@ const CourseSidebar = () => {
                                 <item.icon className={`w-5 h-5 ${item.color}`} />
                                 <span>{item.text}</span>
                             </div>
-                        ))}
+                        ))} */}
+
+                            {
+                                courseDetail?.course_includes?.map((item: any, idx: number) => (
+                                    <div key={item?.id || idx} className="flex items-center gap-3 text-sm text-gray-600 px-1">
+                                        <img src={item?.icon || ""} alt="" className="w-5 h-5" />
+                                        <span>{item?.text}</span>
+                                    </div>
+                                ))
+                            }
+                        </div>
                     </div>
-                </div>
+                }
 
                 {/* Share Section */}
                 <div className="border-t pt-6">
