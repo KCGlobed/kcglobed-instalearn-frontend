@@ -1,161 +1,43 @@
 import { useEffect, useState } from "react";
 import {
     SlidersHorizontal, Search, ChevronDown, ChevronUp,
-    Cpu, Handshake, CreditCard, Monitor, Briefcase, Book, PenTool,
-    Megaphone, Box, Camera, Headphones, HeartPulse
 } from "lucide-react";
 import CoursesCard from "../Cards/CoursesCard";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import { fetchCoursesList } from "../../store/slices/filterCourseSlice";
 import { useNavigate } from "react-router-dom";
-
-
-const Sidebar = () => {
-    // Accordion State
-    const [openCategory, setOpenCategory] = useState(true);
-    const [openDevelopment, setOpenDevelopment] = useState(true);
-    const [openRating, setOpenRating] = useState(true);
-
-    // Initial subcategories state for Development
-    const [subcategories, setSubcategories] = useState([
-        { name: "Web development", count: "574", checked: false },
-        { name: "Data Science", count: "568", checked: false },
-        { name: "Mobile Development", count: "1345", checked: true },
-        { name: "Software Testing", count: "317", checked: false },
-        { name: "Software Engineering", count: "31", checked: false },
-        { name: "Software Development Tools", count: "558", checked: false },
-        { name: "No-Code Development", count: "37", checked: false },
-    ]);
-
-    const toggleSubcategory = (index: number) => {
-        const newSubs = [...subcategories];
-        newSubs[index].checked = !newSubs[index].checked;
-        setSubcategories(newSubs);
-    };
-
-    return (
-        <div className="w-full bg-white flex flex-col select-none">
-            {/* Category Section */}
-            <div className="border border-[#E9EAF0] p-5 pb-2 transition-all">
-                <div
-                    className="flex justify-between items-center mb-5 cursor-pointer"
-                    onClick={() => setOpenCategory(!openCategory)}
-                >
-                    <h3 className="text-[#1D2026] font-bold text-[14px] uppercase tracking-wide">Category</h3>
-                    {openCategory ? <ChevronUp className="w-4 h-4 text-[#1D2026]" /> : <ChevronDown className="w-4 h-4 text-[#8C94A3]" />}
-                </div>
-
-                {openCategory && (
-                    <div className="space-y-1">
-                        {/* Development Dropdown */}
-                        <div>
-                            <div
-                                className="flex justify-between items-center py-2.5 cursor-pointer group"
-                                onClick={() => setOpenDevelopment(!openDevelopment)}
-                            >
-                                <div className={`flex items-center gap-3 ${openDevelopment ? "text-[#5624D0]" : "text-[#4E5566] group-hover:text-[#5624D0] transition-colors"}`}>
-                                    <Cpu className="w-[18px] h-[18px]" strokeWidth={openDevelopment ? 2 : 1.5} />
-                                    <span className="text-[14px] font-medium">Development</span>
-                                </div>
-                                {openDevelopment ? <ChevronUp className="w-4 h-4 text-[#5624D0]" /> : <ChevronDown className="w-4 h-4 text-[#8C94A3]" />}
-                            </div>
-
-                            {/* Subcategories */}
-                            {openDevelopment && (
-                                <div className="pl-7 flex flex-col gap-3.5 py-3 pb-5">
-                                    {subcategories.map((sub, i) => (
-                                        <label
-                                            key={i}
-                                            className="flex items-center justify-between cursor-pointer group"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                toggleSubcategory(i);
-                                            }}
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <div className={`w-[16px] h-[16px] rounded-[3px] border flex items-center justify-center shrink-0 transition-colors ${sub.checked ? 'bg-[#5624D0] border-[#5624D0]' : 'border-[#E9EAF0] bg-white group-hover:border-[#8C94A3]'}`}>
-                                                    {sub.checked && <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>}
-                                                </div>
-                                                <span className={`text-[13px] transition-colors ${sub.checked ? 'text-[#5624D0] font-medium' : 'text-[#4E5566]'}`}>{sub.name}</span>
-                                            </div>
-                                            <span className="text-[12px] text-[#8C94A3] ml-2">{sub.count}</span>
-                                        </label>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="h-px bg-[#E9EAF0] my-1" />
-
-                        {/* Other Categories */}
-                        {[
-                            { icon: Handshake, name: "Business" },
-                            { icon: CreditCard, name: "Finance & Accounting" },
-                            { icon: Monitor, name: "IT & Software" },
-                            { icon: Briefcase, name: "Office Productivity" },
-                            { icon: Book, name: "Personal Development" },
-                            { icon: PenTool, name: "Design" },
-                            { icon: Megaphone, name: "Marketing" },
-                            { icon: Box, name: "Lifestyle" },
-                            { icon: Camera, name: "Photography & Video" },
-                            { icon: Headphones, name: "Music" },
-                            { icon: HeartPulse, name: "Health & Fitness" },
-                        ].map((cat, i) => (
-                            <div key={i}>
-                                <div className="flex justify-between items-center py-3.5 cursor-pointer group">
-                                    <div className="flex items-center gap-3 text-[#4E5566] group-hover:text-[#5624D0] transition-colors">
-                                        <cat.icon className="w-[18px] h-[18px] stroke-[1.5px]" />
-                                        <span className="text-[14px]">{cat.name}</span>
-                                    </div>
-                                    <ChevronDown className="w-4 h-4 text-[#8C94A3]" />
-                                </div>
-                                {i < 10 && <div className="h-px bg-[#E9EAF0] mt-1" />}
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
-
-            {/* Rating Section Stub */}
-            <div className="border border-[#E9EAF0] border-t-0 p-5 bg-white transition-all">
-                <div
-                    className="flex justify-between items-center cursor-pointer"
-                    onClick={() => setOpenRating(!openRating)}
-                >
-                    <h3 className="text-[#1D2026] font-bold text-[14px] uppercase tracking-wide">Rating</h3>
-                    {openRating ? <ChevronUp className="w-4 h-4 text-[#1D2026]" /> : <ChevronDown className="w-4 h-4 text-[#8C94A3]" />}
-                </div>
-                {/* Content for rating would go here when openRating is true */}
-                {openRating && (
-                    <div className="mt-4 text-[13px] font-medium text-[#4E5566] pb-2">
-                        {/* Placeholder for rating filters */}
-                        More rating options...
-                    </div>
-                )}
-            </div>
-
-            {/* Additional filters can be added here following same boxed layout structure */}
-        </div>
-    );
-};
+import { filterCoursesListParams } from "../../store/slices/filterCoursesParamsSlice";
+import Sidebar from "./SideBar";
 
 
 const CourseListFilter = () => {
     const [isFilterOpen, setIsFilterOpen] = useState(true);
+    const [selectedSubcategories, setSelectedSubcategories] = useState<number[]>([]);
+    const [selectedLevels, setSelectedLevels] = useState<number[]>([]);
+    const [selectedRatings, setSelectedRatings] = useState<number[]>([]);
+    const [selectedTags, setSelectedTags] = useState<number[]>([]);
+    const [name, setName] = useState("");
     const dispatch = useAppDispatch();
     const { courses, loading, error } = useAppSelector((state: any) => state.filterCourse);
     const navigate = useNavigate();
 
-
     const handleCourseClick = (course: any) => {
-        navigate(`/courses/detail/${course.id}`)
-    }
-
-
+        navigate(`/courses/detail/${course.id}`);
+    };
 
     useEffect(() => {
         dispatch(fetchCoursesList());
     }, []);
+
+    useEffect(() => {
+        dispatch(filterCoursesListParams({
+            subcategory: selectedSubcategories,
+            name: name,
+            level: selectedLevels,
+            rating: selectedRatings,
+            tags: selectedTags
+        }));
+    }, [selectedSubcategories, name, selectedLevels, selectedRatings, selectedTags]);
 
     return (
         <section className="bg-white px-4 xl:px-0">
@@ -174,7 +56,7 @@ const CourseListFilter = () => {
                             <SlidersHorizontal className="w-[18px] h-[18px]" strokeWidth={2.5} />
                             <span>Filter</span>
                             <span className="w-6 h-6 flex items-center justify-center bg-[#5624D0] text-white text-[12px] font-bold rounded ml-1">
-                                3
+                                {selectedSubcategories.length + selectedLevels.length + selectedRatings.length + selectedTags.length}
                             </span>
                         </button>
 
@@ -183,7 +65,9 @@ const CourseListFilter = () => {
                             <Search className="w-5 h-5 text-[#8C94A3]" />
                             <input
                                 type="text"
-                                defaultValue="UI/UX Design"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                placeholder="Search courses..."
                                 className="w-full h-full bg-transparent outline-none text-[#1D2026] text-[15px] placeholder:text-[#8C94A3]"
                             />
                         </div>
@@ -224,12 +108,19 @@ const CourseListFilter = () => {
                 </div>
             </div>
 
-            {/* Main Content Area: Sidebar + Course Grid */}
             <div className="max-w-[1320px] mx-auto py-10 flex flex-col lg:flex-row gap-8">
                 {/* Left Sidebar */}
                 {isFilterOpen && (
                     <div className="w-full lg:w-[280px] xl:w-[312px] shrink-0 transition-all duration-300">
-                        <Sidebar />
+                        <Sidebar selectedSubcategories={selectedSubcategories}
+                            setSelectedSubcategories={setSelectedSubcategories}
+                            selectedLevels={selectedLevels}
+                            setSelectedLevels={setSelectedLevels}
+                            selectedRatings={selectedRatings}
+                            setSelectedRatings={setSelectedRatings}
+                            selectedTags={selectedTags}
+                            setSelectedTags={setSelectedTags}
+                        />
                     </div>
                 )}
 
