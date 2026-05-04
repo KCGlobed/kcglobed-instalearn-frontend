@@ -62,3 +62,13 @@ export const wishlistApi = async (): Promise<any> => {
   return await apiRequest(API_ENDPOINTS.WISHLIST, 'GET');
 }
 
+
+// ---------Abhishek Work--------
+
+export const getCategoryFilterApi = async (): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.CATEGORY_FILTER}`, 'GET');
+}
+
+export const getCourseSearchFilteApi = async (params: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.COURSE_SEARCH_FILTER}?${params}`, 'GET');
+}

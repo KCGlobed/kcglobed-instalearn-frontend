@@ -12,6 +12,11 @@ import cartReducer from "./slices/courseCartSlice";
 import homepageRecentlyAddedReducer from "./slices/homepageRecentlyAdded";
 import wishListReducer from "./slices/courseWishList";
 
+import filterCategoryReducer from "./slices/filterCategorySlice";
+import filterCoursesParamsReducer from "./slices/filterCoursesParamsSlice";
+
+
+
 export const store = configureStore({
   reducer: {
     homepageCategory: homepageCategoryReducer,
@@ -24,7 +29,12 @@ export const store = configureStore({
     courseDetail: courseDetailReducer,
     cart: cartReducer,
     homepageRecentlyAdded: homepageRecentlyAddedReducer,
-    wishList: wishListReducer
+    wishList: wishListReducer,
+
+    filterCategory: filterCategoryReducer,
+    filterCourseParams: filterCoursesParamsReducer,
+
+
 
   },
 });
