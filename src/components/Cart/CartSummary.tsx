@@ -22,7 +22,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({ totalPrice, originalPrice, di
     const userData = {
         first_name: "Harish", // Should be dynamic
         last_name: "Kumar",   // Should be dynamic
-        email: "harish.kumar@kcglobed.com", // Should be dynamic
+        email: "[EMAIL_ADDRESS]", // Should be dynamic
         phone: "9915039343",  // Should be dynamic
         user_id: userID,
         device_id: deviceID,
@@ -33,10 +33,9 @@ const CartSummary: React.FC<CartSummaryProps> = ({ totalPrice, originalPrice, di
         pincode: ""
     };
 
-    const handleCheckOutLogin = () => {
-        if (!isLogin) {
-            navigate("/login");
-        }
+    const handleCheckOut = () => {
+        sessionStorage.setItem('checkout_access', 'true');
+        navigate("/checkout");
     };
 
 
@@ -53,20 +52,12 @@ const CartSummary: React.FC<CartSummaryProps> = ({ totalPrice, originalPrice, di
                 )}
             </div>
 
-            {isLogin ? (
-                <RazorpayButton
-                    userData={userData}
-                    label="Checkout"
-                    className="w-full bg-[#a435f0] hover:bg-[#8710d8] text-white font-bold py-3.5 rounded transition-colors text-[16px] active:scale-[0.98] shadow-md mb-6"
-                />
-            ) : (
-                <button
-                    onClick={handleCheckOutLogin}
-                    className="w-full bg-[#a435f0] hover:bg-[#8710d8] text-white font-bold py-3.5 rounded transition-colors text-[16px] active:scale-[0.98] shadow-md mb-6"
-                >
-                    Login to Checkout
-                </button>
-            )}
+            <button
+                onClick={handleCheckOut}
+                className="w-full bg-[#a435f0] hover:bg-[#8710d8] text-white font-bold py-3.5 rounded transition-colors text-[16px] active:scale-[0.98] shadow-md mb-6 disabled:bg-gray-300 disabled:cursor-not-allowed"
+            >
+                Checkout
+            </button>
 
             <div className="pt-5 border-t border-gray-100">
                 <h3 className="text-[13px] font-bold text-[#1c1d1f] mb-3 uppercase tracking-tight">Promotions</h3>

@@ -1,27 +1,49 @@
 import React, { useState } from 'react';
+import Tabs from '../UI/Tabs';
+import type { Tab } from '../UI/Tabs';
+import { useAppSelector } from '../../hooks/useRedux';
+import type { RootState } from '../../store/store';
 
-const CourseTabs = () => {
-    const tabs = ['Overview', 'Curriculum', 'Instructor', 'Review'];
-    const [activeTab, setActiveTab] = useState('Overview');
+import OverviewPanel    from './tabs/OverviewPanel';
+import CurriculumPanel  from './tabs/CurriculumPanel';
+import FeaturedPanel    from './tabs/FeaturedPanel';
+import InstructorPanel  from './tabs/InstructorPanel';
+import ReviewsPanel     from './tabs/ReviewsPanel';
+
+// ─── Tab definitions ──────────────────────────────────────────────────────────
+
+const TABS: Tab[] = [
+    { label: 'Overview' },
+    { label: 'Curriculum' },
+    { label: 'Featured' },
+    { label: 'Instructor' },
+    { label: 'Reviews' },
+];
+
+// ─── CourseTabs ───────────────────────────────────────────────────────────────
+
+const CourseTabs: React.FC = () => {
+    const { courseDetail } = useAppSelector((state: RootState) => state.courseDetail);
+    const [activeTab, setActiveTab] = useState<string>('Overview');
+
+    const tabsWithCounts: Tab[] = TABS.map((t) => {
+        if (t.label === 'Reviews')    return { ...t, count: courseDetail?.total_reviews ?? 0 };
+        if (t.label === 'Curriculum') return { ...t, count: courseDetail?.sample_videos?.length ?? 0 };
+        if (t.label === 'Featured')   return { ...t, count: courseDetail?.feature_json?.length ?? 0 };
+        return t;
+    });
 
     return (
-        <div className="flex border-b border-gray-200 mb-8 sticky top-0 bg-white z-10 w-full overflow-x-auto no-scrollbar scroll-smooth">
-            {tabs.map((tab) => (
-                <button
-                    key={tab}
-                    onClick={() => setActiveTab(tab)}
-                    className={`px-6 py-4 text-sm md:text-base font-semibold transition-all duration-300 relative whitespace-nowrap
-                        ${activeTab === tab 
-                            ? 'text-indigo-600' 
-                            : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
-                        }`}
-                >
-                    {tab}
-                    {activeTab === tab && (
-                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600 animate-[tab-slide_0.3s_ease-out]" />
-                    )}
-                </button>
-            ))}
+        <div className="mb-8">
+            <Tabs tabs={tabsWithCounts} activeTab={activeTab} onChange={setActiveTab} />
+
+            <div className="pt-8">
+                {activeTab === 'Overview'   && <OverviewPanel   courseDetail={courseDetail} />}
+                {activeTab === 'Curriculum' && <CurriculumPanel courseDetail={courseDetail} />}
+                {activeTab === 'Featured'   && <FeaturedPanel   courseDetail={courseDetail} />}
+                {activeTab === 'Instructor' && <InstructorPanel courseDetail={courseDetail} />}
+                {activeTab === 'Reviews'    && <ReviewsPanel    courseDetail={courseDetail} />}
+            </div>
         </div>
     );
 };

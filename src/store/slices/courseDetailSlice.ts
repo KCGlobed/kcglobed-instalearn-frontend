@@ -74,7 +74,7 @@ export interface CourseDetail {
     feature_json: string[];
     image: string | null;
     banner_image: string | null;
-    categories: CourseCategory[];
+    categories?: CourseCategory[];
     objectives_summary: string[];
     tags: CourseTag[];
     status: boolean;
@@ -84,6 +84,14 @@ export interface CourseDetail {
     avg_rating: number;
     total_reviews: number;
     created_by: CreatedBy;
+    level: number;
+    chapters?: any[];
+    original_price?: number;
+    language: string;
+    subtitle_language: string;
+    enrolled_students: number;
+    course_includes?: any[];
+    is_in_wishlist?: boolean;
 }
 
 // ── Slice state ───────────────────────────────────────────────────────────────
@@ -135,6 +143,11 @@ const courseDetailSlice = createSlice({
             state.loading = false;
             state.error = null;
         },
+        toggleCourseWishlistStatus: (state) => {
+            if (state.courseDetail) {
+                state.courseDetail.is_in_wishlist = !state.courseDetail.is_in_wishlist;
+            }
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -156,5 +169,5 @@ const courseDetailSlice = createSlice({
     },
 });
 
-export const { clearCourseDetail } = courseDetailSlice.actions;
+export const { clearCourseDetail, toggleCourseWishlistStatus } = courseDetailSlice.actions;
 export default courseDetailSlice.reducer;

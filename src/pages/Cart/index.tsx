@@ -11,11 +11,6 @@ import RecommendationCard from '../../components/Cart/RecommendationCard';
 
 const Cart = () => {
     const { cartItems: cart, loading } = useAppSelector((state: RootState) => state.cart);
-    const dispatch = useAppDispatch();
-
-    useEffect(() => {
-        dispatch(viewCartDetails());
-    }, [dispatch]);
 
     const { totalPrice, originalPrice, discountCount } = useMemo(() => {
         const total = cart.reduce((sum, item) => sum + (item.course_info?.price || 0), 0);

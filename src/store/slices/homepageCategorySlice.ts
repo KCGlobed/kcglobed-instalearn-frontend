@@ -34,7 +34,6 @@ export const fetchHomepageCategories = createAsyncThunk<
 >("homepageCategory/fetchAll", async (_, { rejectWithValue }) => {
   try {
     const response = await fetch(API_BASE_URL + API_ENDPOINTS.HOMEPAGE_CATEGORY);
-
     if (!response.ok) {
       return rejectWithValue(`Request failed with status ${response.status}`);
     }
