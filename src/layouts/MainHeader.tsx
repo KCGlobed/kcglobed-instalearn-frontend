@@ -626,7 +626,7 @@ const ProfileDropdown = () => {
                             <span>Notifications</span>
                             {unreadCount > 0 && <span className="px-1.5 py-0.5 bg-[#FF4B2B] text-white text-[10px] font-bold rounded-full">{unreadCount}</span>}
                         </a>
-                        <a href="#" onClick={(e) => e.preventDefault()} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Messages</a>
+                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/profile?tab=notifications'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Notification Preferences</a>
                     </div>
 
                     <div className="h-px bg-[#E9EAF0] my-1 mx-5" />
@@ -634,8 +634,8 @@ const ProfileDropdown = () => {
 
                     {/* Group 4 */}
                     <div className="py-1 pb-2">
-                        <a href="#" onClick={(e) => e.preventDefault()} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Account Settings</a>
-                        <a href="#" onClick={(e) => e.preventDefault()} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Payment Methods</a>
+                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/profile?tab=profile'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Account Settings</a>
+                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/profile?tab=payment'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Payment Methods</a>
                         <a href="#" onClick={(e) => onLogoutClick()} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Log out</a>
                     </div>
                 </div>

@@ -23,5 +23,6 @@ export const API_ENDPOINTS = {
     UNREAD_NOTIFICATION: "user_study/get-user-notification/",
     MARK_AS_READ: "user_study/change-notification-status/",
     ALL_NOTIFICATION: "user_study/get-all-notification/",
-
+    NOTIFICATION_SETTINGS_GET: "user_study/get-user-notification-setting/",
+    NOTIFICATION_SETTINGS_UPDATE: "user_study/update-user-notification-setting/"
 }

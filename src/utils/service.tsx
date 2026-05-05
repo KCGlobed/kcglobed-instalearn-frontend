@@ -81,3 +81,11 @@ export const markAsReadApi = async (payload: any): Promise<any> => {
 export const allNotificationApi = async (): Promise<any> => {
   return await apiRequest(API_ENDPOINTS.ALL_NOTIFICATION, 'GET');
 }
+
+export const notificationSettingsGetApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.NOTIFICATION_SETTINGS_GET, 'GET');
+}
+
+export const notificationSettingsUpdateApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.NOTIFICATION_SETTINGS_UPDATE, 'POST', payload);
+}
