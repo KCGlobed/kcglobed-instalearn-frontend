@@ -62,13 +62,30 @@ export const wishlistApi = async (): Promise<any> => {
   return await apiRequest(API_ENDPOINTS.WISHLIST, 'GET');
 }
 
-
-// ---------Abhishek Work--------
-
 export const getCategoryFilterApi = async (): Promise<any> => {
   return await apiRequest(`${API_ENDPOINTS.CATEGORY_FILTER}`, 'GET');
 }
 
 export const getCourseSearchFilteApi = async (params: any): Promise<any> => {
   return await apiRequest(`${API_ENDPOINTS.COURSE_SEARCH_FILTER}?${params}`, 'GET');
+}
+
+export const unreadNotificationApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.UNREAD_NOTIFICATION, 'GET');
+}
+
+export const markAsReadApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.MARK_AS_READ, 'POST', payload);
+}
+
+export const allNotificationApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.ALL_NOTIFICATION, 'GET');
+}
+
+export const notificationSettingsGetApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.NOTIFICATION_SETTINGS_GET, 'GET');
+}
+
+export const notificationSettingsUpdateApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.NOTIFICATION_SETTINGS_UPDATE, 'POST', payload);
 }

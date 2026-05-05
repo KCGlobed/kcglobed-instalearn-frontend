@@ -1,78 +1,79 @@
 import React from 'react';
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-export interface Tab {
-    /** Unique identifier and display label */
+export interface TabConfig {
+    key?: string;
     label: string;
-    /** Optional count badge (e.g. number of reviews) */
-    count?: number;
+    component?: React.ReactNode;
+    count?: number; // Added for compatibility with CourseTabs
 }
 
-export interface TabsProps {
-    tabs: Tab[];
+// Backward compatibility alias
+export type Tab = TabConfig;
+
+interface TabsProps {
+    tabs: TabConfig[];
     activeTab: string;
-    onChange: (label: string) => void;
-    /** Extra className for the outer wrapper */
+    onChange: (key: string) => void;
     className?: string;
+    containerClassName?: string;
+    contentClassName?: string;
+    variant?: 'dark' | 'light';
 }
 
-// ─── Component ────────────────────────────────────────────────────────────────
+const Tabs: React.FC<TabsProps> = ({
+    tabs,
+    activeTab,
+    onChange,
+    className = "",
+    containerClassName = "",
+    contentClassName = "",
+    variant = 'light'
+}) => {
+    const isDark = variant === 'dark';
 
-/**
- * Reusable horizontal tab bar.
- *
- * Usage:
- * ```tsx
- * const [active, setActive] = useState('Overview');
- * const tabs = [{ label: 'Overview' }, { label: 'Reviews', count: 12 }];
- *
- * <Tabs tabs={tabs} activeTab={active} onChange={setActive} />
- * ```
- */
-const Tabs: React.FC<TabsProps> = ({ tabs, activeTab, onChange, className = '' }) => {
     return (
-        <div
-            role="tablist"
-            aria-label="Content tabs"
-            className={`flex border-b border-gray-200 sticky top-0 bg-white z-10 w-full overflow-x-auto scroll-smooth ${className}`}
-            style={{ scrollbarWidth: 'none' }}
-        >
-            {tabs.map(({ label, count }) => {
-                const isActive = activeTab === label;
-                return (
-                    <button
-                        key={label}
-                        role="tab"
-                        aria-selected={isActive}
-                        aria-controls={`tabpanel-${label}`}
-                        id={`tab-${label}`}
-                        onClick={() => onChange(label)}
-                        className={`relative px-5 py-4 text-sm md:text-base font-semibold whitespace-nowrap transition-colors duration-200 flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-1 ${
-                            isActive
-                                ? 'text-indigo-600'
-                                : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
-                        }`}
-                    >
-                        {label}
-                        {count !== undefined && (
-                            <span
-                                className={`text-xs font-bold px-1.5 py-0.5 rounded-full ${
-                                    isActive ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-500'
-                                }`}
-                            >
-                                {count}
-                            </span>
-                        )}
-                        {/* Active indicator bar */}
-                        <span
-                            className={`absolute bottom-0 left-0 right-0 h-0.5 rounded-t-sm transition-all duration-300 ${
-                                isActive ? 'bg-indigo-600 opacity-100' : 'opacity-0'
+        <div className={`w-full font-inter ${className}`}>
+            <div className={`flex gap-6 md:gap-10 overflow-x-auto no-scrollbar border-b ${isDark ? 'border-white/10' : 'border-gray-200'} ${containerClassName}`}>
+                {tabs.map((tab) => {
+                    const key = tab.key || tab.label;
+                    const isActive = activeTab === key;
+                    return (
+                        <button
+                            key={key}
+                            onClick={() => onChange(key)}
+                            className={`relative pb-3 text-[15px] font-bold transition-all whitespace-nowrap outline-none ${
+                                isActive
+                                    ? (isDark ? 'text-white' : 'text-gray-900')
+                                    : (isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-900')
                             }`}
-                        />
-                    </button>
-                );
-            })}
+                        >
+                            <div className="flex items-center gap-2">
+                                {tab.label}
+                                {tab.count !== undefined && (
+                                    <span className={`px-1.5 py-0.5 text-[10px] rounded-full ${
+                                        isActive 
+                                            ? (isDark ? 'bg-white text-gray-900' : 'bg-gray-900 text-white') 
+                                            : (isDark ? 'bg-white/10 text-gray-400' : 'bg-gray-100 text-gray-500')
+                                    }`}>
+                                        {tab.count}
+                                    </span>
+                                )}
+                            </div>
+                            {isActive && (
+                                <div className={`absolute bottom-0 left-0 right-0 h-[4px] rounded-t-full ${
+                                    isDark ? 'bg-white shadow-[0_0_15px_rgba(255,255,255,0.4)]' : 'bg-gray-900'
+                                }`} />
+                            )}
+                        </button>
+                    );
+                })}
+            </div>
+            {/* Render component only if it exists in the active tab */}
+            {tabs.find((tab) => (tab.key || tab.label) === activeTab)?.component && (
+                <div className={`mt-10 ${contentClassName}`}>
+                    {tabs.find((tab) => (tab.key || tab.label) === activeTab)?.component}
+                </div>
+            )}
         </div>
     );
 };
