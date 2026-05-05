@@ -6,6 +6,7 @@ import PrivateRoute from "./utils/privateRoutes"
 import MyLearning from "./pages/MyLearning"
 
 import CheckoutPage from "./pages/Checkout"
+import Notification from "./pages/Notification"
 
 // Lazy-loaded components
 const Home = lazy(() => import("./pages/Home/Index"))
@@ -37,6 +38,7 @@ function App() {
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route element={<PrivateRoute />}>
           <Route path="/my-learning" element={<MyLearning />} />
+          <Route path="/notifications" element={<Notification />} />
         </Route>
 
       </Routes>

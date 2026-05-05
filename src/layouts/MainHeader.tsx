@@ -18,8 +18,22 @@ import { logout } from "../store/slices/authSlice";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { viewCartDetails } from "../store/slices/courseCartSlice";
 import { viewWishlistAction } from "../store/slices/courseWishList";
+import { fetchUnreadNotifications, markNotificationAsRead } from "../store/slices/notificationSlice";
 
+const formatTimeAgo = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
+    if (seconds < 60) return "Just now";
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    if (days < 7) return `${days}d ago`;
+    return date.toLocaleDateString();
+};
 // ─── Browse Dropdown ──────────────────────────────────────────────────────────
 
 const BrowseDropdown = () => {
@@ -119,6 +133,8 @@ const MobileDrawer = ({
     onSignIn: () => void;
 }) => {
     const { categories } = useSelector((state: RootState) => state.homepageCategory);
+    const { unreadCount } = useAppSelector((state: RootState) => state.notification);
+    const navigate = useNavigate();
 
     // Prevent body scroll when drawer open
     useEffect(() => {
@@ -189,6 +205,31 @@ const MobileDrawer = ({
                         ))}
                     </ul>
 
+                    {/* Notification Link in Mobile */}
+                    <div className="px-4 pt-6 pb-2 border-t border-[#E9EAF0] mt-4">
+                        <span className="text-[10px] font-semibold text-[#8C94A3] uppercase tracking-widest">
+                            Account
+                        </span>
+                    </div>
+                    <ul>
+                        <li
+                            className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-[#F5F4FF] transition-colors group"
+                            onClick={() => { navigate('/notifications'); onClose(); }}
+                        >
+                            <div className="flex items-center gap-3">
+                                <Bell className="w-4 h-4 text-[#8C94A3] group-hover:text-[#5624D0] transition-colors shrink-0" />
+                                <span className="text-[14px] font-medium text-[#1D2026] group-hover:text-[#5624D0] transition-colors">
+                                    Notifications
+                                </span>
+                            </div>
+                            {unreadCount > 0 && (
+                                <span className="px-2 py-0.5 bg-[#FF4B2B] text-white text-[10px] font-bold rounded-full">
+                                    {unreadCount}
+                                </span>
+                            )}
+                        </li>
+                    </ul>
+
                     {/* Auth buttons in drawer */}
                     {/* <div className="flex flex-col gap-3 px-4 mt-4 pb-6">
 
@@ -207,6 +248,10 @@ const MobileDrawer = ({
 const NotificationDropdown = () => {
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+    const { notifications, unreadCount, loading } = useAppSelector((state: RootState) => state.notification);
+    const { isAuthenticated } = useAppSelector((state: RootState) => state.auth);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -218,11 +263,15 @@ const NotificationDropdown = () => {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    const notifications = [
-        { id: 1, title: "Welcome to InstaLearn!", date: "2 hours ago" },
-        { id: 2, title: "New course added: Advanced React Patterns", date: "5 hours ago" },
-        { id: 3, title: "Your payment was successful", date: "Yesterday" },
-    ];
+    useEffect(() => {
+        if (isAuthenticated) {
+            dispatch(fetchUnreadNotifications());
+        }
+    }, [dispatch, isAuthenticated]);
+
+    const handleMarkAsRead = async (id: number) => {
+        await dispatch(markNotificationAsRead({ notification_id: [id] }));
+    };
 
     return (
         <div className="relative" ref={dropdownRef} style={{ overflow: "visible" }}>
@@ -233,12 +282,16 @@ const NotificationDropdown = () => {
                 aria-haspopup="menu"
             >
                 <Bell className={`w-5 h-5 stroke-[1.5px] ${open ? 'fill-[#5624D0]/10' : ''}`} />
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#FF4B2B] rounded-full border-2 border-white" />
+                {unreadCount > 0 && (
+                    <span className="absolute top-1 right-1 w-4 h-4 bg-[#FF4B2B] text-white text-[10px] font-bold flex items-center justify-center rounded-full border border-white">
+                        {unreadCount}
+                    </span>
+                )}
             </button>
 
             {open && (
                 <div
-                    className="absolute right-0 top-[calc(100%+12px)] w-[300px] bg-white rounded-[10px] py-1 border border-[#E9EAF0] shadow-[0_12px_40px_rgba(0,0,0,0.12)] z-[9999]"
+                    className="absolute right-0 top-[calc(100%+12px)] w-[320px] bg-white rounded-[10px] py-1 border border-[#E9EAF0] shadow-[0_12px_40px_rgba(0,0,0,0.12)] z-[9999]"
                     style={{
                         animation: "browseDropdownIn 0.18s cubic-bezier(0.4, 0, 0.2, 1) forwards",
                         transformOrigin: "top right"
@@ -246,26 +299,66 @@ const NotificationDropdown = () => {
                 >
                     <div className="px-5 py-4 border-b border-[#E9EAF0] flex justify-between items-center bg-[#fcfcfd] rounded-t-[10px]">
                         <span className="text-[15px] font-bold text-[#1D2026]">Notifications</span>
-                        <a href="#" className="text-[12px] font-semibold text-[#5624D0] hover:underline" onClick={(e) => e.preventDefault()}>Settings</a>
+                        <button
+                            className="text-[12px] font-semibold text-[#5624D0] hover:underline"
+                            onClick={() => {
+                                // Optional: Mark all as read logic
+                                if (notifications.length > 0) {
+                                    dispatch(markNotificationAsRead({ notification_id: notifications.map(n => n.id) }));
+                                }
+                            }}
+                        >
+                            Mark all as read
+                        </button>
                     </div>
 
-                    <div className="max-h-[320px] overflow-y-auto">
-                        {notifications.length > 0 ? (
+                    <div className="max-h-[360px] overflow-y-auto">
+                        {loading ? (
+                            <div className="px-5 py-10 text-center">
+                                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#5624D0] mx-auto mb-2"></div>
+                                <p className="text-[13px] text-[#8C94A3]">Loading notifications...</p>
+                            </div>
+                        ) : notifications.length > 0 ? (
                             notifications.map((n) => (
-                                <div key={n.id} className="px-5 py-3.5 border-b border-[#f3f4f6] last:border-0 hover:bg-[#F5F4FF]/50 cursor-pointer transition-colors group">
-                                    <p className="text-[13.5px] font-medium text-[#1D2026] leading-snug group-hover:text-[#5624D0]">{n.title}</p>
-                                    <p className="text-[11.5px] text-[#8C94A3] mt-1">{n.date}</p>
+                                <div
+                                    key={n.id}
+                                    className="px-5 py-3.5 border-b border-[#f3f4f6] last:border-0 hover:bg-[#F5F4FF]/50 cursor-pointer transition-colors group relative"
+                                    onClick={() => {
+                                        handleMarkAsRead(n.id);
+                                        // navigate if needed, e.g. to course page if course id exists
+                                        if (n.course) {
+                                            navigate(`/courses/detail/${n.course}`);
+                                        }
+                                        setOpen(false);
+                                    }}
+                                >
+                                    <div className="flex justify-between items-start gap-2">
+                                        <p className="text-[13.5px] font-semibold text-[#1D2026] leading-snug group-hover:text-[#5624D0]">{n.title}</p>
+                                        <span className="w-2 h-2 bg-[#5624D0] rounded-full shrink-0 mt-1.5" />
+                                    </div>
+                                    <p className="text-[12.5px] text-[#6E7485] mt-1 line-clamp-2">{n.description}</p>
+                                    <p className="text-[11px] text-[#8C94A3] mt-2 font-medium">{formatTimeAgo(n.created_at)}</p>
                                 </div>
                             ))
                         ) : (
-                            <div className="px-5 py-8 text-center">
-                                <p className="text-[14px] text-[#6E7485]">No notifications yet</p>
+                            <div className="px-5 py-12 text-center">
+                                <div className="w-12 h-12 bg-[#F5F4FF] rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <Bell className="w-6 h-6 text-[#8C94A3]" />
+                                </div>
+                                <p className="text-[14px] font-medium text-[#1D2026]">No new notifications</p>
+                                <p className="text-[12px] text-[#8C94A3] mt-1">We'll notify you when something arrives</p>
                             </div>
                         )}
                     </div>
 
                     <div className="p-3 bg-[#fcfcfd] rounded-b-[10px] border-t border-[#E9EAF0]">
-                        <button className="w-full py-2 text-[13px] font-bold text-[#5624D0] hover:bg-[#F5F4FF] rounded transition-colors" onClick={() => setOpen(false)}>
+                        <button
+                            className="w-full py-2.5 text-[13px] font-bold text-[#5624D0] hover:bg-[#F5F4FF] rounded transition-colors"
+                            onClick={() => {
+                                navigate('/notifications');
+                                setOpen(false);
+                            }}
+                        >
                             View all notifications
                         </button>
                     </div>
@@ -462,6 +555,9 @@ const ProfileDropdown = () => {
     const dropdownRef = useRef<HTMLDivElement>(null);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const { unreadCount } = useAppSelector((state: RootState) => state.notification);
+    const userProfile = localStorage.getItem("userProfile") as any;
+    const userName = JSON.parse(userProfile).first_name?.charAt(0).toUpperCase() + JSON.parse(userProfile).last_name?.charAt(0).toUpperCase();
 
     const onLogoutClick = () => {
         dispatch(logout());
@@ -479,6 +575,8 @@ const ProfileDropdown = () => {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
+
+
     return (
         <div className="relative" ref={dropdownRef} style={{ overflow: "visible" }}>
             <button
@@ -487,7 +585,7 @@ const ProfileDropdown = () => {
                 aria-expanded={open}
                 aria-haspopup="menu"
             >
-                JD
+                {userName}
             </button>
 
             {/* Dropdown Menu */}
@@ -501,8 +599,8 @@ const ProfileDropdown = () => {
                 >
                     {/* Header: User Info */}
                     <div className="px-5 py-4 bg-[#fcfcfd] border-b border-[#E9EAF0] mt-[-4px] rounded-t-[10px] mb-2">
-                        <p className="text-[15px] font-bold text-[#1D2026] leading-tight mb-0.5">John Doe</p>
-                        <p className="text-[13px] text-[#6E7485] font-medium truncate">johndoe@example.com</p>
+                        <p className="text-[15px] font-bold text-[#1D2026] leading-tight mb-0.5">{JSON.parse(userProfile).first_name} {JSON.parse(userProfile).last_name}</p>
+                        <p className="text-[13px] text-[#6E7485] font-medium truncate">{JSON.parse(userProfile).email}</p>
                     </div>
 
                     {/* Group 1 */}
@@ -524,7 +622,10 @@ const ProfileDropdown = () => {
 
                     {/* Group 3 */}
                     <div className="py-1">
-                        <a href="#" onClick={(e) => e.preventDefault()} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Notifications</a>
+                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/notifications'); setOpen(false); }} className="flex justify-between items-center px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">
+                            <span>Notifications</span>
+                            {unreadCount > 0 && <span className="px-1.5 py-0.5 bg-[#FF4B2B] text-white text-[10px] font-bold rounded-full">{unreadCount}</span>}
+                        </a>
                         <a href="#" onClick={(e) => e.preventDefault()} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Messages</a>
                     </div>
 
