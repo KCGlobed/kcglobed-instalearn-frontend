@@ -26,13 +26,13 @@ import {
 const TAB_CONFIG = [
     { id: 'profile', label: 'Profile', icon: User, component: ProfileTab },
     { id: 'photo', label: 'Photo', icon: Camera, component: PhotoTab },
-    { id: 'security', label: 'Account Security', icon: ShieldCheck, component: SecurityTab },
-    { id: 'subscriptions', label: 'Subscriptions', icon: Layout, component: () => <PlaceholderTab title="Subscriptions" /> },
-    { id: 'payment', label: 'Payment methods', icon: CreditCard, component: () => <PlaceholderTab title="Payment Methods" /> },
-    { id: 'privacy', label: 'Privacy', icon: Lock, component: () => <PlaceholderTab title="Privacy" /> },
+    // { id: 'security', label: 'Account Security', icon: ShieldCheck, component: SecurityTab },
+    // { id: 'subscriptions', label: 'Subscriptions', icon: Layout, component: () => <PlaceholderTab title="Subscriptions" /> },
+    // { id: 'payment', label: 'Payment methods', icon: CreditCard, component: () => <PlaceholderTab title="Payment Methods" /> },
+    // { id: 'privacy', label: 'Privacy', icon: Lock, component: () => <PlaceholderTab title="Privacy" /> },
     { id: 'notifications', label: 'Notification Preferences', icon: Bell, component: NotificationTab },
-    { id: 'api', label: 'API clients', icon: Globe, component: () => <PlaceholderTab title="API Clients" /> },
-    { id: 'close', label: 'Close account', icon: Trash2, component: () => <PlaceholderTab title="Close Account" /> },
+    // { id: 'api', label: 'API clients', icon: Globe, component: () => <PlaceholderTab title="API Clients" /> },
+    // { id: 'close', label: 'Close account', icon: Trash2, component: () => <PlaceholderTab title="Close Account" /> },
 ];
 
 // ─── MAIN COMPONENT ──────────────────────────────────────────────────────────
@@ -90,8 +90,8 @@ const PublicProfile = () => {
                                         key={tab.id}
                                         onClick={() => handleTabChange(tab.id)}
                                         className={`w-full flex items-center gap-3 px-4 py-3 text-[14px] font-medium rounded-lg transition-all ${isActive
-                                                ? 'bg-[#5624D0] text-white shadow-md'
-                                                : 'text-[#4E5566] hover:bg-[#F5F4FF] hover:text-[#5624D0]'
+                                            ? 'bg-[#5624D0] text-white shadow-md'
+                                            : 'text-[#4E5566] hover:bg-[#F5F4FF] hover:text-[#5624D0]'
                                             }`}
                                     >
                                         <Icon className={`w-4.5 h-4.5 ${isActive ? 'text-white' : 'text-[#8C94A3]'}`} />
