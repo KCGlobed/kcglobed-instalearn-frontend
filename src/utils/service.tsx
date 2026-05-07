@@ -89,3 +89,25 @@ export const notificationSettingsGetApi = async (): Promise<any> => {
 export const notificationSettingsUpdateApi = async (payload: any): Promise<any> => {
   return await apiRequest(API_ENDPOINTS.NOTIFICATION_SETTINGS_UPDATE, 'POST', payload);
 }
+
+export const getUserProfileApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.GET_USER_PROFILE, 'GET');
+}
+
+export const updateUserProfileApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.UPDATE_USER_PROFILE, 'POST', payload);
+}
+
+export const updateProfilePictureApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.UPDATE_PROFILE_PICTURE, 'POST', payload);
+}
+
+export const myCoursesApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.MY_COURSES, 'GET');
+}
+
+export const createMyListApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.ADD_TO_MY_LIST, 'POST', payload);
+}
+
+

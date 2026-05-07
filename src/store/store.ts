@@ -12,6 +12,7 @@ import cartReducer from "./slices/courseCartSlice";
 import homepageRecentlyAddedReducer from "./slices/homepageRecentlyAdded";
 import wishListReducer from "./slices/courseWishList";
 import notificationReducer from "./slices/notificationSlice";
+import myLearningReducer from "./slices/myLearningSlice";
 
 import filterCategoryReducer from "./slices/filterCategorySlice";
 import filterCoursesParamsReducer from "./slices/filterCoursesParamsSlice";
@@ -32,6 +33,7 @@ export const store = configureStore({
     homepageRecentlyAdded: homepageRecentlyAddedReducer,
     wishList: wishListReducer,
     notification: notificationReducer,
+    myLearning: myLearningReducer,
 
     filterCategory: filterCategoryReducer,
     filterCourseParams: filterCoursesParamsReducer,

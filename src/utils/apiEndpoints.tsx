@@ -24,5 +24,10 @@ export const API_ENDPOINTS = {
     MARK_AS_READ: "user_study/change-notification-status/",
     ALL_NOTIFICATION: "user_study/get-all-notification/",
     NOTIFICATION_SETTINGS_GET: "user_study/get-user-notification-setting/",
-    NOTIFICATION_SETTINGS_UPDATE: "user_study/update-user-notification-setting/"
+    NOTIFICATION_SETTINGS_UPDATE: "user_study/update-user-notification-setting/",
+    GET_USER_PROFILE: "user/get-profile/",
+    UPDATE_USER_PROFILE: "user/update-profile/",
+    UPDATE_PROFILE_PICTURE: "user/update-profile-image/",
+    MY_COURSES: "user_study/purchased-courses/",
+    ADD_TO_MY_LIST: "user_study/mylist/create/",
 }

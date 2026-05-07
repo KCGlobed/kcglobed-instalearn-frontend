@@ -10,13 +10,13 @@ import WishlistTab from '../../components/MyLearning/WishlistTab';
 
 const MyLearning = () => {
     const [searchParams, setSearchParams] = useSearchParams();
-    const activeTabKey = searchParams.get('tab') || 'overview';
+    const activeTabKey = searchParams.get('tab') || 'courses';
 
     const tabConfig: TabConfig[] = useMemo(() => [
         { key: 'courses', label: 'My Courses', component: <MyCoursesTab /> },
         { key: 'wishlist', label: 'Wishlist', component: <WishlistTab /> },
-        { key: 'overview', label: 'Overview', component: <OverviewTab /> },
-        { key: 'learning-paths', label: 'Learning paths', component: <div className="text-center py-24 text-gray-500 bg-gray-50 rounded-3xl border border-gray-100">Learning paths feature is coming soon!</div> },
+        // { key: 'overview', label: 'Overview', component: <OverviewTab /> },
+        // { key: 'learning-paths', label: 'Learning paths', component: <div className="text-center py-24 text-gray-500 bg-gray-50 rounded-3xl border border-gray-100">Learning paths feature is coming soon!</div> },
         { key: 'archived', label: 'Archived', component: <div className="text-center py-24 text-gray-500 bg-gray-50 rounded-3xl border border-gray-100">You have no archived courses.</div> },
     ], []);
 

@@ -78,19 +78,17 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
                     onClick={(e) => { if (e.target === e.currentTarget) hideModal(); }}
                 >
                     <div
-                        className={`rounded-xl shadow-2xl w-full relative my-auto max-h-[90vh] flex flex-col ${
-                            modalData.type === 'custom'
+                        className={`rounded-xl shadow-2xl w-full relative my-auto max-h-[90vh] flex flex-col ${modalData.type === 'custom'
                                 ? 'bg-transparent overflow-hidden'
                                 : 'bg-white overflow-y-auto'
-                        } ${getSizeClass(modalData.size)}`}
+                            } ${getSizeClass(modalData.size)}`}
                     >
                         <button
                             onClick={hideModal}
-                            className={`absolute cursor-pointer top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full text-sm font-bold transition-colors ${
-                                modalData.type === 'custom'
+                            className={`absolute cursor-pointer top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full text-sm font-bold transition-colors ${modalData.type === 'custom'
                                     ? 'bg-white/10 text-white hover:bg-white/20'
                                     : 'text-gray-400 hover:text-black hover:bg-gray-100'
-                            }`}
+                                }`}
                         >
                             ✕
                         </button>
