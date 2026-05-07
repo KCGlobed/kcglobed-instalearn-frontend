@@ -109,12 +109,12 @@ const CheckoutPage = () => {
     const watchedData = watch();
 
     // Security & Redirect
-    useEffect(() => {
-        const hasAccess = sessionStorage.getItem('checkout_access');
-        if (!hasAccess || cart.length === 0) {
-            navigate('/cart');
-        }
-    }, [cart.length, navigate]);
+    // useEffect(() => {
+    //     const hasAccess = sessionStorage.getItem('checkout_access');
+    //     if (!hasAccess || cart.length === 0) {
+    //         navigate('/cart');
+    //     }
+    // }, [cart.length, navigate]);
 
     // Price Calculations
     const { totalPrice, originalPrice, discountCount } = useMemo(() => {

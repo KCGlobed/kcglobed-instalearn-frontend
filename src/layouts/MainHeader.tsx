@@ -373,6 +373,7 @@ const WishlistDropdown = () => {
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const { wishListItems, loading } = useAppSelector((state: RootState) => state.wishList);
+    const { isAuthenticated } = useAppSelector((state: RootState) => state.auth);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
@@ -387,8 +388,10 @@ const WishlistDropdown = () => {
     }, []);
 
     useEffect(() => {
-        dispatch(viewWishlistAction());
-    }, [dispatch]);
+        if (isAuthenticated) {
+            dispatch(viewWishlistAction());
+        }
+    }, [dispatch, isAuthenticated]);
 
     return (
         <div className="relative" ref={dropdownRef} style={{ overflow: "visible" }}>
