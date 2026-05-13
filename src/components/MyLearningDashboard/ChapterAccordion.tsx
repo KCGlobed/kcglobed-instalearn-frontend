@@ -46,35 +46,36 @@ export default function ChapterAccordion({
   }
 
   return (
-    <div className="border-b border-[#3e4143] bg-[#f7f9fa]/05">
+    <div className="border-b border-[#d1d7dc] bg-white">
       <button
         onClick={() => setOpen(!open)}
-        className={`w-full flex items-center justify-between px-4 py-3 text-left transition-colors ${open ? "bg-[#3e4143]/50" : "hover:bg-[#3e4143]/30"
-          }`}
+        className={`w-full flex items-center justify-between px-4 py-4 text-left transition-all ${
+          open ? "bg-[#f7f9fa]" : "hover:bg-[#f7f9fa]/80"
+        }`}
       >
         <div className="flex-1 min-w-0 pr-4">
-          <h3 className="text-[15px] font-bold text-white leading-snug tracking-tight">
+          <h3 className="text-[14px] font-bold text-[#2d2f31] leading-snug tracking-tight">
             Section {chapterId}: {chapter.chapter_info.name}
           </h3>
-          <div className="flex items-center gap-1 mt-1 text-[12px] font-medium text-[#9b9da2]">
+          <div className="flex items-center gap-1 mt-1.5 text-[11px] font-bold text-[#6a6f73]">
             <span>{completedLectures} / {totalLectures} | {formatDuration(totalDuration)}</span>
           </div>
         </div>
 
         <ChevronDown
           size={16}
-          className={`text-white shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+          className={`text-[#2d2f31] shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
         />
       </button>
 
       {open && (
-        <div className="bg-[#1c1d1f]">
+        <div className="bg-white border-t border-[#f7f9fa]">
           {isLoading ? (
-            <div className="flex flex-col items-center justify-center py-6 gap-2">
+            <div className="flex flex-col items-center justify-center py-8 gap-2">
               <div className="w-5 h-5 border-2 border-[#a435f0] border-t-transparent rounded-full animate-spin" />
             </div>
           ) : lectures.length === 0 ? (
-            <p className="text-[11px] text-[#9b9da2] px-6 py-4 italic">No lectures found.</p>
+            <p className="text-[11px] text-[#6a6f73] px-6 py-4 italic">No lectures available in this section.</p>
           ) : (
             <div className="flex flex-col">
               {lectures.map((lesson) => (

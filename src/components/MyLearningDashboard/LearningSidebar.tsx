@@ -16,33 +16,33 @@ export default function CourseSidebar({}: CourseSidebarProps) {
   );
 
   return (
-    <aside className="w-[350px] bg-[#1c1d1f] border-l border-[#3e4143] flex flex-col shrink-0 h-full z-30 font-sans">
+    <aside className="w-[350px] bg-white border-l border-[#d1d7dc] flex flex-col shrink-0 h-full z-30 font-sans shadow-sm">
       {/* Sidebar Header */}
-      <div className="px-4 py-3.5 border-b border-[#3e4143] bg-[#1c1d1f] shrink-0 flex items-center justify-between">
-        <h2 className="text-base font-bold text-white tracking-tight">Course content</h2>
-        <button className="p-1 hover:bg-[#3e4143] rounded transition-colors text-white">
+      <div className="px-4 py-3.5 border-b border-[#d1d7dc] bg-white shrink-0 flex items-center justify-between">
+        <h2 className="text-base font-bold text-[#2d2f31] tracking-tight">Course content</h2>
+        <button className="p-1 hover:bg-[#f7f9fa] rounded transition-colors text-[#2d2f31]">
           <X size={20} />
         </button>
       </div>
 
       {/* Content Area */}
-      <div className="flex-1 overflow-y-auto bg-[#1c1d1f] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      <div className="flex-1 overflow-y-auto bg-white [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#d1d7dc] [&::-webkit-scrollbar-track]:bg-[#f7f9fa]">
         {loading && (
-          <div className="flex flex-col items-center justify-center py-20 gap-3">
+          <div className="flex flex-col items-center justify-center py-24 gap-3">
             <div className="w-8 h-8 border-[3px] border-[#a435f0] border-t-transparent rounded-full animate-spin" />
-            <span className="text-[10px] font-bold text-[#9b9da2] uppercase tracking-widest">Loading...</span>
+            <span className="text-[10px] font-bold text-[#6a6f73] uppercase tracking-widest animate-pulse">Loading modules...</span>
           </div>
         )}
 
         {!loading && error && (
           <div className="px-6 py-10 text-center">
-            <p className="text-xs text-red-400 font-medium">{error}</p>
+            <p className="text-xs text-red-500 font-medium">{error}</p>
           </div>
         )}
 
         {!loading && !error && chapters.length === 0 && (
           <div className="px-6 py-10 text-center">
-            <p className="text-xs text-[#9b9da2] font-medium">No chapters found.</p>
+            <p className="text-xs text-[#6a6f73] font-medium">No chapters found for this course.</p>
           </div>
         )}
 

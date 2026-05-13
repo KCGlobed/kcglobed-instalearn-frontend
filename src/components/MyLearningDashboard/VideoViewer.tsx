@@ -5,6 +5,11 @@ const BASE_VIDEO_URL = "https://storage.googleapis.com/instalearn-public-bucket/
 
 interface VideoViewerProps {
   activeLesson: Lecture;
+  isExpanded?: boolean;
+  isFullscreen?: boolean;
+  onToggleExpand?: () => void;
+  onToggleFullscreen?: () => void;
+  onNext?: () => void;
 }
 
 function formatDuration(seconds: number): string {
@@ -14,10 +19,15 @@ function formatDuration(seconds: number): string {
   return s > 0 ? `${m}min ${s}s` : `${m}min`;
 }
 
-export default function VideoViewer({ activeLesson }: VideoViewerProps) {
+export default function VideoViewer({
+  activeLesson,
+  isExpanded,
+  isFullscreen,
+  onNext,
+}: VideoViewerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError]     = useState<string | null>(null);
 
   useEffect(() => {
     if (!activeLesson?.video_info?.transcoded_video) {
@@ -95,19 +105,27 @@ export default function VideoViewer({ activeLesson }: VideoViewerProps) {
     };
   }, [activeLesson]);
 
-  const title = activeLesson?.video_info?.name || "Video Lecture";
+  const title    = activeLesson?.video_info?.name || "Video Lecture";
   const duration = formatDuration(activeLesson?.video_info?.video_duration);
 
-  return (
-    <div className="relative bg-black w-full overflow-hidden" style={{ aspectRatio: "16/9" }}>
-      <video
-        ref={videoRef}
-        controls
-        className="w-full h-full object-contain bg-black"
-        onWaiting={() => setLoading(true)}
-        onPlaying={() => setLoading(false)}
-      />
+  // Sizing: fill 100% when expanded/fullscreen; 16/9 aspect ratio otherwise
+  const containerStyle: React.CSSProperties =
+    isFullscreen || isExpanded
+      ? { width: "100%", height: "100%", minHeight: 0 }
+      : { aspectRatio: "16/9", width: "100%", maxWidth: "1380px", margin: "0 auto" };
 
+  return (
+    <div className="relative bg-black overflow-hidden w-full h-full flex items-center justify-center" style={containerStyle}>
+        <video
+          ref={videoRef}
+          controls
+          className="w-full h-full object-contain bg-black"
+          onWaiting={() => setLoading(true)}
+          onPlaying={() => setLoading(false)}
+          onEnded={onNext}
+        />
+
+      {/* Loading overlay */}
       {loading && !error && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-950/80 backdrop-blur-sm z-10 pointer-events-none gap-3">
           <div className="w-10 h-10 border-4 border-violet-500/20 border-t-violet-500 rounded-full animate-spin" />
@@ -115,20 +133,26 @@ export default function VideoViewer({ activeLesson }: VideoViewerProps) {
         </div>
       )}
 
+      {/* Error overlay */}
       {error && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-950 z-10 p-6 text-center gap-4">
           <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center">
-             <span className="text-red-500 text-xl font-bold">!</span>
+            <span className="text-red-500 text-xl font-bold">!</span>
           </div>
           <p className="text-red-400 text-sm font-medium">{error}</p>
-          <button onClick={() => window.location.reload()} className="px-4 py-2 bg-gray-800 text-gray-200 text-xs font-bold rounded-lg hover:bg-gray-700 transition-colors">
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-gray-800 text-gray-200 text-xs font-bold rounded-lg hover:bg-gray-700 transition-colors"
+          >
             Retry Player
           </button>
         </div>
       )}
 
+      {/* Title badge — top-left, non-interactive */}
       {!error && (
-        <div className="absolute top-4 left-4 bg-gray-900/60 backdrop-blur-md rounded-lg px-3 py-1.5 text-[11px] text-gray-300 font-bold border border-white/5 z-10 pointer-events-none flex items-center gap-2">
+        <div className="absolute top-4 left-4 bg-gray-900/60 backdrop-blur-md rounded-lg px-3 py-1.5
+                        text-[11px] text-gray-300 font-bold border border-white/5 z-10 pointer-events-none flex items-center gap-2">
           <span className="text-violet-400 shrink-0">●</span>
           <span className="truncate max-w-[200px] md:max-w-md">{title}</span>
           {duration && <span className="text-gray-500 border-l border-gray-700 pl-2 ml-1">{duration}</span>}
@@ -137,4 +161,3 @@ export default function VideoViewer({ activeLesson }: VideoViewerProps) {
     </div>
   );
 }
-
