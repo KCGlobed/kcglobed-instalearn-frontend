@@ -16,6 +16,8 @@ import myLearningReducer from "./slices/myLearningSlice";
 
 import filterCategoryReducer from "./slices/filterCategorySlice";
 import filterCoursesParamsReducer from "./slices/filterCoursesParamsSlice";
+import courseDashboardChapterReducer from "./slices/courseDashboardChapterSlice";
+import courseDashboardLectureReducer from "./slices/courseDashboardLectureSlice";
 
 
 
@@ -37,9 +39,8 @@ export const store = configureStore({
 
     filterCategory: filterCategoryReducer,
     filterCourseParams: filterCoursesParamsReducer,
-
-
-
+    courseDashboardChapter: courseDashboardChapterReducer,
+    courseDashboardLecture: courseDashboardLectureReducer,
   },
 });
 

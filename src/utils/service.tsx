@@ -110,4 +110,17 @@ export const createMyListApi = async (payload: any): Promise<any> => {
   return await apiRequest(API_ENDPOINTS.ADD_TO_MY_LIST, 'POST', payload);
 }
 
+export const getDashboardChaptersApi = async (slug: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_DASHBOARD_CHAPTERS}${slug}`, 'GET');
+}
+
+export const getDashboardChapterLecturesApi = async (slug: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_DASHBOARD_CHAPTER_LECTURES}/${slug}`, 'GET');
+}
+
+export const getDashboardPdfSignedUrlApi = async (lectureId: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_DASHBOARD_PDF_SIGNED_URL}/${lectureId}`, 'GET');
+}
+
+
 

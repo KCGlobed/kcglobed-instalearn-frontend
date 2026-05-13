@@ -63,7 +63,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
 
                 {/* Content Section */}
                 <div className="p-4 flex flex-col flex-1">
-                    <Link to={`/course/${course.id}`} className="hover:text-[#5624D0] transition-colors">
+                    <Link to={`/learning/dashboard/${course.id}`} className="hover:text-[#5624D0] transition-colors">
                         <h3 className="text-[15px] font-bold text-[#1D2026] line-clamp-2 leading-snug mb-2">
                             {course.name}
                         </h3>

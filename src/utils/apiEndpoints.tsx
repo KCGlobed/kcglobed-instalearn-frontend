@@ -30,4 +30,7 @@ export const API_ENDPOINTS = {
     UPDATE_PROFILE_PICTURE: "user/update-profile-image/",
     MY_COURSES: "user_study/purchased-courses/",
     ADD_TO_MY_LIST: "user_study/mylist/create/",
+    GET_DASHBOARD_CHAPTERS: "user_study/dashboard-chapters/",
+    GET_DASHBOARD_CHAPTER_LECTURES: "user_study/chapter-lectures",
+    GET_DASHBOARD_PDF_SIGNED_URL: "user_study/get-book-signed-url",
 }
