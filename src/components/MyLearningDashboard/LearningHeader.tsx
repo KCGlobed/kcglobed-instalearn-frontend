@@ -1,153 +1,112 @@
 import React, { useState } from 'react';
-import { ChevronLeft, Share2, Star, Trophy, ChevronDown, MoreVertical, Award } from 'lucide-react';
+import { ChevronLeft, Share2, Star, Trophy, ChevronDown, MoreVertical, Award, Search, HelpCircle, Settings } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-const Header = ({
+interface HeaderProps {
+    courseTitle?: string;
+    progress?: number;
+}
+
+const Header: React.FC<HeaderProps> = ({
     courseTitle = "Advanced React Patterns & Architecture",
     progress = 68
 }) => {
     const [showProgress, setShowProgress] = useState(false);
+    const navigate = useNavigate();
 
     const circumference = 81.68;
     const offset = circumference - (circumference * progress) / 100;
 
     return (
-        <header style={{
-            height: 56,
-            background: '#0f0f11',
-            borderBottom: '0.5px solid rgba(255,255,255,0.08)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '0 16px',
-            gap: 12,
-            position: 'sticky',
-            top: 0,
-            zIndex: 100,
-            fontFamily: 'sans-serif'
-        }}>
-
-            {/* Left */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
-                <IconBtn aria-label="Go back">
-                    <ChevronLeft size={18} />
-                </IconBtn>
-                <div style={{ width: 0.5, height: 20, background: 'rgba(255,255,255,0.08)' }} />
-                <span style={{
-                    fontSize: 13, fontWeight: 600, color: '#e8e8f0',
-                    whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 320
-                }}>
+        <header className="h-14 w-full bg-[#1c1d1f] border-b border-[#3e4143] flex items-center justify-between px-4 gap-4 sticky top-0 z-[100] shrink-0 font-sans">
+            
+            {/* Left Section: Back Button + Title */}
+            <div className="flex items-center gap-4 flex-1 min-w-0">
+                <button 
+                    onClick={() => navigate(-1)} 
+                    className="flex items-center gap-2 p-1.5 hover:bg-[#3e4143] rounded transition-colors text-white"
+                    title="Back"
+                >
+                   <ChevronLeft size={24} />
+                </button>
+                
+                <div className="w-px h-6 bg-[#3e4143]" />
+                
+                <h1 className="text-sm font-bold text-[#e8e8f0] truncate leading-tight hover:text-white cursor-default">
                     {courseTitle}
-                </span>
+                </h1>
             </div>
 
-            {/* Right */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-
-                {/* Rating */}
-                <button style={ratingStyle}>
-                    <Star size={14} fill="currentColor" />
-                    <span>Rating</span>
+            {/* Right Section: Actions */}
+            <div className="flex items-center gap-3 shrink-0">
+                
+                {/* Rating Link */}
+                <button className="hidden lg:flex items-center gap-1.5 text-[#e8e8f0] hover:text-white transition-colors text-xs font-bold mr-2">
+                    <Star size={14} fill="white" className="text-white" />
+                    <span>Leave a rating</span>
                 </button>
 
-                {/* Progress */}
-                <div style={{ position: 'relative' }}>
+                {/* Progress Circle */}
+                <div className="relative group">
                     <button
                         onClick={() => setShowProgress(p => !p)}
-                        style={progressBtnStyle}
+                        className="flex items-center gap-2.5 px-2 py-1 rounded hover:bg-[#3e4143] transition-all"
                     >
-                        <svg width="32" height="32" viewBox="0 0 32 32" style={{ transform: 'rotate(-90deg)' }}>
-                            <circle cx="16" cy="16" r="13" stroke="#2a2a35" strokeWidth="2.5" fill="none" />
-                            <circle
-                                cx="16" cy="16" r="13"
-                                stroke="#7f77dd" strokeWidth="2.5" fill="none"
-                                strokeDasharray={circumference}
-                                strokeDashoffset={offset}
-                                strokeLinecap="round"
-                            />
-                        </svg>
-                        <Trophy size={10} style={{ position: 'absolute', left: 19, color: '#a89fec' }} />
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                            <span style={{ fontSize: 10, fontWeight: 800, color: '#e8e8f0', letterSpacing: 0.5, textTransform: 'uppercase' }}>
-                                {progress}% done
-                            </span>
-                            <ChevronDown size={10} style={{ color: '#6b6b80', transform: showProgress ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+                        <div className="relative w-8 h-8 flex items-center justify-center shrink-0">
+                            <svg className="w-8 h-8 -rotate-90">
+                                <circle 
+                                    cx="16" cy="16" r="13" 
+                                    className="stroke-[#3e4143] fill-none" 
+                                    strokeWidth="2.5" 
+                                />
+                                <circle
+                                    cx="16" cy="16" r="13"
+                                    className="stroke-[#a435f0] fill-none"
+                                    strokeWidth="2.5"
+                                    strokeDasharray={circumference}
+                                    strokeDashoffset={offset}
+                                    strokeLinecap="round"
+                                />
+                            </svg>
+                        </div>
+                        <div className="flex flex-col items-start leading-none gap-0.5">
+                            <div className="flex items-center gap-1">
+                                <span className="text-[13px] text-[#e8e8f0] font-bold">Your progress</span>
+                                <ChevronDown size={14} className={`text-white transition-transform ${showProgress ? 'rotate-180' : ''}`} />
+                            </div>
                         </div>
                     </button>
 
                     {showProgress && (
-                        <div style={dropdownStyle}>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-                                <span style={{ fontSize: 12, fontWeight: 700, color: '#e8e8f0' }}>Progress</span>
-                                <Award size={16} style={{ color: '#a89fec' }} />
+                        <div className="absolute top-[calc(100%+8px)] right-0 w-72 bg-[#1c1d1f] border border-[#3e4143] rounded p-5 shadow-2xl z-50">
+                            <div className="flex items-center justify-between mb-4">
+                                <span className="text-sm font-bold text-white">Course Progress</span>
+                                <Award size={18} className="text-[#a435f0]" />
                             </div>
-                            <div style={{ height: 4, background: '#242429', borderRadius: 99, overflow: 'hidden', marginBottom: 8 }}>
-                                <div style={{ height: '100%', width: `${progress}%`, background: '#7f77dd', borderRadius: 99 }} />
+                            <div className="h-2 bg-[#3e4143] rounded-full overflow-hidden mb-3">
+                                <div className="h-full bg-[#a435f0]" style={{ width: `${progress}%` }} />
                             </div>
-                            <p style={{ fontSize: 11, color: '#6b6b80', lineHeight: 1.5 }}>
-                                Complete all lessons to earn your certificate.
+                            <p className="text-[12px] text-[#9b9da2] leading-relaxed">
+                                {progress}% complete. Keep going to get your certificate!
                             </p>
                         </div>
                     )}
                 </div>
 
-                {/* Share */}
-                <button style={shareStyle}>
-                    <Share2 size={15} />
+                {/* Share Button */}
+                <button className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded border border-[#3e4143] text-white hover:bg-[#3e4143] transition-all text-sm font-bold">
+                    <Share2 size={16} />
                     <span>Share</span>
                 </button>
 
-                {/* More */}
-                <IconBtn aria-label="More options">
+                {/* Overflow Button */}
+                <button className="p-2 rounded border border-[#3e4143] text-white hover:bg-[#3e4143] transition-colors">
                     <MoreVertical size={18} />
-                </IconBtn>
+                </button>
             </div>
         </header>
     );
 };
 
-const IconBtn = ({ children, ...props }: any) => (
-    <button {...props} style={{
-        width: 34, height: 34,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        borderRadius: 8, border: 'none',
-        background: 'transparent', color: '#6b6b80',
-        cursor: 'pointer', transition: 'background 0.15s, color 0.15s'
-    }}
-        onMouseEnter={e => { e.currentTarget.style.background = '#242429'; e.currentTarget.style.color = '#e8e8f0'; }}
-        onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#6b6b80'; }}
-    >
-        {children}
-    </button>
-);
-
-const ratingStyle = {
-    display: 'flex', alignItems: 'center', gap: 5,
-    padding: '0 10px', height: 34, borderRadius: 8,
-    border: 'none', background: 'transparent',
-    color: '#f3ca8c', cursor: 'pointer',
-    fontSize: 12, fontWeight: 700
-};
-
-const progressBtnStyle: any = {
-    display: 'flex', alignItems: 'center', gap: 8,
-    padding: '0 8px', height: 34, borderRadius: 8,
-    border: 'none', background: 'transparent',
-    cursor: 'pointer', position: 'relative'
-};
-
-const dropdownStyle: any = {
-    position: 'absolute', top: 'calc(100% + 8px)', right: 0,
-    width: 220, background: '#1a1a1f',
-    border: '0.5px solid rgba(255,255,255,0.08)',
-    borderRadius: 12, padding: 16, zIndex: 200
-};
-
-const shareStyle = {
-    display: 'flex', alignItems: 'center', gap: 6,
-    padding: '0 12px', height: 34, borderRadius: 8,
-    border: '0.5px solid rgba(255,255,255,0.08)',
-    background: 'transparent', color: '#e8e8f0',
-    cursor: 'pointer', fontSize: 12, fontWeight: 700
-};
-
 export default Header;
+

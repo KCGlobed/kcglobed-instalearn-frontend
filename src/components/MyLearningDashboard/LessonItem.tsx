@@ -1,4 +1,4 @@
-import { FileText, Video } from "lucide-react";
+import { FileText, PlayCircle, CheckCircle2, ChevronDown } from "lucide-react";
 import type { Lecture } from "../../store/slices/courseDashboardLectureSlice";
 
 interface LessonItemProps {
@@ -16,41 +16,41 @@ function formatDuration(seconds: number): string {
 
 export default function LessonItem({ lesson, isActive, onClick }: LessonItemProps) {
   const isVideo = lesson.lecture_type === 1;
+  const isCompleted = lesson.id % 3 === 0; // Mocked for UI matching
   const title = isVideo ? lesson?.video_info?.name : lesson?.ebook_info?.name;
   const duration = isVideo ? formatDuration(lesson?.video_info?.video_duration) : "";
 
   return (
     <div
       onClick={onClick}
-      className={`flex items-start gap-2.5 px-4 py-2.5 cursor-pointer transition group ${
+      className={`flex items-start gap-4 px-4 py-4 cursor-pointer transition-colors border-b border-[#3e4143]/50 group ${
         isActive
-          ? "bg-violet-50 border-l-2 border-violet-500"
-          : "hover:bg-gray-50 border-l-2 border-transparent"
+          ? "bg-[#3e4143]"
+          : "bg-transparent hover:bg-[#3e4143]/50"
       }`}
     >
       <div className="flex-1 min-w-0">
-        <div className="flex items-start gap-2">
-          {isVideo ? (
-            <Video size={13} className={isActive ? "text-violet-500" : "text-gray-400"} />
-          ) : (
-            <FileText size={13} className={isActive ? "text-violet-500" : "text-gray-400"} />
-          )}
+        <h4
+          className={`text-[13px] font-medium leading-snug break-words mb-1 ${
+            isActive ? "text-white" : "text-[#e8e8f0]"
+          }`}
+        >
+          {lesson.id}. {title || "Untitled Lecture"}
+        </h4>
 
-          <span
-            className={`text-[13px] leading-snug ${
-              isActive ? "text-violet-700 font-semibold" : "text-gray-700"
-            }`}
-          >
-            {title || "Lecture"}
-          </span>
+        <div className="flex items-center gap-1.5">
+           {isVideo ? (
+              <PlayCircle size={12} className="text-[#9b9da2]" />
+           ) : (
+              <FileText size={12} className="text-[#9b9da2]" />
+           )}
+           <span className="text-[12px] text-[#9b9da2]">{duration || "1min"}</span>
         </div>
-
-        {duration && (
-          <div className="ml-5 mt-1">
-            <span className="text-[11px] text-gray-400">{duration}</span>
-          </div>
-        )}
       </div>
+
     </div>
   );
 }
+
+
+

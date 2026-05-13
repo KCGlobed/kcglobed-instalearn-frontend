@@ -2,14 +2,6 @@ import { BookOpen, Bell, FileText, Star, Wrench } from "lucide-react";
 
 const TABS = ["Overview", "Notes", "Announcements", "Reviews", "Learning tools"] as const;
 
-const TAB_ICONS = {
-  Overview: BookOpen,
-  Notes: FileText,
-  Announcements: Bell,
-  Reviews: Star,
-  "Learning tools": Wrench,
-};
-
 interface CourseTabsProps {
   active: string;
   setActive: (tab: string) => void;
@@ -17,21 +9,26 @@ interface CourseTabsProps {
 
 export default function CourseTabs({ active, setActive }: CourseTabsProps) {
   return (
-    <div className="flex items-center border-b border-gray-700/50">
+    <div className="flex items-center gap-8 border-b border-[#3e4143]">
       {TABS.map((tab) => {
-        const Icon = TAB_ICONS[tab];
+        const isActive = active === tab;
+        
         return (
           <button
             key={tab}
             onClick={() => setActive(tab)}
-            className={`flex items-center gap-1.5 px-4 py-3 text-[13px] font-semibold border-b-2 -mb-px transition ${
-              active === tab
-                ? "text-white border-violet-500"
-                : "text-gray-400 border-transparent hover:text-gray-200"
+            className={`relative py-3 text-sm font-bold transition-colors shrink-0 ${
+              isActive
+                ? "text-white"
+                : "text-[#9b9da2] hover:text-white"
             }`}
           >
-            <Icon size={13} />
-            {tab}
+            <span className="tracking-tight">{tab}</span>
+            
+            {/* Active Underline */}
+            {isActive && (
+              <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#a435f0]" />
+            )}
           </button>
         );
       })}
@@ -40,3 +37,5 @@ export default function CourseTabs({ active, setActive }: CourseTabsProps) {
 }
 
 export { TABS };
+
+

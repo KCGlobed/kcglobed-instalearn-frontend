@@ -39,12 +39,15 @@ export interface CourseDashboardLectureState {
     loadingChapters: number[];
     // Track errors per chapter
     errorsByChapter: Record<number, string>;
+    // The currently active lesson for playback
+    activeLesson: Lecture | null;
 }
 
 const initialState: CourseDashboardLectureState = {
     lecturesByChapter: {},
     loadingChapters: [],
     errorsByChapter: {},
+    activeLesson: null,
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -101,6 +104,9 @@ const courseDashboardLectureSlice = createSlice({
             delete state.lecturesByChapter[action.payload];
             delete state.errorsByChapter[action.payload];
         },
+        setActiveLesson: (state, action: PayloadAction<Lecture | null>) => {
+            state.activeLesson = action.payload;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -124,5 +130,5 @@ const courseDashboardLectureSlice = createSlice({
     },
 });
 
-export const { clearLectureCache, clearChapterLectures } = courseDashboardLectureSlice.actions;
+export const { clearLectureCache, clearChapterLectures, setActiveLesson } = courseDashboardLectureSlice.actions;
 export default courseDashboardLectureSlice.reducer;
