@@ -22,7 +22,7 @@ export default function MediaViewerSection({
   onNavigate,
 }: MediaViewerSectionProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isExpanded, setIsExpanded]     = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
@@ -61,7 +61,7 @@ export default function MediaViewerSection({
     return (
       <div className="relative bg-black flex flex-col items-center justify-center gap-4 text-gray-600" style={{ aspectRatio: "16/9" }}>
         <div className="w-16 h-16 rounded-full bg-gray-900 flex items-center justify-center text-gray-700">
-           <FileText size={32} />
+          <FileText size={32} />
         </div>
         <div className="text-center">
           <h3 className="text-sm font-bold text-gray-400">No content available</h3>
@@ -74,27 +74,27 @@ export default function MediaViewerSection({
   if (!activeLesson) return null;
 
   // ── Container sizing ───────────────────────────────────────────────────────
-  const containerHeight = isFullscreen 
-    ? "100vh" 
-    : isExpanded 
-    ? "calc(100vh - 56px)" 
-    : activeLesson.lecture_type === 1 
-    ? "auto" 
-    : "700px";
+  const containerHeight = isFullscreen
+    ? "100vh"
+    : isExpanded
+      ? "calc(100vh - 56px)"
+      : activeLesson.lecture_type === 1
+        ? "auto"
+        : "700px";
 
   const containerStyle = activeLesson.lecture_type === 1 && !isExpanded && !isFullscreen
     ? { aspectRatio: "16/9" }
     : { height: containerHeight };
 
   return (
-    <div 
-      ref={containerRef} 
+    <div
+      ref={containerRef}
       className="relative w-full bg-black flex flex-col transition-all duration-300 overflow-hidden"
       style={containerStyle}
     >
       {/* ── Viewer Wrapper ─────────────────────────────────────────────────── */}
       <div className="relative flex-1 min-h-0 bg-black">
-        
+
         {/* Floating Arrows: Lecture Navigation */}
         <div className="absolute inset-y-0 left-0 right-0 pointer-events-none flex items-center justify-between px-4 z-30">
           <button
@@ -137,7 +137,7 @@ export default function MediaViewerSection({
 
       {/* ── Unified Dashboard Bottom Bar ────────────────────────────────────── */}
       <div className="h-12 bg-white border-t border-[#d1d7dc] flex items-center justify-between px-6 shrink-0 z-40 shadow-sm">
-        
+
         {/* Left: Previous/Next Lecture Buttons */}
         <div className="flex items-center gap-4">
           <button
@@ -148,9 +148,9 @@ export default function MediaViewerSection({
             <ChevronLeft size={16} />
             <span className="hidden sm:inline">Previous Lesson</span>
           </button>
-          
+
           <div className="w-px h-4 bg-[#d1d7dc]" />
-          
+
           <button
             onClick={() => nextLesson && onNavigate?.(nextLesson)}
             disabled={!nextLesson}
@@ -163,9 +163,9 @@ export default function MediaViewerSection({
 
         {/* Center: Badge */}
         <div className="absolute left-1/2 -translate-x-1/2 pointer-events-none">
-           <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-[#f7f9fa] text-[#2d2f31] border border-[#d1d7dc]">
-             {activeLesson.lecture_type === 1 ? "Video Lecture" : "E-Book Content"}
-           </span>
+          <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-[#f7f9fa] text-[#2d2f31] border border-[#d1d7dc]">
+            {activeLesson.lecture_type === 1 ? "Video Lecture" : "E-Book Content"}
+          </span>
         </div>
 
         {/* Right: Expand & Fullscreen */}
@@ -193,6 +193,6 @@ export default function MediaViewerSection({
 // Inline helper icons since I can't import easily
 function FileText({ size }: { size: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" /><polyline points="14 2 14 8 20 8" /></svg>
   );
 }

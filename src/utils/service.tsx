@@ -122,5 +122,14 @@ export const getDashboardPdfSignedUrlApi = async (lectureId: any): Promise<any> 
   return await apiRequest(`${API_ENDPOINTS.GET_DASHBOARD_PDF_SIGNED_URL}/${lectureId}`, 'GET');
 }
 
+export const watchedVideoApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.WATCHED_VIDEO, 'POST', payload);
+}
+
+export const getCourseProgressApi = async (courseId: number): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_COURSE_PROGRESS}${courseId}`, 'GET');
+}
+
+
 
 

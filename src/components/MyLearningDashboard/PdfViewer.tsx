@@ -25,11 +25,11 @@ export default function PdfViewer({
   isExpanded,
   isFullscreen,
 }: PdfViewerProps) {
-  const [pdfUrl, setPdfUrl]       = useState<string | null>(null);
-  const [loading, setLoading]     = useState<boolean>(true);
-  const [error, setError]         = useState<string | null>(null);
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [zoom, setZoom]           = useState(100);
+  const [zoom, setZoom] = useState(100);
   const [showSettings, setShowSettings] = useState(false);
 
   // ── Fetch signed URL ─────────────────────────────────────────────────────
@@ -64,7 +64,7 @@ export default function PdfViewer({
     return () => { isMounted = false; };
   }, [activeLesson]);
 
-  const handleZoomIn  = () => setZoom(z => Math.min(z + 10, 200));
+  const handleZoomIn = () => setZoom(z => Math.min(z + 10, 200));
   const handleZoomOut = () => setZoom(z => Math.max(z - 10, 50));
   const prevPage = () => setCurrentPage(p => Math.max(p - 1, 1));
   const nextPage = () => setCurrentPage(p => Math.min(p + 1, TOTAL_PAGES));
@@ -86,7 +86,7 @@ export default function PdfViewer({
         <div className="w-6 h-6 bg-violet-600/15 rounded flex items-center justify-center shrink-0">
           <FileText size={13} className="text-violet-600" />
         </div>
-        
+
         {/* Title */}
         <div className="flex flex-col min-w-0 flex-1">
           <span className="text-[9px] font-black text-[#6a6f73] uppercase tracking-widest leading-none">E-Book Viewer</span>

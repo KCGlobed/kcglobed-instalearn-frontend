@@ -33,4 +33,7 @@ export const API_ENDPOINTS = {
     GET_DASHBOARD_CHAPTERS: "user_study/dashboard-chapters/",
     GET_DASHBOARD_CHAPTER_LECTURES: "user_study/chapter-lectures",
     GET_DASHBOARD_PDF_SIGNED_URL: "user_study/get-book-signed-url",
+    WATCHED_VIDEO: "user_study/watch-video/",
+    GET_COURSE_PROGRESS: "user_study/get-course-progress/",
+
 }

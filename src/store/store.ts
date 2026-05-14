@@ -21,6 +21,8 @@ import courseDashboardLectureReducer from "./slices/courseDashboardLectureSlice"
 
 
 
+import { videoApi } from "./api/videoApi";
+
 export const store = configureStore({
   reducer: {
     homepageCategory: homepageCategoryReducer,
@@ -41,7 +43,10 @@ export const store = configureStore({
     filterCourseParams: filterCoursesParamsReducer,
     courseDashboardChapter: courseDashboardChapterReducer,
     courseDashboardLecture: courseDashboardLectureReducer,
+    [videoApi.reducerPath]: videoApi.reducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(videoApi.middleware),
 });
 
 

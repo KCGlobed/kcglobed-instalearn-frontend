@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useWatchVideoMutation } from "../../store/api/videoApi";
 import type { Lecture } from "../../store/slices/courseDashboardLectureSlice";
-
 const BASE_VIDEO_URL = "https://storage.googleapis.com/instalearn-public-bucket/";
 
 interface VideoViewerProps {
@@ -25,9 +26,16 @@ export default function VideoViewer({
   isFullscreen,
   onNext,
 }: VideoViewerProps) {
+  const { slug } = useParams();
+  const [watchVideo] = useWatchVideoMutation();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError]     = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  // Ref to track last synced duration to avoid redundant calls
+  const lastSyncedDurationRef = useRef<number>(-1);
+  const trackingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const courseId = Number(slug);
 
   useEffect(() => {
     if (!activeLesson?.video_info?.transcoded_video) {
@@ -45,13 +53,23 @@ export default function VideoViewer({
     let hls: any = null;
 
     const initPlayer = async () => {
+      const restoreAndPlay = () => {
+        setLoading(false);
+        const savedProgress = localStorage.getItem(`lecture_progress_${activeLesson.id}`);
+        if (savedProgress && video) {
+          const seekTo = parseFloat(savedProgress);
+          if (seekTo < (activeLesson.video_info?.video_duration || 0) - 1) {
+            video.currentTime = seekTo;
+            lastSyncedDurationRef.current = Math.floor(seekTo);
+          }
+        }
+        video.play().catch(console.error);
+      };
+
       if (videoUrl.endsWith(".m3u8")) {
         if (video.canPlayType("application/vnd.apple.mpegurl")) {
           video.src = videoUrl;
-          video.addEventListener("loadedmetadata", () => {
-            setLoading(false);
-            video.play().catch(console.error);
-          });
+          video.addEventListener("loadedmetadata", restoreAndPlay);
         } else {
           try {
             // @ts-ignore
@@ -61,10 +79,7 @@ export default function VideoViewer({
               hls = new Hls();
               hls.loadSource(videoUrl);
               hls.attachMedia(video);
-              hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                setLoading(false);
-                video.play().catch(console.error);
-              });
+              hls.on(Hls.Events.MANIFEST_PARSED, restoreAndPlay);
               hls.on(Hls.Events.ERROR, (_: any, data: any) => {
                 if (data.fatal) {
                   setError("Fatal error loading video stream.");
@@ -82,10 +97,7 @@ export default function VideoViewer({
         }
       } else {
         video.src = videoUrl;
-        video.addEventListener("loadedmetadata", () => {
-          setLoading(false);
-          video.play().catch(console.error);
-        });
+        video.addEventListener("loadedmetadata", restoreAndPlay);
         video.addEventListener("error", () => {
           setError("Error loading video.");
           setLoading(false);
@@ -95,6 +107,53 @@ export default function VideoViewer({
 
     initPlayer();
 
+    // ── Watch Progress Tracking ──────────────────────────────────────────────
+    const syncProgress = async () => {
+      const video = videoRef.current;
+      if (!video || !activeLesson?.id || !courseId) return;
+
+      const currentDuration = Math.floor(video.currentTime);
+      
+      // Only sync if duration has changed since last sync
+      if (currentDuration !== lastSyncedDurationRef.current) {
+        try {
+          await watchVideo({
+            course_id: courseId,
+            lecture_id: activeLesson.id,
+            duration: currentDuration,
+          }).unwrap();
+          
+          lastSyncedDurationRef.current = currentDuration;
+          
+          // Local persistence for immediate restore on refresh
+          localStorage.setItem(`lecture_progress_${activeLesson.id}`, currentDuration.toString());
+        } catch (err) {
+          // Silent error handling for background tracking
+          console.debug("Failed to sync video progress:", err);
+        }
+      }
+    };
+
+    const startTracking = () => {
+      if (!trackingIntervalRef.current) {
+        // Sync every 8 seconds as per requirements (5-10s range)
+        trackingIntervalRef.current = setInterval(syncProgress, 8000);
+      }
+    };
+
+    const stopTracking = () => {
+      if (trackingIntervalRef.current) {
+        clearInterval(trackingIntervalRef.current);
+        trackingIntervalRef.current = null;
+      }
+      // Sync one final time when pausing
+      syncProgress();
+    };
+
+    video?.addEventListener("play", startTracking);
+    video?.addEventListener("pause", stopTracking);
+    video?.addEventListener("ended", stopTracking);
+
     return () => {
       if (hls) {
         hls.destroy();
@@ -102,10 +161,19 @@ export default function VideoViewer({
         video.removeAttribute("src");
         video.load();
       }
+      
+      // Cleanup tracking
+      if (trackingIntervalRef.current) {
+        clearInterval(trackingIntervalRef.current);
+        trackingIntervalRef.current = null;
+      }
+      video?.removeEventListener("play", startTracking);
+      video?.removeEventListener("pause", stopTracking);
+      video?.removeEventListener("ended", stopTracking);
     };
-  }, [activeLesson]);
+  }, [activeLesson, courseId, watchVideo]);
 
-  const title    = activeLesson?.video_info?.name || "Video Lecture";
+  const title = activeLesson?.video_info?.name || "Video Lecture";
   const duration = formatDuration(activeLesson?.video_info?.video_duration);
 
   // Sizing: fill 100% when expanded/fullscreen; 16/9 aspect ratio otherwise
@@ -116,14 +184,14 @@ export default function VideoViewer({
 
   return (
     <div className="relative bg-black overflow-hidden w-full h-full flex items-center justify-center" style={containerStyle}>
-        <video
-          ref={videoRef}
-          controls
-          className="w-full h-full object-contain bg-black"
-          onWaiting={() => setLoading(true)}
-          onPlaying={() => setLoading(false)}
-          onEnded={onNext}
-        />
+      <video
+        ref={videoRef}
+        controls
+        className="w-full h-full object-contain bg-black"
+        onWaiting={() => setLoading(true)}
+        onPlaying={() => setLoading(false)}
+        onEnded={onNext}
+      />
 
       {/* Loading overlay */}
       {loading && !error && (
