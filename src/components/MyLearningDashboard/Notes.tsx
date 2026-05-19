@@ -26,7 +26,6 @@ const NotesEditor = ({ onSave, onCancel, currentTimestamp = "0:02" }: { onSave: 
         }
     };
 
-
     return (
         <div className="flex gap-4 w-full">
             <div className="mt-2 shrink-0">
