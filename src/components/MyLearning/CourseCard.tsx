@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Play, MoreVertical, Star, ShoppingCart, Trash2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface CourseCardProps {
     course: any;
@@ -20,6 +20,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
     menuContent
 }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const navigate = useNavigate();
 
     // Enrolled Card View
     if (type === 'enrolled') {
@@ -28,7 +29,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
                 className={`group bg-white rounded-[4px] border border-[#E9EAF0] transition-all duration-300 flex flex-col h-full relative ${isMenuOpen ? 'z-50 shadow-2xl' : 'z-10 hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] hover:-translate-y-2 hover:z-20'}`}
             >
                 {/* Image Section */}
-                <div className="relative aspect-video overflow-hidden rounded-t-[4px] bg-gray-100">
+                <div onClick={() => navigate(`/learning/dashboard/${course.id}`)} className=" cursor-pointer relative aspect-video overflow-hidden rounded-t-[4px] bg-gray-100">
                     <img
                         src={course.image}
                         alt={course.name}

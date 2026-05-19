@@ -51,7 +51,7 @@ const CourseCard = memo(({ course }: { course: CourseItem }) => {
                         {info?.categories?.[0]?.category_info?.name}
                     </span>
                     <span className="text-[#FF6636] font-bold text-[18px]">
-                        ${info?.price}
+                        ₹{info?.price}
                     </span>
                 </div>
 

@@ -35,5 +35,6 @@ export const API_ENDPOINTS = {
     GET_DASHBOARD_PDF_SIGNED_URL: "user_study/get-book-signed-url",
     WATCHED_VIDEO: "user_study/watch-video/",
     GET_COURSE_PROGRESS: "user_study/get-course-progress/",
-
+    REGISTER: "user/register/",
+    VERIFY_OTP: "user/verify-otp/",
 }

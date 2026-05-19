@@ -130,6 +130,16 @@ export const getCourseProgressApi = async (courseId: number): Promise<any> => {
   return await apiRequest(`${API_ENDPOINTS.GET_COURSE_PROGRESS}${courseId}`, 'GET');
 }
 
+export const registerUserApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.REGISTER, 'POST', payload);
+}
+
+export const verifyOtpApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.VERIFY_OTP, 'POST', payload);
+}
+
+
+
 
 
 

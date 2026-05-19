@@ -724,7 +724,7 @@ const MainHeader = () => {
                             <ProfileDropdown />
                         ) : (
                             <>
-                                <Button variant="secondary" title="Sign Up" className="h-[38px] px-4 !rounded-sm text-[13px]" />
+                                <Button onClick={() => useNavigate()} variant="secondary" title="Sign Up" className="h-[38px] px-4 !rounded-sm text-[13px]" />
                                 <Button variant="primary" title="Sign In" className="h-[38px] px-4 !rounded-sm text-[13px]"
                                     onClick={handleSignIn}
                                 />
@@ -775,7 +775,7 @@ const MainHeader = () => {
                                 <Button
                                     variant="secondary"
                                     title="Sign Up"
-                                    onClick={() => console.log("Sign Up")}
+                                    onClick={() => navigate('/signup')}
                                     className="h-[44px] px-5 !rounded-sm"
                                 />
                                 <Button
