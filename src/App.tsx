@@ -8,6 +8,8 @@ import MyLearning from "./pages/MyLearning"
 import CheckoutPage from "./pages/Checkout"
 import Notification from "./pages/Notification"
 import PublicProfile from "./pages/PublicProfile"
+import LearningDashboard from "./pages/LearningDashboard"
+import SignupPage from "./pages/Singup"
 
 // Lazy-loaded components
 const Home = lazy(() => import("./pages/Home/Index"))
@@ -27,6 +29,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
         <Route path="/testing" element={<Testing />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/user/reset" element={<ResetPassword />} />
@@ -41,6 +44,7 @@ function App() {
           <Route path="/my-learning" element={<MyLearning />} />
           <Route path="/notifications" element={<Notification />} />
           <Route path="/profile" element={<PublicProfile />} />
+          <Route path="/learning/dashboard/:slug" element={<LearningDashboard />} />
         </Route>
 
       </Routes>

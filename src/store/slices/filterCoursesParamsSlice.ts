@@ -47,7 +47,7 @@ export const filterCoursesListParams = createAsyncThunk<Course[], FilterCoursePa
             }
 
             if (filter?.level?.length) {
-                params.append("levels", filter.level.join(","));
+                params.append("level", filter.level.join(","));
             }
 
             if (filter?.rating?.length) {

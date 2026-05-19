@@ -373,6 +373,7 @@ const WishlistDropdown = () => {
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const { wishListItems, loading } = useAppSelector((state: RootState) => state.wishList);
+    const { isAuthenticated } = useAppSelector((state: RootState) => state.auth);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
@@ -387,8 +388,10 @@ const WishlistDropdown = () => {
     }, []);
 
     useEffect(() => {
-        dispatch(viewWishlistAction());
-    }, [dispatch]);
+        if (isAuthenticated) {
+            dispatch(viewWishlistAction());
+        }
+    }, [dispatch, isAuthenticated]);
 
     return (
         <div className="relative" ref={dropdownRef} style={{ overflow: "visible" }}>
@@ -610,13 +613,13 @@ const ProfileDropdown = () => {
                         <a href="#" onClick={(e) => { e.preventDefault(); navigate('/my-learning?tab=wishlist'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Wishlist</a>
                     </div>
 
-                    <div className="h-px bg-[#E9EAF0] my-1 mx-5" />
+                    {/* <div className="h-px bg-[#E9EAF0] my-1 mx-5" /> */}
 
                     {/* Group 2 */}
-                    <div className="py-1">
+                    {/* <div className="py-1">
                         <a href="#" onClick={(e) => e.preventDefault()} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Refer a Friend</a>
                         <a href="#" onClick={(e) => e.preventDefault()} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Teach on Platform</a>
-                    </div>
+                    </div> */}
 
                     <div className="h-px bg-[#E9EAF0] my-1 mx-5" />
 
@@ -635,7 +638,7 @@ const ProfileDropdown = () => {
                     {/* Group 4 */}
                     <div className="py-1 pb-2">
                         <a href="#" onClick={(e) => { e.preventDefault(); navigate('/profile?tab=profile'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Account Settings</a>
-                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/profile?tab=payment'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Payment Methods</a>
+                        {/* <a href="#" onClick={(e) => { e.preventDefault(); navigate('/profile?tab=payment'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Payment Methods</a> */}
                         <a href="#" onClick={(e) => onLogoutClick()} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Log out</a>
                     </div>
                 </div>
@@ -721,7 +724,7 @@ const MainHeader = () => {
                             <ProfileDropdown />
                         ) : (
                             <>
-                                <Button variant="secondary" title="Sign Up" className="h-[38px] px-4 !rounded-sm text-[13px]" />
+                                <Button onClick={() => useNavigate()} variant="secondary" title="Sign Up" className="h-[38px] px-4 !rounded-sm text-[13px]" />
                                 <Button variant="primary" title="Sign In" className="h-[38px] px-4 !rounded-sm text-[13px]"
                                     onClick={handleSignIn}
                                 />
@@ -772,7 +775,7 @@ const MainHeader = () => {
                                 <Button
                                     variant="secondary"
                                     title="Sign Up"
-                                    onClick={() => console.log("Sign Up")}
+                                    onClick={() => navigate('/signup')}
                                     className="h-[44px] px-5 !rounded-sm"
                                 />
                                 <Button
