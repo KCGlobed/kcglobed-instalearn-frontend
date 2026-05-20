@@ -40,5 +40,9 @@ export const API_ENDPOINTS = {
     ALL_LECTURE_NOTES: "user_study/get-user-notes",
     CREATE_NOTE: "user_study/create-note/",
     UPDATE_NOTE: "user_study/update-note/",
-    DELETE_NOTE: "user_study/delete-note/"
+    DELETE_NOTE: "user_study/delete-note/",
+    ADD_REVIEW_RATING: "user_study/add-review-rating/",
+    GET_REVIEW_RATING: "user_study/get-course-review",
+    UPDATE_REVIEW_RATING: "user_study/update-review-rating/",
+    DELETE_REVIEW_RATING: "user_study/delete-review-rating/",
 }

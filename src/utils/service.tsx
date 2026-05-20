@@ -154,6 +154,22 @@ export const deleteNoteApi = async (id: any): Promise<any> => {
   return await apiRequest(`${API_ENDPOINTS.DELETE_NOTE}${id}`, 'DELETE');
 }
 
+export const addReviewRatingApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.ADD_REVIEW_RATING, 'POST', payload);
+}
+
+export const getReviewRatingApi = async (courseId: number): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_REVIEW_RATING}/${courseId}`, 'GET');
+}
+
+export const updateReviewRatingApi = async (courseId: number, payload: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.UPDATE_REVIEW_RATING}${courseId}`, 'POST', payload);
+}
+
+export const deleteReviewRatingApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.DELETE_REVIEW_RATING, 'POST', payload);
+}
+
 
 
 

@@ -1,5 +1,10 @@
-import React, { useState } from 'react';
-import { Star } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Star, Loader2 } from 'lucide-react';
+import { useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { useModal } from './ModalContext';
+import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
+import { fetchReview, createReview, updateReview, clearReviewStatus } from '../../store/slices/reviewSlice';
 
 const RATING_LABELS: Record<number, string> = {
     1: "Awful, not what I expected",
@@ -9,12 +14,73 @@ const RATING_LABELS: Record<number, string> = {
     5: "Amazing, above expectations",
 };
 
-const StarRatingReview = () => {
+const StarRatingReview = ({ courseId }: { courseId: number }) => {
+    const dispatch = useAppDispatch();
+    const { review: existingReview, loading } = useAppSelector((state) => state.review);
+
     const [rating, setRating] = useState<number>(0);
     const [hover, setHover] = useState<number>(0);
     const [comment, setComment] = useState<string>("");
-
+    const { hideModal } = useModal();
     const displayRating = hover || rating;
+
+    // Determine if a valid review exists (has id or rating)
+    const hasReview = existingReview && (
+        Array.isArray(existingReview)
+            ? existingReview.length > 0 && !!(existingReview[0].id || existingReview[0].rating)
+            : !!(existingReview.id || existingReview.rating)
+    );
+
+    useEffect(() => {
+        dispatch(fetchReview(courseId));
+        return () => {
+            dispatch(clearReviewStatus());
+        };
+    }, [dispatch, courseId]);
+
+    useEffect(() => {
+        if (existingReview) {
+            const reviewObj = Array.isArray(existingReview) ? existingReview[0] : existingReview;
+            if (reviewObj && (reviewObj.id || reviewObj.rating)) {
+                setRating(Number(reviewObj.rating) || 0);
+                setComment(reviewObj.review || "");
+            }
+        }
+    }, [existingReview]);
+
+    const addReviewRating = async () => {
+        if (!comment.trim()) return;
+        try {
+            if (hasReview) {
+                await dispatch(updateReview({
+                    id: existingReview?.id,
+                    data: {
+                        rating,
+                        review: comment
+                    }
+                })).unwrap();
+                toast.success("Review updated successfully");
+            } else {
+                await dispatch(createReview({
+                    course_id: courseId,
+                    rating,
+                    review: comment
+                })).unwrap();
+                toast.success("Review added successfully");
+            }
+            hideModal();
+        } catch (error: any) {
+            console.error(error);
+            toast.error(error || "Failed to save review");
+        }
+    }; if (loading && !hasReview) {
+        return (
+            <div className="flex flex-col items-center justify-center py-12 w-full max-w-xl mx-auto min-h-[300px]">
+                <Loader2 className="w-8 h-8 animate-spin text-[#a435f0] mb-2" />
+                <p className="text-sm text-[#6a6f73]">Loading review...</p>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col items-center py-6 px-4 w-full max-w-xl mx-auto animate-in fade-in zoom-in-95 duration-300">
@@ -45,11 +111,10 @@ const StarRatingReview = () => {
                     >
                         <Star
                             size={44}
-                            className={`transition-all duration-200 ${
-                                star <= displayRating
-                                    ? "fill-[#e59819] text-[#e59819]"
-                                    : "text-[#e59819] fill-none"
-                            }`}
+                            className={`transition-all duration-200 ${star <= displayRating
+                                ? "fill-[#e59819] text-[#e59819]"
+                                : "text-[#e59819] fill-none"
+                                }`}
                             strokeWidth={2}
                         />
                         {/* Subtle glow effect on hover */}
@@ -77,6 +142,7 @@ const StarRatingReview = () => {
 
                     <div className="flex justify-end pt-4">
                         <button
+                            onClick={addReviewRating}
                             className="px-6 py-3 bg-[#a435f0] text-white font-bold text-sm rounded-sm hover:bg-[#8710d8] 
                                      active:scale-[0.98] transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:pointer-events-none"
                             disabled={!comment.trim()}
