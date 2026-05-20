@@ -138,6 +138,23 @@ export const verifyOtpApi = async (payload: any): Promise<any> => {
   return await apiRequest(API_ENDPOINTS.VERIFY_OTP, 'POST', payload);
 }
 
+export const getAllNotesApi = async (courseId: number): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.ALL_LECTURE_NOTES}/${courseId}`, 'GET');
+}
+
+export const createNoteApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.CREATE_NOTE, 'POST', payload);
+}
+
+export const updateNoteApi = async (courseId: number, payload: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.UPDATE_NOTE}${courseId}`, 'POST', payload);
+}
+
+export const deleteNoteApi = async (id: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.DELETE_NOTE}${id}`, 'DELETE');
+}
+
+
 
 
 

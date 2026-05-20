@@ -37,4 +37,8 @@ export const API_ENDPOINTS = {
     GET_COURSE_PROGRESS: "user_study/get-course-progress/",
     REGISTER: "user/register/",
     VERIFY_OTP: "user/verify-otp/",
+    ALL_LECTURE_NOTES: "user_study/get-user-notes",
+    CREATE_NOTE: "user_study/create-note/",
+    UPDATE_NOTE: "user_study/update-note/",
+    DELETE_NOTE: "user_study/delete-note/"
 }

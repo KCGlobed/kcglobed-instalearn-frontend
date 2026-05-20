@@ -33,6 +33,12 @@ export default function ChapterAccordion({
     }
   }, [open, chapterId, dispatch]);
 
+  useEffect(() => {
+    if (activeLesson && activeLesson.chapter === chapterId) {
+      setOpen(true);
+    }
+  }, [activeLesson, chapterId]);
+
   // Mock progress for UI matching: completed / total | duration
   const totalLectures = chapter.chapter_info.no_of_videos;
   const totalDuration = chapter.chapter_info.no_of_videos_duration;

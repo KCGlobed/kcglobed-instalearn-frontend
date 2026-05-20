@@ -18,6 +18,7 @@ import filterCategoryReducer from "./slices/filterCategorySlice";
 import filterCoursesParamsReducer from "./slices/filterCoursesParamsSlice";
 import courseDashboardChapterReducer from "./slices/courseDashboardChapterSlice";
 import courseDashboardLectureReducer from "./slices/courseDashboardLectureSlice";
+import notesReducer from "./slices/noteSlice";
 
 
 
@@ -43,6 +44,7 @@ export const store = configureStore({
     filterCourseParams: filterCoursesParamsReducer,
     courseDashboardChapter: courseDashboardChapterReducer,
     courseDashboardLecture: courseDashboardLectureReducer,
+    notes: notesReducer,
     [videoApi.reducerPath]: videoApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
