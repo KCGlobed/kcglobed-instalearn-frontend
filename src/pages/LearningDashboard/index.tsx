@@ -43,9 +43,36 @@ export default function LMSCoursePage() {
     };
   }, [dispatch, slug]);
 
-  // Auto-select first lecture
+  // Auto-select last watched lecture (or fallback to first lecture)
   useEffect(() => {
     if (!activeLesson && chapters.length > 0) {
+      const courseId = Number(slug);
+      const lastChapterIdStr = localStorage.getItem(`course_last_chapter_${courseId}`);
+      const lastLectureIdStr = localStorage.getItem(`course_last_lecture_${courseId}`);
+
+      if (lastChapterIdStr && lastLectureIdStr) {
+        const lastChapterId = Number(lastChapterIdStr);
+        const lastLectureId = Number(lastLectureIdStr);
+        
+        // Verify that the chapter is actually one of the chapters of this course
+        const chapterExists = chapters.some(ch => ch.chapter_info.id === lastChapterId);
+        
+        if (chapterExists) {
+          const chapterLectures = lecturesByChapter[lastChapterId];
+          if (chapterLectures) {
+            const foundLecture = chapterLectures.find(l => l.id === lastLectureId);
+            if (foundLecture) {
+              dispatch(setActiveLesson(foundLecture));
+              return;
+            }
+          } else if (!loadingChapters.includes(lastChapterId)) {
+            dispatch(fetchChapterLectures(lastChapterId));
+            return;
+          }
+        }
+      }
+
+      // Default fallback: Auto-select first lecture of first chapter
       const firstChapterId = chapters[0].chapter_info.id;
       const firstChapterLectures = lecturesByChapter[firstChapterId];
       if (firstChapterLectures && firstChapterLectures.length > 0) {
@@ -54,7 +81,7 @@ export default function LMSCoursePage() {
         dispatch(fetchChapterLectures(firstChapterId));
       }
     }
-  }, [dispatch, chapters, activeLesson, lecturesByChapter, loadingChapters]);
+  }, [dispatch, chapters, activeLesson, lecturesByChapter, loadingChapters, slug]);
 
   // Build a flat ordered lecture list across all loaded chapters
   const flatLectures = useMemo(() => {

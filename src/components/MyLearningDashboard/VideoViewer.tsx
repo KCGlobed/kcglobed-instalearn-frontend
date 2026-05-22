@@ -135,6 +135,18 @@ export default function VideoViewer({
       }
     };
 
+    let lastSavedSecond = -1;
+    const handleTimeUpdate = () => {
+      if (!video || !activeLesson?.id || !courseId) return;
+      const currentSecond = Math.floor(video.currentTime);
+      if (currentSecond !== lastSavedSecond) {
+        localStorage.setItem(`lecture_progress_${activeLesson.id}`, currentSecond.toString());
+        localStorage.setItem(`course_last_lecture_${courseId}`, activeLesson.id.toString());
+        localStorage.setItem(`course_last_chapter_${courseId}`, activeLesson.chapter.toString());
+        lastSavedSecond = currentSecond;
+      }
+    };
+
     const startTracking = () => {
       if (!trackingIntervalRef.current) {
         // Sync every 8 seconds as per requirements (5-10s range)
@@ -154,6 +166,7 @@ export default function VideoViewer({
     video.addEventListener("play", startTracking);
     video.addEventListener("pause", stopTracking);
     video.addEventListener("ended", stopTracking);
+    video.addEventListener("timeupdate", handleTimeUpdate);
 
     return () => {
       if (trackingIntervalRef.current) {
@@ -165,6 +178,7 @@ export default function VideoViewer({
         video.removeEventListener("play", startTracking);
         video.removeEventListener("pause", stopTracking);
         video.removeEventListener("ended", stopTracking);
+        video.removeEventListener("timeupdate", handleTimeUpdate);
         video.removeEventListener("loadedmetadata", restoreProgress);
         video.removeEventListener("error", handleError);
         
