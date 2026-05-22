@@ -120,6 +120,7 @@ export default function MediaViewerSection({
         <div className="w-full h-full">
           {activeLesson.lecture_type === 1 ? (
             <VideoViewer
+              key={activeLesson.id}
               activeLesson={activeLesson}
               isExpanded={isExpanded}
               isFullscreen={isFullscreen}
@@ -127,6 +128,7 @@ export default function MediaViewerSection({
             />
           ) : (
             <PdfViewer
+              key={activeLesson.id}
               activeLesson={activeLesson}
               isExpanded={isExpanded}
               isFullscreen={isFullscreen}

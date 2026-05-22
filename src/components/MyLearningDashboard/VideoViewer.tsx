@@ -52,25 +52,30 @@ export default function VideoViewer({
 
     let hls: any = null;
 
-    const initPlayer = async () => {
-      const restoreAndPlay = () => {
-        setLoading(false);
-        const savedProgress = localStorage.getItem(`lecture_progress_${activeLesson.id}`);
-        if (savedProgress && video) {
-          const seekTo = parseFloat(savedProgress);
-          if (seekTo < (activeLesson.video_info?.video_duration || 0) - 1) {
-            video.currentTime = seekTo;
-            lastSyncedDurationRef.current = Math.floor(seekTo);
-          }
+    const restoreProgress = () => {
+      setLoading(false);
+      const savedProgress = localStorage.getItem(`lecture_progress_${activeLesson.id}`);
+      if (savedProgress && video) {
+        const seekTo = parseFloat(savedProgress);
+        if (seekTo < (activeLesson.video_info?.video_duration || 0) - 1) {
+          video.currentTime = seekTo;
+          lastSyncedDurationRef.current = Math.floor(seekTo);
         }
-        video.play().catch(console.error);
-      };
+      }
+    };
 
-      if (videoUrl.endsWith(".m3u8")) {
-        if (video.canPlayType("application/vnd.apple.mpegurl")) {
-          video.src = videoUrl;
-          video.addEventListener("loadedmetadata", restoreAndPlay);
-        } else {
+    const handleError = () => {
+      setError("Error loading video.");
+      setLoading(false);
+    };
+
+    if (videoUrl.endsWith(".m3u8")) {
+      if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        video.src = videoUrl;
+        video.addEventListener("loadedmetadata", restoreProgress);
+        video.addEventListener("error", handleError);
+      } else {
+        const initHls = async () => {
           try {
             // @ts-ignore
             const HlsModule = await import("hls.js");
@@ -79,7 +84,7 @@ export default function VideoViewer({
               hls = new Hls();
               hls.loadSource(videoUrl);
               hls.attachMedia(video);
-              hls.on(Hls.Events.MANIFEST_PARSED, restoreAndPlay);
+              hls.on(Hls.Events.MANIFEST_PARSED, restoreProgress);
               hls.on(Hls.Events.ERROR, (_: any, data: any) => {
                 if (data.fatal) {
                   setError("Fatal error loading video stream.");
@@ -90,29 +95,25 @@ export default function VideoViewer({
               setError("HLS is not supported.");
               setLoading(false);
             }
-          } catch {
+          } catch (err) {
             setError("Failed to load player.");
             setLoading(false);
           }
-        }
-      } else {
-        video.src = videoUrl;
-        video.addEventListener("loadedmetadata", restoreAndPlay);
-        video.addEventListener("error", () => {
-          setError("Error loading video.");
-          setLoading(false);
-        });
+        };
+        initHls();
       }
-    };
-
-    initPlayer();
+    } else {
+      video.src = videoUrl;
+      video.addEventListener("loadedmetadata", restoreProgress);
+      video.addEventListener("error", handleError);
+    }
 
     // ── Watch Progress Tracking ──────────────────────────────────────────────
     const syncProgress = async () => {
-      const video = videoRef.current;
-      if (!video || !activeLesson?.id || !courseId) return;
+      const currentVideo = videoRef.current;
+      if (!currentVideo || !activeLesson?.id || !courseId) return;
 
-      const currentDuration = Math.floor(video.currentTime);
+      const currentDuration = Math.floor(currentVideo.currentTime);
       
       // Only sync if duration has changed since last sync
       if (currentDuration !== lastSyncedDurationRef.current) {
@@ -150,26 +151,37 @@ export default function VideoViewer({
       syncProgress();
     };
 
-    video?.addEventListener("play", startTracking);
-    video?.addEventListener("pause", stopTracking);
-    video?.addEventListener("ended", stopTracking);
+    video.addEventListener("play", startTracking);
+    video.addEventListener("pause", stopTracking);
+    video.addEventListener("ended", stopTracking);
 
     return () => {
+      if (trackingIntervalRef.current) {
+        clearInterval(trackingIntervalRef.current);
+        trackingIntervalRef.current = null;
+      }
+
+      if (video) {
+        video.removeEventListener("play", startTracking);
+        video.removeEventListener("pause", stopTracking);
+        video.removeEventListener("ended", stopTracking);
+        video.removeEventListener("loadedmetadata", restoreProgress);
+        video.removeEventListener("error", handleError);
+        
+        try {
+          video.pause();
+          video.currentTime = 0;
+        } catch (e) {
+          console.debug("Error resetting video properties on unmount:", e);
+        }
+      }
+
       if (hls) {
         hls.destroy();
       } else if (video) {
         video.removeAttribute("src");
         video.load();
       }
-      
-      // Cleanup tracking
-      if (trackingIntervalRef.current) {
-        clearInterval(trackingIntervalRef.current);
-        trackingIntervalRef.current = null;
-      }
-      video?.removeEventListener("play", startTracking);
-      video?.removeEventListener("pause", stopTracking);
-      video?.removeEventListener("ended", stopTracking);
     };
   }, [activeLesson, courseId, watchVideo]);
 

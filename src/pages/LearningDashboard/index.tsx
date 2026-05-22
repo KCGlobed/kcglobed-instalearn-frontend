@@ -3,8 +3,8 @@ import { useParams } from "react-router-dom";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { useAppSelector } from "../../hooks/useRedux";
 import type { RootState } from "../../store/store";
-import { fetchDashboardChapterBySlug } from "../../store/slices/courseDashboardChapterSlice";
-import { fetchChapterLectures, setActiveLesson } from "../../store/slices/courseDashboardLectureSlice";
+import { fetchDashboardChapterBySlug, clearCourseDetail as clearDashboardChapters } from "../../store/slices/courseDashboardChapterSlice";
+import { fetchChapterLectures, setActiveLesson, clearLectureCache } from "../../store/slices/courseDashboardLectureSlice";
 import type { Lecture } from "../../store/slices/courseDashboardLectureSlice";
 
 import Header from "../../components/MyLearningDashboard/LearningHeader";
@@ -13,7 +13,7 @@ import MediaViewerSection from "../../components/MyLearningDashboard/MediaViewer
 import CourseTabs from "../../components/MyLearningDashboard/CourseTabs";
 import { getCourseProgressApi } from "../../utils/service";
 import OverviewPanel from "../../components/CourseDetail/tabs/OverviewPanel";
-import { fetchCourseById } from "../../store/slices/courseDetailSlice";
+import { fetchCourseById, clearCourseDetail as clearCourseDetailInfo } from "../../store/slices/courseDetailSlice";
 import { Loader2 } from "lucide-react";
 import Notes from "../../components/MyLearningDashboard/Notes";
 
@@ -29,10 +29,18 @@ export default function LMSCoursePage() {
   // Fetch Chapters on Mount
   useEffect(() => {
     if (slug) {
+      dispatch(clearDashboardChapters());
+      dispatch(clearCourseDetailInfo());
+      dispatch(clearLectureCache());
       dispatch(setActiveLesson(null));
       dispatch(fetchDashboardChapterBySlug(Number(slug)));
     }
-    return () => { dispatch(setActiveLesson(null)); };
+    return () => {
+      dispatch(clearDashboardChapters());
+      dispatch(clearCourseDetailInfo());
+      dispatch(clearLectureCache());
+      dispatch(setActiveLesson(null));
+    };
   }, [dispatch, slug]);
 
   // Auto-select first lecture
