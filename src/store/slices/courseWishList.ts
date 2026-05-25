@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { toggleWishlistApi, wishlistApi } from "../../utils/service";
+import { getToken } from "../../utils/tokenStorage";
 
 export interface WishListState {
     itemCount: number;
@@ -40,6 +41,15 @@ export const viewWishlistAction = createAsyncThunk<any, void, { rejectValue: str
         } catch (error: any) {
             return rejectWithValue(error.message || "Something went wrong while fetching wishlist");
         }
+    },
+    {
+        condition: () => {
+            const token = getToken();
+            if (!token) {
+                return false;
+            }
+            return true;
+        },
     }
 );
 
@@ -57,9 +67,9 @@ const courseWishListSlice = createSlice({
             state.itemCount = action.payload;
         },
         removeFromWishList: (state, action: PayloadAction<number>) => {
-            state.wishListItems = state.wishListItems.filter((item: any) => 
-                item.id !== action.payload && 
-                item.course_info?.id !== action.payload && 
+            state.wishListItems = state.wishListItems.filter((item: any) =>
+                item.id !== action.payload &&
+                item.course_info?.id !== action.payload &&
                 item.course_id !== action.payload
             );
             state.itemCount = state.wishListItems.length;
@@ -76,13 +86,13 @@ const courseWishListSlice = createSlice({
                 state.loading = false;
                 state.success = true;
                 state.message = action.payload?.message || "Wishlist toggled successfully";
-                
+
                 const courseId = Number(action.meta.arg.course_id);
                 const responseData = action.payload?.data;
 
                 // Trust the server response:
                 // 1. Remove the course from the local list first to avoid duplicates
-                state.wishListItems = state.wishListItems.filter((item: any) => 
+                state.wishListItems = state.wishListItems.filter((item: any) =>
                     (item.course_info?.id || item.course_id) !== courseId
                 );
 

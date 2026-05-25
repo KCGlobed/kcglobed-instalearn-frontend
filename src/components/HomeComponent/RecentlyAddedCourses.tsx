@@ -86,7 +86,7 @@ const RecentlyAddedCourses = () => {
                                                         {category.name}
                                                     </span>
                                                     <span className="text-[#FF6636] font-bold text-[18px]">
-                                                        Rs.{course.price}
+                                                        ₹{course.price}
                                                     </span>
                                                 </div>
 
@@ -182,10 +182,10 @@ const RecentlyAddedCourses = () => {
                                                 {/* Pricing Row */}
                                                 <div className="flex items-center justify-between pt-2">
                                                     <div className="flex items-baseline gap-2">
-                                                        <span className="text-[24px] font-bold text-[#1D2026]">Rs.{course.price}</span>
+                                                        <span className="text-[24px] font-bold text-[#1D2026]">₹{course.price}</span>
                                                         {oldPrice && (
                                                             <>
-                                                                <span className="text-[16px] text-[#8C94A3] line-through">Rs.{oldPrice}</span>
+                                                                <span className="text-[16px] text-[#8C94A3] line-through">₹{oldPrice}</span>
                                                                 <span className="px-2 py-0.5 bg-[#EBEBFF] text-[#5624D0] text-[12px] font-bold">{course.discount}% OFF</span>
                                                             </>
                                                         )}

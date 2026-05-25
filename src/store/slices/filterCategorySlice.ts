@@ -32,7 +32,7 @@ export const fetchCategoryFilter = createAsyncThunk<any, string | undefined, { r
     async (_, { rejectWithValue }) => {
         try {
             const response = await getCategoryFilterApi();
-            
+
             const data = response?.data || response;
             return {
                 category: data.category_filter || [],

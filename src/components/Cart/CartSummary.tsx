@@ -11,12 +11,18 @@ interface CartSummaryProps {
     discountCount: number;
 }
 
+const GST_RATE = 0.18;
+
 const CartSummary: React.FC<CartSummaryProps> = ({ totalPrice, originalPrice, discountCount }) => {
     const navigate = useNavigate()
     const isLogin = useSelector((state: RootState) => state.auth.isAuthenticated);
 
     const userID = localStorage.getItem("userID") || "";
     const deviceID = getDeviceId();
+
+    // GST Calculation (18% on discounted total)
+    const gstAmount = Math.round(totalPrice * GST_RATE);
+    const totalPayable = totalPrice + gstAmount;
 
     // In a real application, these should come from your user profile state/store
     const userData = {
@@ -41,15 +47,31 @@ const CartSummary: React.FC<CartSummaryProps> = ({ totalPrice, originalPrice, di
 
     return (
         <div className="lg:sticky lg:top-8 bg-white border border-gray-100 rounded-md p-5 shadow-sm">
-            <h2 className="text-[14px] font-bold text-gray-500 mb-2 uppercase tracking-wide">Total:</h2>
+            <h2 className="text-[14px] font-bold text-gray-500 mb-2 uppercase tracking-wide">Order Summary</h2>
             <div className="mb-6">
-                <p className="text-[32px] font-bold text-[#1c1d1f] leading-none mb-1">₹{totalPrice}</p>
+                {/* Original & Discount */}
                 {discountCount > 0 && (
-                    <div className="flex flex-col gap-0.5">
+                    <div className="flex flex-col gap-0.5 mb-3">
                         <p className="text-[14px] text-gray-400 line-through">₹{originalPrice}</p>
                         <p className="text-[14px] text-[#1c1d1f] font-medium">{Math.round((discountCount / originalPrice) * 100)}% off</p>
                     </div>
                 )}
+
+                {/* Price Breakdown */}
+                <div className="flex flex-col gap-2 border-t border-gray-100 pt-3">
+                    <div className="flex justify-between items-center text-[13px] text-gray-600">
+                        <span>Subtotal</span>
+                        <span className="font-medium">₹{totalPrice}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-[13px] text-gray-600">
+                        <span>GST (18%)</span>
+                        <span className="font-medium text-green-700">+ ₹{gstAmount}</span>
+                    </div>
+                    <div className="flex justify-between items-center border-t border-gray-200 pt-2 mt-1">
+                        <span className="text-[15px] font-bold text-[#1c1d1f]">Total Payable</span>
+                        <span className="text-[22px] font-bold text-[#1c1d1f]">₹{totalPayable}</span>
+                    </div>
+                </div>
             </div>
 
             <button

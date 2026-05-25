@@ -109,12 +109,12 @@ const CheckoutPage = () => {
     const watchedData = watch();
 
     // Security & Redirect
-    useEffect(() => {
-        const hasAccess = sessionStorage.getItem('checkout_access');
-        if (!hasAccess || cart.length === 0) {
-            navigate('/cart');
-        }
-    }, [cart.length, navigate]);
+    // useEffect(() => {
+    //     const hasAccess = sessionStorage.getItem('checkout_access');
+    //     if (!hasAccess || cart.length === 0) {
+    //         navigate('/cart');
+    //     }
+    // }, [cart.length, navigate]);
 
     // Price Calculations
     const { totalPrice, originalPrice, discountCount } = useMemo(() => {
@@ -122,6 +122,11 @@ const CheckoutPage = () => {
         const original = cart.reduce((sum, item) => sum + Math.round((item.course_info?.price || 0) * 1.8), 0);
         return { totalPrice: total, originalPrice: original, discountCount: original - total };
     }, [cart]);
+
+    // GST Calculation (18% on discounted total)
+    const GST_RATE = 0.18;
+    const gstAmount = Math.round(totalPrice * GST_RATE);
+    const totalPayable = totalPrice + gstAmount;
 
     // Payload — always send clean 10-digit phone
     const userDataForPayment = {
@@ -294,11 +299,19 @@ const CheckoutPage = () => {
                                     </div>
                                     <div className="flex justify-between text-[14px]">
                                         <span className="text-[#6a6f73]">Discounts:</span>
-                                        <span className="text-[#2d2f31]">-₹{discountCount.toFixed(2)}</span>
+                                        <span className="text-green-600 font-medium">-₹{discountCount.toFixed(2)}</span>
                                     </div>
-                                    <div className="pt-4 border-t border-gray-100 flex justify-between items-baseline">
-                                        <span className="text-[18px] font-bold text-[#1c1d1f]">Total:</span>
-                                        <span className="text-[24px] font-bold text-[#1c1d1f]">₹{totalPrice.toFixed(2)}</span>
+                                    <div className="flex justify-between text-[14px]">
+                                        <span className="text-[#6a6f73]">Subtotal:</span>
+                                        <span className="text-[#2d2f31] font-medium">₹{totalPrice.toFixed(2)}</span>
+                                    </div>
+                                    <div className="flex justify-between text-[14px]">
+                                        <span className="text-[#6a6f73]">GST (18%):</span>
+                                        <span className="text-[#2d2f31] font-medium">+₹{gstAmount.toFixed(2)}</span>
+                                    </div>
+                                    <div className="pt-4 border-t border-gray-200 flex justify-between items-baseline">
+                                        <span className="text-[18px] font-bold text-[#1c1d1f]">Total Payable:</span>
+                                        <span className="text-[24px] font-bold text-[#1c1d1f]">₹{totalPayable.toFixed(2)}</span>
                                     </div>
                                 </div>
 

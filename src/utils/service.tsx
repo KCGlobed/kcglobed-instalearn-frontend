@@ -95,3 +95,90 @@ export const notificationSettingsGetApi = async (): Promise<any> => {
 export const notificationSettingsUpdateApi = async (payload: any): Promise<any> => {
   return await apiRequest(API_ENDPOINTS.NOTIFICATION_SETTINGS_UPDATE, 'POST', payload);
 }
+
+export const getUserProfileApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.GET_USER_PROFILE, 'GET');
+}
+
+export const updateUserProfileApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.UPDATE_USER_PROFILE, 'POST', payload);
+}
+
+export const updateProfilePictureApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.UPDATE_PROFILE_PICTURE, 'POST', payload);
+}
+
+export const myCoursesApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.MY_COURSES, 'GET');
+}
+
+export const createMyListApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.ADD_TO_MY_LIST, 'POST', payload);
+}
+
+export const getDashboardChaptersApi = async (slug: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_DASHBOARD_CHAPTERS}${slug}`, 'GET');
+}
+
+export const getDashboardChapterLecturesApi = async (slug: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_DASHBOARD_CHAPTER_LECTURES}/${slug}`, 'GET');
+}
+
+export const getDashboardPdfSignedUrlApi = async (lectureId: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_DASHBOARD_PDF_SIGNED_URL}/${lectureId}`, 'GET');
+}
+
+export const watchedVideoApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.WATCHED_VIDEO, 'POST', payload);
+}
+
+export const getCourseProgressApi = async (courseId: number): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_COURSE_PROGRESS}${courseId}`, 'GET');
+}
+
+export const registerUserApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.REGISTER, 'POST', payload);
+}
+
+export const verifyOtpApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.VERIFY_OTP, 'POST', payload);
+}
+
+export const getAllNotesApi = async (courseId: number): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.ALL_LECTURE_NOTES}/${courseId}`, 'GET');
+}
+
+export const createNoteApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.CREATE_NOTE, 'POST', payload);
+}
+
+export const updateNoteApi = async (courseId: number, payload: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.UPDATE_NOTE}${courseId}`, 'POST', payload);
+}
+
+export const deleteNoteApi = async (id: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.DELETE_NOTE}${id}`, 'DELETE');
+}
+
+export const addReviewRatingApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.ADD_REVIEW_RATING, 'POST', payload);
+}
+
+export const getReviewRatingApi = async (courseId: number): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_REVIEW_RATING}/${courseId}`, 'GET');
+}
+
+export const updateReviewRatingApi = async (courseId: number, payload: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.UPDATE_REVIEW_RATING}${courseId}`, 'POST', payload);
+}
+
+export const deleteReviewRatingApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.DELETE_REVIEW_RATING, 'POST', payload);
+}
+
+
+
+
+
+
+
