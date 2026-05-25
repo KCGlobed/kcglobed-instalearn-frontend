@@ -36,6 +36,7 @@ function App() {
         <Route path="/courses" element={<Courses />} />
         <Route path="/courses/detail/:id" element={<CourseDetail />} />
         <Route path="/categories" element={<CategoryPage />} />
+        <Route path="/categories/:id" element={<CategoryPage />} />
         <Route path="/coming-soon" element={<ComingSoon />} />
         <Route path="/watch-course" element={<WatchCourse />} />
         <Route path="/cart" element={<Cart />} />
