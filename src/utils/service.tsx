@@ -18,6 +18,12 @@ export const courseById = async (payload: any): Promise<any> => {
   return await apiRequest(`${API_ENDPOINTS.COURSE_BY_ID}/${payload}`, 'GET');
 };
 
+export const getCategoryCoursesApi = async (id: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.CATEGORY_COURSES}${id}`, 'GET');
+};
+
+
+
 export const courseList = async (): Promise<any> => {
   return await apiRequest(API_ENDPOINTS.COURSE_LIST, 'GET');
 };
@@ -137,6 +143,47 @@ export const registerUserApi = async (payload: any): Promise<any> => {
 export const verifyOtpApi = async (payload: any): Promise<any> => {
   return await apiRequest(API_ENDPOINTS.VERIFY_OTP, 'POST', payload);
 }
+
+export const getAllNotesApi = async (courseId: number): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.ALL_LECTURE_NOTES}/${courseId}`, 'GET');
+}
+
+export const createNoteApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.CREATE_NOTE, 'POST', payload);
+}
+
+export const updateNoteApi = async (courseId: number, payload: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.UPDATE_NOTE}${courseId}`, 'POST', payload);
+}
+
+export const deleteNoteApi = async (id: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.DELETE_NOTE}${id}`, 'DELETE');
+}
+
+export const addReviewRatingApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.ADD_REVIEW_RATING, 'POST', payload);
+}
+
+export const getReviewRatingApi = async (courseId: number): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_REVIEW_RATING}/${courseId}`, 'GET');
+}
+
+export const updateReviewRatingApi = async (courseId: number, payload: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.UPDATE_REVIEW_RATING}${courseId}`, 'POST', payload);
+}
+
+export const deleteReviewRatingApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.DELETE_REVIEW_RATING, 'POST', payload);
+}
+
+export const getAnnouncementsApi = async (courseId: number): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_ANNOUNCEMENTS}/${courseId}`, 'GET');
+}
+
+export const addCommentOnAnnouncementsApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.ADD_COMMENT_ON_ANNOUNCEMENTS, 'POST', payload);
+}
+
 
 
 

@@ -3,8 +3,8 @@ import { useParams } from "react-router-dom";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { useAppSelector } from "../../hooks/useRedux";
 import type { RootState } from "../../store/store";
-import { fetchDashboardChapterBySlug } from "../../store/slices/courseDashboardChapterSlice";
-import { fetchChapterLectures, setActiveLesson } from "../../store/slices/courseDashboardLectureSlice";
+import { fetchDashboardChapterBySlug, clearCourseDetail as clearDashboardChapters } from "../../store/slices/courseDashboardChapterSlice";
+import { fetchChapterLectures, setActiveLesson, clearLectureCache } from "../../store/slices/courseDashboardLectureSlice";
 import type { Lecture } from "../../store/slices/courseDashboardLectureSlice";
 
 import Header from "../../components/MyLearningDashboard/LearningHeader";
@@ -13,9 +13,10 @@ import MediaViewerSection from "../../components/MyLearningDashboard/MediaViewer
 import CourseTabs from "../../components/MyLearningDashboard/CourseTabs";
 import { getCourseProgressApi } from "../../utils/service";
 import OverviewPanel from "../../components/CourseDetail/tabs/OverviewPanel";
-import { fetchCourseById } from "../../store/slices/courseDetailSlice";
+import { fetchCourseById, clearCourseDetail as clearCourseDetailInfo } from "../../store/slices/courseDetailSlice";
 import { Loader2 } from "lucide-react";
 import Notes from "../../components/MyLearningDashboard/Notes";
+import Announcements from "../../components/MyLearningDashboard/Announcements";
 
 export default function LMSCoursePage() {
   const dispatch = useAppDispatch();
@@ -29,15 +30,50 @@ export default function LMSCoursePage() {
   // Fetch Chapters on Mount
   useEffect(() => {
     if (slug) {
+      dispatch(clearDashboardChapters());
+      dispatch(clearCourseDetailInfo());
+      dispatch(clearLectureCache());
       dispatch(setActiveLesson(null));
       dispatch(fetchDashboardChapterBySlug(Number(slug)));
     }
-    return () => { dispatch(setActiveLesson(null)); };
+    return () => {
+      dispatch(clearDashboardChapters());
+      dispatch(clearCourseDetailInfo());
+      dispatch(clearLectureCache());
+      dispatch(setActiveLesson(null));
+    };
   }, [dispatch, slug]);
 
-  // Auto-select first lecture
+  // Auto-select last watched lecture (or fallback to first lecture)
   useEffect(() => {
     if (!activeLesson && chapters.length > 0) {
+      const courseId = Number(slug);
+      const lastChapterIdStr = localStorage.getItem(`course_last_chapter_${courseId}`);
+      const lastLectureIdStr = localStorage.getItem(`course_last_lecture_${courseId}`);
+
+      if (lastChapterIdStr && lastLectureIdStr) {
+        const lastChapterId = Number(lastChapterIdStr);
+        const lastLectureId = Number(lastLectureIdStr);
+
+        // Verify that the chapter is actually one of the chapters of this course
+        const chapterExists = chapters.some(ch => ch.chapter_info.id === lastChapterId);
+
+        if (chapterExists) {
+          const chapterLectures = lecturesByChapter[lastChapterId];
+          if (chapterLectures) {
+            const foundLecture = chapterLectures.find(l => l.id === lastLectureId);
+            if (foundLecture) {
+              dispatch(setActiveLesson(foundLecture));
+              return;
+            }
+          } else if (!loadingChapters.includes(lastChapterId)) {
+            dispatch(fetchChapterLectures(lastChapterId));
+            return;
+          }
+        }
+      }
+
+      // Default fallback: Auto-select first lecture of first chapter
       const firstChapterId = chapters[0].chapter_info.id;
       const firstChapterLectures = lecturesByChapter[firstChapterId];
       if (firstChapterLectures && firstChapterLectures.length > 0) {
@@ -46,7 +82,7 @@ export default function LMSCoursePage() {
         dispatch(fetchChapterLectures(firstChapterId));
       }
     }
-  }, [dispatch, chapters, activeLesson, lecturesByChapter, loadingChapters]);
+  }, [dispatch, chapters, activeLesson, lecturesByChapter, loadingChapters, slug]);
 
   // Build a flat ordered lecture list across all loaded chapters
   const flatLectures = useMemo(() => {
@@ -144,6 +180,11 @@ export default function LMSCoursePage() {
                 {
                   activeTab === "Notes" && (
                     <Notes />
+                  )
+                }
+                {
+                  activeTab === "Announcements" && (
+                    <Announcements />
                   )
                 }
 

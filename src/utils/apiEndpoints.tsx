@@ -25,6 +25,8 @@ export const API_ENDPOINTS = {
     ALL_NOTIFICATION: "user_study/get-all-notification/",
     NOTIFICATION_SETTINGS_GET: "user_study/get-user-notification-setting/",
     NOTIFICATION_SETTINGS_UPDATE: "user_study/update-user-notification-setting/",
+    CATEGORY_COURSES: "course/category/course/",
+
     GET_USER_PROFILE: "user/get-profile/",
     UPDATE_USER_PROFILE: "user/update-profile/",
     UPDATE_PROFILE_PICTURE: "user/update-profile-image/",
@@ -37,4 +39,14 @@ export const API_ENDPOINTS = {
     GET_COURSE_PROGRESS: "user_study/get-course-progress/",
     REGISTER: "user/register/",
     VERIFY_OTP: "user/verify-otp/",
+    ALL_LECTURE_NOTES: "user_study/get-user-notes",
+    CREATE_NOTE: "user_study/create-note/",
+    UPDATE_NOTE: "user_study/update-note/",
+    DELETE_NOTE: "user_study/delete-note/",
+    ADD_REVIEW_RATING: "user_study/add-review-rating/",
+    GET_REVIEW_RATING: "user_study/get-course-review",
+    UPDATE_REVIEW_RATING: "user_study/update-review-rating/",
+    DELETE_REVIEW_RATING: "user_study/delete-review-rating/",
+    GET_ANNOUNCEMENTS: "course/get-courses-announcements-listing",
+    ADD_COMMENT_ON_ANNOUNCEMENTS: "course/add-comment-in-course-announcements/",
 }

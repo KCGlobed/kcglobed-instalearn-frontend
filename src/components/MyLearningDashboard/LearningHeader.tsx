@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronLeft, Share2, Star, Trophy, ChevronDown, MoreVertical, Award, Search, HelpCircle, Settings } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useModal } from '../Modals/ModalContext';
 import StarRatingReview from '../Modals/StarReview';
 import ShareCourse from '../Modals/ShareCourse';
@@ -19,9 +19,10 @@ const Header: React.FC<HeaderProps> = ({
     const [showProgress, setShowProgress] = useState(false);
     const navigate = useNavigate();
     const { showModal, hideModal } = useModal();
+    const { slug } = useParams();
     const handleStarRatingModal = () => {
         showModal({
-            content: <StarRatingReview />,
+            content: <StarRatingReview courseId={Number(slug) || 1} />,
             size: "lg",
         })
     }
