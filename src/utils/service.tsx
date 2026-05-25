@@ -170,6 +170,10 @@ export const deleteReviewRatingApi = async (payload: any): Promise<any> => {
   return await apiRequest(API_ENDPOINTS.DELETE_REVIEW_RATING, 'POST', payload);
 }
 
+export const getAnnouncementsApi = async (courseId: number): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_ANNOUNCEMENTS}/${courseId}`, 'GET');
+}
+
 
 
 

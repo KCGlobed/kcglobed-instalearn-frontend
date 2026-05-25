@@ -20,6 +20,7 @@ import courseDashboardChapterReducer from "./slices/courseDashboardChapterSlice"
 import courseDashboardLectureReducer from "./slices/courseDashboardLectureSlice";
 import notesReducer from "./slices/noteSlice";
 import reviewReducer from "./slices/reviewSlice";
+import announcementReducer from "./slices/announcementSlice";
 
 
 
@@ -48,6 +49,7 @@ export const store = configureStore({
     notes: notesReducer,
     [videoApi.reducerPath]: videoApi.reducer,
     review: reviewReducer,
+    announcement: announcementReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(videoApi.middleware),

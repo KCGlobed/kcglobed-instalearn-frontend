@@ -16,6 +16,7 @@ import OverviewPanel from "../../components/CourseDetail/tabs/OverviewPanel";
 import { fetchCourseById, clearCourseDetail as clearCourseDetailInfo } from "../../store/slices/courseDetailSlice";
 import { Loader2 } from "lucide-react";
 import Notes from "../../components/MyLearningDashboard/Notes";
+import Announcements from "../../components/MyLearningDashboard/Announcements";
 
 export default function LMSCoursePage() {
   const dispatch = useAppDispatch();
@@ -53,10 +54,10 @@ export default function LMSCoursePage() {
       if (lastChapterIdStr && lastLectureIdStr) {
         const lastChapterId = Number(lastChapterIdStr);
         const lastLectureId = Number(lastLectureIdStr);
-        
+
         // Verify that the chapter is actually one of the chapters of this course
         const chapterExists = chapters.some(ch => ch.chapter_info.id === lastChapterId);
-        
+
         if (chapterExists) {
           const chapterLectures = lecturesByChapter[lastChapterId];
           if (chapterLectures) {
@@ -179,6 +180,11 @@ export default function LMSCoursePage() {
                 {
                   activeTab === "Notes" && (
                     <Notes />
+                  )
+                }
+                {
+                  activeTab === "Announcements" && (
+                    <Announcements />
                   )
                 }
 

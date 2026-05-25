@@ -45,4 +45,5 @@ export const API_ENDPOINTS = {
     GET_REVIEW_RATING: "user_study/get-course-review",
     UPDATE_REVIEW_RATING: "user_study/update-review-rating/",
     DELETE_REVIEW_RATING: "user_study/delete-review-rating/",
+    GET_ANNOUNCEMENTS: "course/get-courses-announcements-listing",
 }
