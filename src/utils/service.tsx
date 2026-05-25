@@ -180,6 +180,10 @@ export const getAnnouncementsApi = async (courseId: number): Promise<any> => {
   return await apiRequest(`${API_ENDPOINTS.GET_ANNOUNCEMENTS}/${courseId}`, 'GET');
 }
 
+export const addCommentOnAnnouncementsApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.ADD_COMMENT_ON_ANNOUNCEMENTS, 'POST', payload);
+}
+
 
 
 

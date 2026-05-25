@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { getAnnouncementsApi } from "../../utils/service";
+import { addCommentOnAnnouncementsApi, getAnnouncementsApi } from "../../utils/service";
 
 // ---------------- TYPES ----------------
 
@@ -44,6 +44,8 @@ export interface Announcement {
     course: Course;
     instructor: Instructor;
     announcement_comments: AnnouncementComment[];
+    likedByMe?: boolean;
+    likesCount?: number;
 }
 
 export interface AnnouncementState {
@@ -91,6 +93,33 @@ export const fetchAnnouncements = createAsyncThunk<
     }
 );
 
+export const addCommentOnAnnouncements = createAsyncThunk(
+    "announcement/addCommentOnAnnouncements",
+    async (payload: any, { rejectWithValue }) => {
+        try {
+            const response = await addCommentOnAnnouncementsApi(payload);
+
+            // Handles both axios response and direct array
+            if (response?.data && Array.isArray(response.data)) {
+                return response.data;
+            } else if (
+                response?.data?.data &&
+                Array.isArray(response.data.data)
+            ) {
+                return response.data.data;
+            } else if (Array.isArray(response)) {
+                return response;
+            }
+
+            return [];
+        } catch (error: any) {
+            return rejectWithValue(
+                error?.message || "Failed to fetch announcements"
+            );
+        }
+    }
+);
+
 // ---------------- SLICE ----------------
 
 const announcementSlice = createSlice({
@@ -100,6 +129,35 @@ const announcementSlice = createSlice({
         clearAnnouncementStatus: (state) => {
             state.loading = false;
             state.error = null;
+        },
+        addLocalComment: (
+            state,
+            action: PayloadAction<{
+                announcementId: number;
+                comment: AnnouncementComment;
+            }>
+        ) => {
+            const { announcementId, comment } = action.payload;
+            const announcement = state.announcements.find(
+                (a) => a.id === announcementId
+            );
+            if (announcement) {
+                announcement.announcement_comments = [
+                    ...announcement.announcement_comments,
+                    comment,
+                ];
+            }
+        },
+        toggleLocalLike: (state, action: PayloadAction<number>) => {
+            const announcementId = action.payload;
+            const announcement = state.announcements.find(
+                (a) => a.id === announcementId
+            );
+            if (announcement) {
+                const liked = !!announcement.likedByMe;
+                announcement.likedByMe = !liked;
+                announcement.likesCount = (announcement.likesCount || 0) + (liked ? -1 : 1);
+            }
         },
     },
     extraReducers: (builder) => {
@@ -126,7 +184,7 @@ const announcementSlice = createSlice({
     },
 });
 
-export const { clearAnnouncementStatus } =
+export const { clearAnnouncementStatus, addLocalComment, toggleLocalLike } =
     announcementSlice.actions;
 
 export default announcementSlice.reducer;
