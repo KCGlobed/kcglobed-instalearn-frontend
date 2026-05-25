@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { API_BASE_URL, API_ENDPOINTS } from "../../utils/apiEndpoints";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
 
 export interface HomepageCategory {
   id: number;
@@ -9,6 +8,9 @@ export interface HomepageCategory {
   total_courses: number;
   status: boolean;
   created_at: string;
+  bg_code?: string;
+  text_code?: string;
+  icon?: string;
 }
 
 interface HomepageCategoryState {
@@ -17,7 +19,6 @@ interface HomepageCategoryState {
   error: string | null;
 }
 
-// ─── Initial State ────────────────────────────────────────────────────────────
 
 const initialState: HomepageCategoryState = {
   categories: [],
@@ -25,7 +26,6 @@ const initialState: HomepageCategoryState = {
   error: null,
 };
 
-// ─── Async Thunk ──────────────────────────────────────────────────────────────
 
 export const fetchHomepageCategories = createAsyncThunk<
   HomepageCategory[],
