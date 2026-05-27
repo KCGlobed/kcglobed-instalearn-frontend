@@ -17,6 +17,7 @@ import { fetchCourseById, clearCourseDetail as clearCourseDetailInfo } from "../
 import { Loader2 } from "lucide-react";
 import Notes from "../../components/MyLearningDashboard/Notes";
 import Announcements from "../../components/MyLearningDashboard/Announcements";
+import LearningReminder from "../../components/MyLearningDashboard/LearningReminder";
 
 export default function LMSCoursePage() {
   const dispatch = useAppDispatch();
@@ -185,6 +186,11 @@ export default function LMSCoursePage() {
                 {
                   activeTab === "Announcements" && (
                     <Announcements />
+                  )
+                }
+                {
+                  activeTab === "Learning tools" && (
+                    <LearningReminder />
                   )
                 }
 

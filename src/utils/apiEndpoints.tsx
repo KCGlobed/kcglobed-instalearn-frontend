@@ -49,4 +49,8 @@ export const API_ENDPOINTS = {
     DELETE_REVIEW_RATING: "user_study/delete-review-rating/",
     GET_ANNOUNCEMENTS: "course/get-courses-announcements-listing",
     ADD_COMMENT_ON_ANNOUNCEMENTS: "course/add-comment-in-course-announcements/",
+    CREATE_REMINDER: "user_study/reminder/create/",
+    UPDATE_REMINDER: "user_study/reminder/update/",
+    DELETE_REMINDER: "user_study/reminder/delete/",
+    GET_REMINDER: "user_study/reminder/get-reminders/",
 }

@@ -284,15 +284,15 @@ const Announcements = () => {
                                     <button
                                         onClick={() => handleLikeToggle(ann.id)}
                                         className={`flex items-center gap-2 px-3.5 py-2 rounded-full border transition-all duration-200 text-xs font-bold ${ann.likedByMe
-                                                ? "bg-pink-50/50 border-pink-200 text-pink-600 shadow-xs"
-                                                : "border-[#d1d7dc] text-[#2d2f31] hover:bg-[#f7f9fa] hover:border-[#2d2f31]"
+                                            ? "bg-pink-50/50 border-pink-200 text-pink-600 shadow-xs"
+                                            : "border-[#d1d7dc] text-[#2d2f31] hover:bg-[#f7f9fa] hover:border-[#2d2f31]"
                                             }`}
                                     >
                                         <Heart
                                             size={14}
                                             className={`transition-all ${ann.likedByMe
-                                                    ? "fill-pink-600 stroke-pink-600 heart-animate-active"
-                                                    : "stroke-[2.5px]"
+                                                ? "fill-pink-600 stroke-pink-600 heart-animate-active"
+                                                : "stroke-[2.5px]"
                                                 }`}
                                         />
                                         <span>{ann.likesCount || 0}</span>
@@ -302,8 +302,8 @@ const Announcements = () => {
                                     <button
                                         onClick={() => setExpandedAnnouncements(prev => ({ ...prev, [ann.id]: !prev[ann.id] }))}
                                         className={`flex items-center gap-2 px-3.5 py-2 rounded-full border transition-all duration-200 text-xs font-bold ${isCommentsExpanded
-                                                ? "bg-purple-50/50 border-[#a435f0]/30 text-[#a435f0]"
-                                                : "border-[#d1d7dc] text-[#2d2f31] hover:bg-[#f7f9fa] hover:border-[#2d2f31]"
+                                            ? "bg-purple-50/50 border-[#a435f0]/30 text-[#a435f0]"
+                                            : "border-[#d1d7dc] text-[#2d2f31] hover:bg-[#f7f9fa] hover:border-[#2d2f31]"
                                             }`}
                                     >
                                         <MessageSquare size={14} className="stroke-[2.5px]" />

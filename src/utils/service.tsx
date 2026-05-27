@@ -184,6 +184,22 @@ export const addCommentOnAnnouncementsApi = async (payload: any): Promise<any> =
   return await apiRequest(API_ENDPOINTS.ADD_COMMENT_ON_ANNOUNCEMENTS, 'POST', payload);
 }
 
+export const createReminderApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.CREATE_REMINDER, 'POST', payload);
+}
+
+export const updateReminderApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.UPDATE_REMINDER, 'POST', payload);
+}
+
+export const deleteReminderApi = async (id: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.DELETE_REMINDER}${id}`, 'DELETE');
+}
+
+export const getReminderApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.GET_REMINDER, 'GET');
+}
+
 
 
 
