@@ -40,6 +40,7 @@ const BrowseDropdown = () => {
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const { categories } = useSelector((state: RootState) => state.homepageCategory);
+    const navigate = useNavigate();
 
     // Close on outside click
     useEffect(() => {
@@ -49,6 +50,11 @@ const BrowseDropdown = () => {
         document.addEventListener("mousedown", handler);
         return () => document.removeEventListener("mousedown", handler);
     }, []);
+
+    const handleBrowseNavigate = (cat: any) => {
+        setOpen(false);
+        navigate(`/categories/${cat.id}`)
+    }
 
     return (
         <div ref={ref} style={{ position: "relative", overflow: "visible" }}>
@@ -101,7 +107,7 @@ const BrowseDropdown = () => {
                                 role="option"
                                 aria-selected={false}
                                 className="flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-[#F5F4FF] transition-colors duration-100 group"
-                                onClick={() => setOpen(false)}
+                                onClick={() => handleBrowseNavigate(cat)}
                             >
                                 <BookOpen className="w-4 h-4 text-[#8C94A3] group-hover:text-[#5624D0] transition-colors shrink-0" />
                                 <span className="text-[13px] text-[#1D2026] group-hover:text-[#5624D0] font-medium transition-colors">

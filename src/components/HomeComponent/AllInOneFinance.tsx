@@ -142,6 +142,8 @@ const AllInOneFinance = () => {
         setActiveTab(id);
     }, []);
 
+    console.log(courses, "all finance cousre")
+
     return (
         <section className="bg-[#FFFFFE] py-20 px-4 xl:px-0">
             <div className="max-w-[1320px] mx-auto">
