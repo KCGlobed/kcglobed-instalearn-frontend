@@ -200,6 +200,10 @@ export const getReminderApi = async (): Promise<any> => {
   return await apiRequest(API_ENDPOINTS.GET_REMINDER, 'GET');
 }
 
+export const getUserCourseReviewComments = async (courseId: number): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_COURSE_REVIEW_COMMENTS}/${courseId}`, 'GET');
+}
+
 
 
 

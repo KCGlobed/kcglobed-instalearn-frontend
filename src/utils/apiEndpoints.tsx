@@ -53,4 +53,5 @@ export const API_ENDPOINTS = {
     UPDATE_REMINDER: "user_study/reminder/update/",
     DELETE_REMINDER: "user_study/reminder/delete/",
     GET_REMINDER: "user_study/reminder/get-reminders/",
+    GET_COURSE_REVIEW_COMMENTS: "course/course-review-rating"
 }
