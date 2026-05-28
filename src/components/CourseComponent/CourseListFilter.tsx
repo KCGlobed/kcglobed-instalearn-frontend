@@ -1,14 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import {
     SlidersHorizontal, Search, ChevronDown, ChevronUp,
 } from "lucide-react";
 import CoursesCard from "../Cards/CoursesCard";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
-import { fetchCoursesList } from "../../store/slices/filterCourseSlice";
 import { useNavigate } from "react-router-dom";
-import { filterCoursesListParams } from "../../store/slices/filterCoursesParamsSlice";
+import { filterCoursesListParams, loadMoreCourses } from "../../store/slices/filterCoursesParamsSlice";
 import Sidebar from "./SideBar";
-
 
 const CourseListFilter = () => {
     const [isFilterOpen, setIsFilterOpen] = useState(true);
@@ -17,27 +15,70 @@ const CourseListFilter = () => {
     const [selectedRatings, setSelectedRatings] = useState<number[]>([]);
     const [selectedTags, setSelectedTags] = useState<number[]>([]);
     const [name, setName] = useState("");
+    const [debouncedName, setDebouncedName] = useState("");
     const dispatch = useAppDispatch();
-    const { courses, loading, error } = useAppSelector((state: any) => state.filterCourse);
+    
+    // Select from filterCourseParams state
+    const { courses, loading, error, isFetchingMore, pagination } = useAppSelector(
+        (state: any) => state.filterCourseParams
+    );
     const navigate = useNavigate();
+    const sentinelRef = useRef<HTMLDivElement>(null);
 
     const handleCourseClick = (course: any) => {
         navigate(`/courses/detail/${course.id}`);
     };
 
+    // Debounce the search term to prevent rapid API requests
     useEffect(() => {
-        dispatch(fetchCoursesList());
-    }, []);
+        const handler = setTimeout(() => {
+            setDebouncedName(name);
+        }, 500);
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [name]);
 
+    // Fetch fresh course list whenever any filter parameter changes
     useEffect(() => {
         dispatch(filterCoursesListParams({
             subcategory: selectedSubcategories,
-            name: name,
+            name: debouncedName,
             level: selectedLevels,
             rating: selectedRatings,
             tags: selectedTags
         }));
-    }, [selectedSubcategories, name, selectedLevels, selectedRatings, selectedTags]);
+    }, [selectedSubcategories, debouncedName, selectedLevels, selectedRatings, selectedTags, dispatch]);
+
+    // Handle fetching more courses on scrolling
+    const handleLoadMore = useCallback(() => {
+        if (!loading && !isFetchingMore && pagination?.next_page) {
+            dispatch(loadMoreCourses(pagination.next_page));
+        }
+    }, [dispatch, loading, isFetchingMore, pagination]);
+
+    // Set up intersection observer for infinite scroll sentinel
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting) {
+                    handleLoadMore();
+                }
+            },
+            { rootMargin: "200px" }
+        );
+
+        const currentSentinel = sentinelRef.current;
+        if (currentSentinel) {
+            observer.observe(currentSentinel);
+        }
+
+        return () => {
+            if (currentSentinel) {
+                observer.unobserve(currentSentinel);
+            }
+        };
+    }, [handleLoadMore]);
 
     return (
         <section className="bg-white px-4 xl:px-0">
@@ -100,9 +141,10 @@ const CourseListFilter = () => {
                         <a href="#" className="text-[#FF6636] font-medium hover:underline transition-all">app</a>
                     </div>
 
-                    {/* Results Count */}
+                    {/* Dynamic Results Count */}
                     <div className="text-[14px] text-[#8C94A3] shrink-0 lg:text-right">
-                        <span className="font-bold text-[#1D2026]">3,145,684</span> results find for "ui/ux design"
+                        Showing <span className="font-bold text-[#1D2026]">{courses.length}</span> of <span className="font-bold text-[#1D2026]">{pagination?.total_results || courses.length}</span> results
+                        {name && <> for "<span className="font-bold text-[#1D2026]">{name}</span>"</>}
                     </div>
 
                 </div>
@@ -127,6 +169,24 @@ const CourseListFilter = () => {
                 {/* Right Courses Grid */}
                 <div className="flex-1 min-w-0 transition-all duration-300">
                     <CoursesCard onCourseClick={handleCourseClick} isSidebarOpen={isFilterOpen} courses={courses} loading={loading} error={error} />
+                    
+                    {/* Infinite Scroll Sentinel and fetching states */}
+                    <div ref={sentinelRef} className="w-full py-6 flex flex-col items-center justify-center">
+                        {isFetchingMore && (
+                            <div className="flex items-center gap-2 text-sm text-[#5624D0] font-medium">
+                                <svg className="animate-spin h-5 w-5 text-[#5624D0]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span>Loading more courses...</span>
+                            </div>
+                        )}
+                        {!loading && !isFetchingMore && pagination && !pagination.next_page && courses.length > 0 && (
+                            <p className="text-sm text-[#8C94A3] font-medium">
+                                All courses loaded ({courses.length} of {pagination.total_results})
+                            </p>
+                        )}
+                    </div>
                 </div>
             </div>
         </section>

@@ -167,19 +167,25 @@ const Sidebar = ({
                             const star = Object.keys(rateObj)[0];
                             const count = rateObj[star];
                             const starValue = parseInt(star);
-                            const isChecked = selectedRatings.includes(starValue);
+                            const isSelected = selectedRatings.includes(starValue);
                             return (
                                 <label
                                     key={star}
                                     className="flex items-center justify-between cursor-pointer group"
                                     onClick={(e) => {
                                         e.preventDefault();
-                                        toggleFilter(starValue, setSelectedRatings);
+                                        // Radio behavior: select only this one, or deselect if already selected
+                                        setSelectedRatings((prev: number[]) =>
+                                            prev.includes(starValue) ? [] : [starValue]
+                                        );
                                     }}
                                 >
                                     <div className="flex items-center gap-3">
-                                        <div className={`w-[16px] h-[16px] rounded-[3px] border flex items-center justify-center shrink-0 transition-colors ${isChecked ? 'bg-[#5624D0] border-[#5624D0]' : 'border-[#E9EAF0] bg-white group-hover:border-[#8C94A3]'}`}>
-                                            {isChecked && <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>}
+                                        {/* Radio circle indicator */}
+                                        <div className={`w-[16px] h-[16px] rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${isSelected ? 'border-[#5624D0]' : 'border-[#8C94A3] group-hover:border-[#5624D0]'}`}>
+                                            {isSelected && (
+                                                <div className="w-[8px] h-[8px] rounded-full bg-[#5624D0]" />
+                                            )}
                                         </div>
                                         <div className="flex items-center gap-1">
                                             {[...Array(5)].map((_, i) => (
@@ -194,8 +200,8 @@ const Sidebar = ({
                                                     <path d="M7 0L8.57154 4.83688H13.6548L9.54163 7.82624L11.1132 12.6631L7 9.67376L2.88683 12.6631L4.45837 7.82624L0.345201 4.83688H5.42846L7 0Z" />
                                                 </svg>
                                             ))}
-                                            <span className={`text-[13px] ml-1 transition-colors ${isChecked ? 'text-[#5624D0] font-medium' : 'text-[#4E5566]'}`}>
-                                                {starValue} {starValue === 5 ? "" : ""}
+                                            <span className={`text-[13px] ml-1 transition-colors ${isSelected ? 'text-[#5624D0] font-medium' : 'text-[#4E5566]'}`}>
+                                                {starValue} & up
                                             </span>
                                         </div>
                                     </div>

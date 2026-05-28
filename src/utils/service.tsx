@@ -204,6 +204,10 @@ export const getUserCourseReviewComments = async (courseId: number): Promise<any
   return await apiRequest(`${API_ENDPOINTS.GET_COURSE_REVIEW_COMMENTS}/${courseId}`, 'GET');
 }
 
+export const getGlobalSearchApi = async (query: string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_GLOBAL_SEARCH}?name=${query}`, 'GET');
+}
+
 
 
 
