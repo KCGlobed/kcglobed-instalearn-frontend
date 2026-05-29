@@ -35,6 +35,7 @@ function App() {
         <Route path="/user/reset" element={<ResetPassword />} />
         <Route path="/courses" element={<Courses />} />
         <Route path="/courses/detail/:id" element={<CourseDetail />} />
+        <Route path="/course-details/:id" element={<CourseDetail />} />
         <Route path="/categories" element={<CategoryPage />} />
         <Route path="/categories/:id" element={<CategoryPage />} />
         <Route path="/coming-soon" element={<ComingSoon />} />
