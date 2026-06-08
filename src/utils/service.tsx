@@ -208,6 +208,10 @@ export const getGlobalSearchApi = async (query: string): Promise<any> => {
   return await apiRequest(`${API_ENDPOINTS.GET_GLOBAL_SEARCH}?name=${query}`, 'GET');
 }
 
+export const quickContactApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.CREATE_QUICK_CONTACT, 'POST', payload);
+}
+
 
 
 

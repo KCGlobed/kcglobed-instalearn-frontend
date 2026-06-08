@@ -55,4 +55,5 @@ export const API_ENDPOINTS = {
     GET_REMINDER: "user_study/reminder/get-reminders/",
     GET_COURSE_REVIEW_COMMENTS: "course/course-review-rating",
     GET_GLOBAL_SEARCH: "course/search/dropdown/",
+    CREATE_QUICK_CONTACT: "cms/contact-us/",
 }
