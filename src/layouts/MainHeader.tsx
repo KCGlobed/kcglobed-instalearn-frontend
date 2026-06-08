@@ -494,6 +494,10 @@ const CartDropdown = () => {
         navigate("/cart")
     }
 
+    const handleCourseDetailPage = (course_id: any) => {
+        navigate(`/courses/detail/${course_id}`)
+    }
+
     return (
         <div className="relative" ref={dropdownRef} style={{ overflow: "visible" }}>
             <button
@@ -524,7 +528,7 @@ const CartDropdown = () => {
                     <div className="max-h-[320px] overflow-y-auto">
                         {cart.length > 0 ? (
                             cart.map((item: any) => (
-                                <div key={item.course_info?.id} className="px-5 py-3.5 border-b border-[#f3f4f6] last:border-0 hover:bg-[#F5F4FF]/50 cursor-pointer transition-colors flex gap-3">
+                                <div onClick={() => handleCourseDetailPage(item.course_info?.id)} key={item.course_info?.id} className="px-5 py-3.5 border-b border-[#f3f4f6] last:border-0 hover:bg-[#F5F4FF]/50 cursor-pointer transition-colors flex gap-3">
                                     <img src={item.course_info?.image} alt={item.course_info?.title} className="w-16 h-9 object-cover rounded bg-[#F5F4FF]" />
                                     <div className="flex-1 min-w-0">
                                         <p className="text-[13px] font-bold text-[#1D2026] leading-tight truncate">{item.course_info?.name}</p>

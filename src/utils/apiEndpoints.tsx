@@ -56,4 +56,5 @@ export const API_ENDPOINTS = {
     GET_COURSE_REVIEW_COMMENTS: "course/course-review-rating",
     GET_GLOBAL_SEARCH: "course/search/dropdown/",
     CREATE_QUICK_CONTACT: "cms/contact-us/",
+    RELATED_COURSE: "course/get-related-courses-list",
 }

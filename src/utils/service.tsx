@@ -212,6 +212,10 @@ export const quickContactApi = async (payload: any): Promise<any> => {
   return await apiRequest(API_ENDPOINTS.CREATE_QUICK_CONTACT, 'POST', payload);
 }
 
+export const getRelatedCourseApi = async (payload: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.RELATED_COURSE}?course_id=${payload}`, 'GET');
+}
+
 
 
 

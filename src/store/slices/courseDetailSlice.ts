@@ -92,6 +92,8 @@ export interface CourseDetail {
     enrolled_students: number;
     course_includes?: any[];
     is_in_wishlist?: boolean;
+    total_video_duration: string | number | null;
+    related_course?: any[]
 }
 
 // ── Slice state ───────────────────────────────────────────────────────────────
