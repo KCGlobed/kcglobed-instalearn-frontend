@@ -15,6 +15,10 @@ const TopHeader = () => {
                         <a href="/coming-soon" className="text-gray-400 text-sm hover:text-white transition-colors">Courses</a>
                         <a href="/coming-soon" className="text-gray-400 text-sm hover:text-white transition-colors">About</a>
                         <a href="/coming-soon" className="text-gray-400 text-sm hover:text-white transition-colors">Contact</a>
+                        <a href="/blogs" className="text-gray-400 text-sm hover:text-white transition-colors">Blog</a>
+
+
+                        {/* <a href="/my-learning" className="text-gray-400 text-sm hover:text-white transition-colors">My Learning</a> */}
                     </div>
                 </div>
 

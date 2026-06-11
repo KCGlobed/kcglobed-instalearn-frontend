@@ -57,4 +57,11 @@ export const API_ENDPOINTS = {
     GET_GLOBAL_SEARCH: "course/search/dropdown/",
     CREATE_QUICK_CONTACT: "cms/contact-us/",
     RELATED_COURSE: "course/get-related-courses-list",
+    BLOG_CATEGORY: "cms/get-blog-categories/",
+    BLOG_BY_CATEGORY: "cms/get-category-wise-blogs/",
+    ALL_BLOG: "cms/get-all-blogs/",
+    FEATURED_BLOG: "cms/get-featured-blogs/",
+    BLOG_DETAIL: "cms/view-blog-detail",
+    DOWNLOAD_CERTIFICATE: "user_study/get-course-certificate/",
+
 }

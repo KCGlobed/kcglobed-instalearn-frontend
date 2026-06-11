@@ -216,6 +216,30 @@ export const getRelatedCourseApi = async (payload: any): Promise<any> => {
   return await apiRequest(`${API_ENDPOINTS.RELATED_COURSE}?course_id=${payload}`, 'GET');
 }
 
+export const getBlogCategoryApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.BLOG_CATEGORY, 'GET');
+}
+
+export const getBlogByCategoryApi = async (categoryId: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.BLOG_BY_CATEGORY}${categoryId}`, 'GET');
+}
+
+export const getAllBlogApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.ALL_BLOG, 'GET');
+}
+
+export const getFeaturedBlogApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.FEATURED_BLOG, 'GET');
+}
+
+export const getBlogDetailApi = async (slug: string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.BLOG_DETAIL}/${slug}`, 'GET');
+}
+
+export const getCourseCertificate = async (courseId: number): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.DOWNLOAD_CERTIFICATE}${courseId}`, 'GET');
+}
+
 
 
 

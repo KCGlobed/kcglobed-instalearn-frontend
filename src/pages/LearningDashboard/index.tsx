@@ -19,6 +19,7 @@ import Notes from "../../components/MyLearningDashboard/Notes";
 import Announcements from "../../components/MyLearningDashboard/Announcements";
 import LearningReminder from "../../components/MyLearningDashboard/LearningReminder";
 import ReviewsPanel from "../../components/CourseDetail/tabs/ReviewsPanel";
+import Certificate from "../../components/MyLearningDashboard/Certificate";
 
 export default function LMSCoursePage() {
   const dispatch = useAppDispatch();
@@ -197,6 +198,11 @@ export default function LMSCoursePage() {
                 {
                   activeTab === "Learning tools" && (
                     <LearningReminder />
+                  )
+                }
+                {
+                  activeTab === "Certificate" && (
+                    <Certificate courseId={Number(slug)} progress={courseProgress?.percentage ?? 0} courseName={courseProgress?.name ?? ""} />
                   )
                 }
 
