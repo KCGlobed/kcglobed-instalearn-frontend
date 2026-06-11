@@ -240,6 +240,10 @@ export const getCourseCertificate = async (courseId: number): Promise<any> => {
   return await apiRequest(`${API_ENDPOINTS.DOWNLOAD_CERTIFICATE}${courseId}`, 'GET');
 }
 
+export const getPurchaseHistory = async (): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.PURCHASE_HISTORY}`, 'GET');
+}
+
 
 
 

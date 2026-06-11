@@ -13,6 +13,7 @@ import SignupPage from "./pages/Singup"
 import Blogs from "./pages/Blog"
 import BlogDetail from "./pages/Blog/BlogDetail"
 import HelpCentre from "./pages/Help/Index"
+import PurchaseHistory from "./pages/PurchaseHistory"
 
 
 // Lazy-loaded components
@@ -55,6 +56,7 @@ function App() {
           <Route path="/notifications" element={<Notification />} />
           <Route path="/profile" element={<PublicProfile />} />
           <Route path="/learning/dashboard/:slug" element={<LearningDashboard />} />
+          <Route path="/purchase-history" element={<PurchaseHistory />} />
         </Route>
 
       </Routes>

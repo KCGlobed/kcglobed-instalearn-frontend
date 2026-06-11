@@ -63,5 +63,6 @@ export const API_ENDPOINTS = {
     FEATURED_BLOG: "cms/get-featured-blogs/",
     BLOG_DETAIL: "cms/view-blog-detail",
     DOWNLOAD_CERTIFICATE: "user_study/get-course-certificate/",
+    PURCHASE_HISTORY: "subscription/get-purchase-history/",
 
 }

@@ -621,6 +621,7 @@ const ProfileDropdown = () => {
                         <a href="#" onClick={(e) => { e.preventDefault(); navigate('/my-learning'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">My Learning</a>
                         <a href="#" onClick={(e) => { e.preventDefault(); navigate('/cart'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">My Cart</a>
                         <a href="#" onClick={(e) => { e.preventDefault(); navigate('/my-learning?tab=wishlist'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Wishlist</a>
+                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/purchase-history'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Purchase History</a>
                     </div>
 
                     {/* <div className="h-px bg-[#E9EAF0] my-1 mx-5" /> */}
