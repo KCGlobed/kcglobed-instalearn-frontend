@@ -184,6 +184,80 @@ export const addCommentOnAnnouncementsApi = async (payload: any): Promise<any> =
   return await apiRequest(API_ENDPOINTS.ADD_COMMENT_ON_ANNOUNCEMENTS, 'POST', payload);
 }
 
+export const createReminderApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.CREATE_REMINDER, 'POST', payload);
+}
+
+export const updateReminderApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.UPDATE_REMINDER, 'POST', payload);
+}
+
+export const deleteReminderApi = async (id: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.DELETE_REMINDER}${id}`, 'DELETE');
+}
+
+export const getReminderApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.GET_REMINDER, 'GET');
+}
+
+export const getUserCourseReviewComments = async (courseId: number): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_COURSE_REVIEW_COMMENTS}/${courseId}`, 'GET');
+}
+
+export const getGlobalSearchApi = async (query: string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_GLOBAL_SEARCH}?name=${query}`, 'GET');
+}
+
+export const quickContactApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.CREATE_QUICK_CONTACT, 'POST', payload);
+}
+
+export const getRelatedCourseApi = async (payload: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.RELATED_COURSE}?course_id=${payload}`, 'GET');
+}
+
+export const getBlogCategoryApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.BLOG_CATEGORY, 'GET');
+}
+
+export const getBlogByCategoryApi = async (categoryId: any): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.BLOG_BY_CATEGORY}${categoryId}`, 'GET');
+}
+
+export const getAllBlogApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.ALL_BLOG, 'GET');
+}
+
+export const getFeaturedBlogApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.FEATURED_BLOG, 'GET');
+}
+
+export const getBlogDetailApi = async (slug: string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.BLOG_DETAIL}/${slug}`, 'GET');
+}
+
+export const getCourseCertificate = async (courseId: number): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.DOWNLOAD_CERTIFICATE}${courseId}`, 'GET');
+}
+
+export const getPurchaseHistory = async (): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.PURCHASE_HISTORY}`, 'GET');
+}
+
+export const socialLoginApi = async (payload: {
+  name: string;
+  email: string;
+  social_id: string;
+  social_type: string;
+  token: string;
+  role: string;
+  device_id: string;
+  device_type: string;
+}): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.SOCIAL_LOGIN, 'POST', payload);
+}
+
+
 
 
 

@@ -19,6 +19,7 @@ interface CourseItem {
         avg_rating?: number;
         total_students?: number | string;
         categories: { category_info: { name: string } }[];
+        enrolled_students?: number | string
     };
 }
 
@@ -63,11 +64,11 @@ const CourseCard = memo(({ course }: { course: CourseItem }) => {
                     <div className="flex items-center gap-1">
                         <Star className="w-4 h-4 text-[#FD8E1F] fill-[#FD8E1F]" />
                         <span className="text-[#1D2026] text-[13px] font-semibold">
-                            {info?.avg_rating ?? 5}
+                            {parseFloat(info?.avg_rating?.toString() as string).toFixed(1) ?? 5}
                         </span>
                     </div>
                     <div className="text-[12px] text-[#4E5566]">
-                        <span className="font-semibold">{info?.total_students ?? "100k"}</span>{" "}
+                        <span className="font-semibold">{info?.enrolled_students ?? "100k"}</span>{" "}
                         students
                     </div>
                 </div>
@@ -141,6 +142,8 @@ const AllInOneFinance = () => {
     const handleTabClick = useCallback((id: number) => {
         setActiveTab(id);
     }, []);
+
+    console.log(courses, "all finance cousre")
 
     return (
         <section className="bg-[#FFFFFE] py-20 px-4 xl:px-0">

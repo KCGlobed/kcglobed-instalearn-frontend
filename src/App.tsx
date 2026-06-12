@@ -10,6 +10,11 @@ import Notification from "./pages/Notification"
 import PublicProfile from "./pages/PublicProfile"
 import LearningDashboard from "./pages/LearningDashboard"
 import SignupPage from "./pages/Singup"
+import Blogs from "./pages/Blog"
+import BlogDetail from "./pages/Blog/BlogDetail"
+import HelpCentre from "./pages/Help/Index"
+import PurchaseHistory from "./pages/PurchaseHistory"
+
 
 // Lazy-loaded components
 const Home = lazy(() => import("./pages/Home/Index"))
@@ -35,17 +40,23 @@ function App() {
         <Route path="/user/reset" element={<ResetPassword />} />
         <Route path="/courses" element={<Courses />} />
         <Route path="/courses/detail/:id" element={<CourseDetail />} />
+        <Route path="/course-details/:id" element={<CourseDetail />} />
         <Route path="/categories" element={<CategoryPage />} />
         <Route path="/categories/:id" element={<CategoryPage />} />
         <Route path="/coming-soon" element={<ComingSoon />} />
         <Route path="/watch-course" element={<WatchCourse />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/blogs" element={<Blogs />} />
+        <Route path="/blogs/:slug" element={<BlogDetail />} />
+        <Route path="/help-centre" element={<HelpCentre />} />
+
         <Route element={<PrivateRoute />}>
           <Route path="/my-learning" element={<MyLearning />} />
           <Route path="/notifications" element={<Notification />} />
           <Route path="/profile" element={<PublicProfile />} />
           <Route path="/learning/dashboard/:slug" element={<LearningDashboard />} />
+          <Route path="/purchase-history" element={<PurchaseHistory />} />
         </Route>
 
       </Routes>

@@ -9,6 +9,7 @@ import type { RootState } from '../../store/store';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Loader from '../../components/Loader/Loader';
+import GoogleLoginButton from '../../components/Auth/GoogleLoginButton';
 
 const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -174,12 +175,11 @@ const LoginPage = () => {
                                 <div className="flex-1 h-px bg-[#2F2B3D1F]" />
                             </div>
 
-                            <div className="flex justify-center gap-4 pb-10">
-                                <a href="#" className="hover:opacity-80 transition-opacity"><img src="/fb-icon.svg" alt="facebook" /></a>
-                                <a href="#" className="hover:opacity-80 transition-opacity"><img src="/twitter-icon.svg" alt="twitter" /></a>
-                                <a href="#" className="hover:opacity-80 transition-opacity"><img src="/git-icon.svg" alt="github" /></a>
-                                <a href="#" className="hover:opacity-80 transition-opacity"><img src="/Google-icon.svg" alt="Google" /></a>
+                            <div className="flex flex-col items-center gap-3 pb-10">
+                                <p className="text-xs text-[#2F2B3D80]">Continue with your Google account</p>
+                                <GoogleLoginButton width={320} text="continue_with" />
                             </div>
+
                         </div>
                     </div>
                 </div>

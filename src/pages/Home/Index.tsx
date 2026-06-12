@@ -8,10 +8,13 @@ import AllInOneFinance from "../../components/HomeComponent/AllInOneFinance"
 import RecentlyAddedCourses from "../../components/HomeComponent/RecentlyAddedCourses"
 import HomeBanner from "../../components/HomeComponent/HomeBanner"
 import LearningFocus from "../../components/HomeComponent/LearningFocus"
+import GoogleOneTap from "../../components/Auth/GoogleOneTap"
 
 const HomePage = () => {
     return (
         <>
+            {/* Google One Tap — auto-prompts unauthenticated users */}
+            <GoogleOneTap />
             <TopHeader />
             <MainHeader />
             <HomeBanner />

@@ -9,6 +9,9 @@ import type { RootState } from '../../store/store';
 import { fetchNotes, createNote, updateNote, deleteNote } from '../../store/slices/noteSlice';
 import type { Note as ApiNote } from '../../store/slices/noteSlice';
 import { setActiveLesson } from '../../store/slices/courseDashboardLectureSlice';
+import DeleteModal from '../Modals/DeleteModal';
+import { useModal } from '../Modals/ModalContext';
+import toast from 'react-hot-toast';
 
 // --- Helper Functions ---
 const formatDuration = (secondsNum: number | string) => {
@@ -19,14 +22,14 @@ const formatDuration = (secondsNum: number | string) => {
 };
 
 // --- Notes Editor Component ---
-const NotesEditor = ({ 
-    onSave, 
-    onCancel, 
-    currentTimestamp = "0:00" 
-}: { 
-    onSave: (content: string) => Promise<void>, 
-    onCancel: () => void, 
-    currentTimestamp?: string 
+const NotesEditor = ({
+    onSave,
+    onCancel,
+    currentTimestamp = "0:00"
+}: {
+    onSave: (content: string) => Promise<void>,
+    onCancel: () => void,
+    currentTimestamp?: string
 }) => {
     const [value, setValue] = useState('');
     const [isFocused, setIsFocused] = useState(false);
@@ -86,15 +89,15 @@ const NotesEditor = ({
                     </div>
                 )}
                 <div className="flex justify-end gap-2 mt-2">
-                    <button 
-                        onClick={onCancel} 
+                    <button
+                        onClick={onCancel}
                         disabled={isSaving}
                         className="px-4 py-2 text-sm font-bold text-[#2d2f31] hover:bg-[#f7f9fa] transition-colors rounded-sm disabled:opacity-50"
                     >
                         Cancel
                     </button>
-                    <button 
-                        onClick={handleSave} 
+                    <button
+                        onClick={handleSave}
                         disabled={isSaving}
                         className="px-4 py-2 text-sm font-bold bg-[#a435f0] text-white rounded-sm hover:bg-[#8712d3] transition-colors disabled:opacity-50 flex items-center gap-2"
                     >
@@ -107,16 +110,16 @@ const NotesEditor = ({
 };
 
 // --- Note Card Component ---
-const NoteCard = ({ 
-    note, 
-    onDelete, 
+const NoteCard = ({
+    note,
+    onDelete,
     onUpdate,
-    onTimestampClick 
-}: { 
-    note: ApiNote, 
-    onDelete: (id: number) => void, 
+    onTimestampClick
+}: {
+    note: ApiNote,
+    onDelete: (note: ApiNote) => void,
     onUpdate: (id: number, content: string) => Promise<void>,
-    onTimestampClick: (note: ApiNote) => void 
+    onTimestampClick: (note: ApiNote) => void
 }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editValue, setEditValue] = useState(note.note_content);
@@ -176,16 +179,16 @@ const NoteCard = ({
                     <h3 className="font-bold text-base text-[#2d2f31] leading-snug">{lectureTitle}</h3>
                     {!isEditing && (
                         <div className="flex gap-3 text-[#2d2f31] shrink-0">
-                            <button 
-                                onClick={() => setIsEditing(true)} 
-                                className="hover:text-[#a435f0] transition-colors" 
+                            <button
+                                onClick={() => setIsEditing(true)}
+                                className="hover:text-[#a435f0] transition-colors"
                                 title="Edit note"
                             >
                                 <Pencil size={16} />
                             </button>
-                            <button 
-                                onClick={() => onDelete(note.id)} 
-                                className="hover:text-[#a435f0] transition-colors" 
+                            <button
+                                onClick={() => onDelete(note)}
+                                className="hover:text-[#a435f0] transition-colors"
                                 title="Delete note"
                             >
                                 <Trash2 size={16} />
@@ -214,15 +217,15 @@ const NoteCard = ({
                             </div>
                         )}
                         <div className="flex justify-end gap-2 mt-2">
-                            <button 
-                                onClick={handleCancel} 
+                            <button
+                                onClick={handleCancel}
                                 disabled={isSaving}
                                 className="px-4 py-2 text-sm font-bold text-[#2d2f31] hover:bg-[#f7f9fa] transition-colors rounded-sm disabled:opacity-50"
                             >
                                 Cancel
                             </button>
-                            <button 
-                                onClick={handleSave} 
+                            <button
+                                onClick={handleSave}
                                 disabled={isSaving}
                                 className="px-4 py-2 text-sm font-bold bg-[#a435f0] text-white rounded-sm hover:bg-[#8712d3] transition-colors disabled:opacity-50 flex items-center gap-2"
                             >
@@ -242,16 +245,16 @@ const NoteCard = ({
 };
 
 // --- Notes List Component ---
-const NotesList = ({ 
-    notes, 
-    onDelete, 
+const NotesList = ({
+    notes,
+    onDelete,
     onUpdate,
-    onTimestampClick 
-}: { 
-    notes: ApiNote[], 
-    onDelete: (id: number) => void, 
+    onTimestampClick
+}: {
+    notes: ApiNote[],
+    onDelete: (note: ApiNote) => void,
     onUpdate: (id: number, content: string) => Promise<void>,
-    onTimestampClick: (note: ApiNote) => void 
+    onTimestampClick: (note: ApiNote) => void
 }) => {
     if (notes.length === 0) {
         return (
@@ -263,12 +266,12 @@ const NotesList = ({
     return (
         <div className="flex flex-col">
             {notes.map(note => (
-                <NoteCard 
-                    key={note.id} 
-                    note={note} 
-                    onDelete={onDelete} 
+                <NoteCard
+                    key={note.id}
+                    note={note}
+                    onDelete={onDelete}
                     onUpdate={onUpdate}
-                    onTimestampClick={onTimestampClick} 
+                    onTimestampClick={onTimestampClick}
                 />
             ))}
         </div>
@@ -290,6 +293,31 @@ const NotesContainer = () => {
     const [videoTime, setVideoTime] = useState(0);
     const [filterOption, setFilterOption] = useState<'all' | 'current'>('all');
     const [sortOption, setSortOption] = useState<'recent' | 'oldest'>('recent');
+    const { showModal } = useModal();
+
+    const handleDeleteNote = (note: ApiNote) => {
+        showModal({
+            content: (
+                <DeleteModal
+                    title="Delete Note "
+                    description={`Are you sure you want to delete this note?`}
+                    confirmText="Delete"
+                    onConfirm={async () => {
+                        try {
+                            await dispatch(deleteNote(note.id)).unwrap();
+                            toast.success('Note deleted successfully!');
+                            dispatch(fetchNotes(courseId));
+                        } catch (err: any) {
+                            console.error('Failed to delete note', err);
+                            toast.error(err?.message || 'Failed to delete note');
+                            throw err;
+                        }
+                    }}
+                />
+            ),
+            size: "md"
+        });
+    };
 
     // Fetch notes on mount/course change
     useEffect(() => {
@@ -356,12 +384,7 @@ const NotesContainer = () => {
         await dispatch(updateNote({ courseId: id, data: { note_content: content } })).unwrap();
     };
 
-    const handleDeleteNote = async (id: number) => {
-        const confirmDelete = window.confirm("Are you sure you want to delete this note?");
-        if (confirmDelete) {
-            await dispatch(deleteNote(id)).unwrap();
-        }
-    };
+
 
     // Filter notes: All vs Current Lecture
     const filteredNotes = notes.filter(note => {
@@ -397,17 +420,17 @@ const NotesContainer = () => {
                 </div>
             ) : (
                 <div className="mb-8">
-                    <NotesEditor 
-                        onSave={handleSaveNote} 
-                        onCancel={() => setIsEditing(false)} 
-                        currentTimestamp={formatDuration(capturedTime)} 
+                    <NotesEditor
+                        onSave={handleSaveNote}
+                        onCancel={() => setIsEditing(false)}
+                        currentTimestamp={formatDuration(capturedTime)}
                     />
                 </div>
             )}
 
             {/* Filters Area */}
             <div className="flex gap-4 mb-6">
-                <select 
+                <select
                     value={filterOption}
                     onChange={(e) => setFilterOption(e.target.value as 'all' | 'current')}
                     className="border border-[#2d2f31] rounded-sm px-4 py-2 font-bold text-sm bg-white text-[#2d2f31] focus:outline-none focus:border-[#a435f0] cursor-pointer"
@@ -415,7 +438,7 @@ const NotesContainer = () => {
                     <option value="all">All lectures</option>
                     <option value="current">Current lecture</option>
                 </select>
-                <select 
+                <select
                     value={sortOption}
                     onChange={(e) => setSortOption(e.target.value as 'recent' | 'oldest')}
                     className="border border-[#2d2f31] rounded-sm px-4 py-2 font-bold text-sm bg-white text-[#2d2f31] focus:outline-none focus:border-[#a435f0] cursor-pointer"
@@ -437,11 +460,11 @@ const NotesContainer = () => {
                 </div>
             ) : (
                 /* Notes List */
-                <NotesList 
-                    notes={sortedNotes} 
-                    onDelete={handleDeleteNote} 
+                <NotesList
+                    notes={sortedNotes}
+                    onDelete={handleDeleteNote}
                     onUpdate={handleUpdateNote}
-                    onTimestampClick={handleTimestampClick} 
+                    onTimestampClick={handleTimestampClick}
                 />
             )}
         </div>

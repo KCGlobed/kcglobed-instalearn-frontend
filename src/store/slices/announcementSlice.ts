@@ -98,8 +98,6 @@ export const addCommentOnAnnouncements = createAsyncThunk(
     async (payload: any, { rejectWithValue }) => {
         try {
             const response = await addCommentOnAnnouncementsApi(payload);
-
-            // Handles both axios response and direct array
             if (response?.data && Array.isArray(response.data)) {
                 return response.data;
             } else if (

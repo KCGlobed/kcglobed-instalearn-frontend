@@ -7,21 +7,52 @@ import Footer from '../../layouts/Footer';
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import type { RootState } from '../../store/store';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { fetchCourseById } from '../../store/slices/courseDetailSlice';
+import _Slider from 'react-slick';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import RecommendationCard from '../../components/Cart/RecommendationCard';
+// Vite ESM fix — same pattern as ToolSlider.tsx
+const Slider = (_Slider as any).default || _Slider;
 
 
 const CourseDetail = () => {
     const { id } = useParams();
     const { courseDetail, loading, error } = useAppSelector((state: RootState) => state.courseDetail);
-
     const dispatch = useAppDispatch();
+    const [recommendedCourses, setRecommendedCourses] = useState<any[]>([]);
+    const sliderRef = useRef<typeof Slider>(null);
 
-    console.log(courseDetail, "courseDetail");
+    const sliderSettings = {
+        dots: false,
+        infinite: recommendedCourses.length > 5,
+        speed: 600,
+        autoplay: true,
+        autoplaySpeed: 3000,
+        pauseOnHover: true,
+        slidesToShow: 6,
+        slidesToScroll: 1,
+        arrows: false,
+        responsive: [
+            { breakpoint: 1280, settings: { slidesToShow: 5 } },
+            { breakpoint: 1024, settings: { slidesToShow: 4 } },
+            { breakpoint: 768, settings: { slidesToShow: 3 } },
+            { breakpoint: 560, settings: { slidesToShow: 2 } },
+            { breakpoint: 400, settings: { slidesToShow: 1 } },
+        ],
+    };
 
     useEffect(() => {
         dispatch(fetchCourseById(Number(id)));
     }, [id]);
+
+    useEffect(() => {
+        if (courseDetail?.related_course && courseDetail.related_course.length > 0) {
+            setRecommendedCourses(courseDetail.related_course);
+        }
+    }, [courseDetail]);
 
 
 
@@ -44,6 +75,41 @@ const CourseDetail = () => {
                         </aside>
                     </div>
                 </div>
+            </div>
+            <div className="container mx-auto px-4 md:px-6 pb-8 lg:max-w-7xl">
+                {/* Recommendations Section */}
+                {recommendedCourses.length > 0 && (
+                    <section className="mt-16">
+                        <div className="flex items-center justify-between mb-5">
+                            <h2 className="text-[18px] font-bold tracking-tight">You might also like</h2>
+                            <div className="flex items-center gap-1">
+                                <button
+                                    onClick={() => (sliderRef.current as any)?.slickPrev()}
+                                    className="p-1.5 rounded border border-gray-200 text-gray-500 hover:border-indigo-500 hover:text-indigo-600 transition-colors"
+                                    aria-label="Previous"
+                                >
+                                    <ChevronLeft className="w-4 h-4" />
+                                </button>
+                                <button
+                                    onClick={() => (sliderRef.current as any)?.slickNext()}
+                                    className="p-1.5 rounded border border-gray-200 text-gray-500 hover:border-indigo-500 hover:text-indigo-600 transition-colors"
+                                    aria-label="Next"
+                                >
+                                    <ChevronRight className="w-4 h-4" />
+                                </button>
+                            </div>
+                        </div>
+                        <div className="-mx-2">
+                            <Slider ref={sliderRef} {...sliderSettings}>
+                                {recommendedCourses.map((course: any, index: number) => (
+                                    <div key={course.id ?? index} className="px-2 outline-none">
+                                        <RecommendationCard index={index} course={course} />
+                                    </div>
+                                ))}
+                            </Slider>
+                        </div>
+                    </section>
+                )}
             </div>
             <Footer />
         </>

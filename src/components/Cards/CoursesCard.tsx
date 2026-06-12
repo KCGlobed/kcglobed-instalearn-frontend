@@ -103,6 +103,8 @@ const CoursesCard: React.FC<CoursesCardProps> = ({ isSidebarOpen = true, courses
     //     }
     // ];
 
+    console.log(courses, "all finance cousre")
+
     if (loading) {
         return (
             <SkeltonLoader loaderType='course' />
@@ -162,10 +164,10 @@ const CoursesCard: React.FC<CoursesCardProps> = ({ isSidebarOpen = true, courses
                             <div className="mt-auto pt-4 border-t border-[#E9EAF0] flex items-center justify-between">
                                 <div className="flex items-center gap-1">
                                     <Star className="w-4 h-4 text-[#FD8E1F] fill-[#FD8E1F]" />
-                                    <span className="text-[#1D2026] text-[13px] font-semibold">5.0</span>
+                                    <span className="text-[#1D2026] text-[13px] font-semibold">{parseFloat(course?.avg_rating).toFixed(1)}</span>
                                 </div>
                                 <div className="text-[12px] text-[#4E5566]">
-                                    <span className="font-semibold">265.7K</span> students
+                                    <span className="font-semibold">180K</span> students
                                 </div>
                             </div>
                         </div>

@@ -40,6 +40,7 @@ const BrowseDropdown = () => {
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const { categories } = useSelector((state: RootState) => state.homepageCategory);
+    const navigate = useNavigate();
 
     // Close on outside click
     useEffect(() => {
@@ -49,6 +50,11 @@ const BrowseDropdown = () => {
         document.addEventListener("mousedown", handler);
         return () => document.removeEventListener("mousedown", handler);
     }, []);
+
+    const handleBrowseNavigate = (cat: any) => {
+        setOpen(false);
+        navigate(`/categories/${cat.id}`)
+    }
 
     return (
         <div ref={ref} style={{ position: "relative", overflow: "visible" }}>
@@ -101,7 +107,7 @@ const BrowseDropdown = () => {
                                 role="option"
                                 aria-selected={false}
                                 className="flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-[#F5F4FF] transition-colors duration-100 group"
-                                onClick={() => setOpen(false)}
+                                onClick={() => handleBrowseNavigate(cat)}
                             >
                                 <BookOpen className="w-4 h-4 text-[#8C94A3] group-hover:text-[#5624D0] transition-colors shrink-0" />
                                 <span className="text-[13px] text-[#1D2026] group-hover:text-[#5624D0] font-medium transition-colors">
@@ -488,6 +494,10 @@ const CartDropdown = () => {
         navigate("/cart")
     }
 
+    const handleCourseDetailPage = (course_id: any) => {
+        navigate(`/courses/detail/${course_id}`)
+    }
+
     return (
         <div className="relative" ref={dropdownRef} style={{ overflow: "visible" }}>
             <button
@@ -518,7 +528,7 @@ const CartDropdown = () => {
                     <div className="max-h-[320px] overflow-y-auto">
                         {cart.length > 0 ? (
                             cart.map((item: any) => (
-                                <div key={item.course_info?.id} className="px-5 py-3.5 border-b border-[#f3f4f6] last:border-0 hover:bg-[#F5F4FF]/50 cursor-pointer transition-colors flex gap-3">
+                                <div onClick={() => handleCourseDetailPage(item.course_info?.id)} key={item.course_info?.id} className="px-5 py-3.5 border-b border-[#f3f4f6] last:border-0 hover:bg-[#F5F4FF]/50 cursor-pointer transition-colors flex gap-3">
                                     <img src={item.course_info?.image} alt={item.course_info?.title} className="w-16 h-9 object-cover rounded bg-[#F5F4FF]" />
                                     <div className="flex-1 min-w-0">
                                         <p className="text-[13px] font-bold text-[#1D2026] leading-tight truncate">{item.course_info?.name}</p>
@@ -611,6 +621,7 @@ const ProfileDropdown = () => {
                         <a href="#" onClick={(e) => { e.preventDefault(); navigate('/my-learning'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">My Learning</a>
                         <a href="#" onClick={(e) => { e.preventDefault(); navigate('/cart'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">My Cart</a>
                         <a href="#" onClick={(e) => { e.preventDefault(); navigate('/my-learning?tab=wishlist'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Wishlist</a>
+                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/purchase-history'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Purchase History</a>
                     </div>
 
                     {/* <div className="h-px bg-[#E9EAF0] my-1 mx-5" /> */}

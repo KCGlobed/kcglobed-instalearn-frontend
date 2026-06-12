@@ -75,6 +75,19 @@ const CourseSidebar = () => {
     }
 
 
+    const formatDuration = (seconds: string | number | null | undefined) => {
+        if (!seconds) return "0h 0m";
+
+        const secNum = typeof seconds === 'string' ? parseFloat(seconds) : seconds;
+        if (!secNum || isNaN(secNum)) return "0h 0m";
+
+        const hours = Math.floor(secNum / 3600);
+        const minutes = Math.floor((secNum % 3600) / 60);
+
+        return `${hours}h ${minutes}m`;
+    };
+
+
 
 
 
@@ -117,7 +130,7 @@ const CourseSidebar = () => {
                             <Clock className="w-5 h-5" />
                             <span>Course Duration</span>
                         </div>
-                        <span className="font-semibold text-gray-800">{courseDetail?.duration ?? '—'}</span>
+                        <span className="font-semibold text-gray-800">{formatDuration(courseDetail?.total_video_duration)} </span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center gap-3 text-gray-500">

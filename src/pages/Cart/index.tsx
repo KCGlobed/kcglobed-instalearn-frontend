@@ -1,16 +1,55 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useAppSelector } from '../../hooks/useRedux';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { viewCartDetails } from '../../store/slices/courseCartSlice';
+import { viewWishlistAction } from '../../store/slices/courseWishList';
 import type { RootState } from '../../store/store';
 import MainHeader from '../../layouts/MainHeader';
 import CartItem from '../../components/Cart/CartItem';
 import CartSummary from '../../components/Cart/CartSummary';
 import EmptyCart from '../../components/Cart/EmptyCart';
 import RecommendationCard from '../../components/Cart/RecommendationCard';
+import { getRelatedCourseApi } from '../../utils/service';
+import _Slider from 'react-slick';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+
+// Vite ESM fix — same pattern as ToolSlider.tsx
+const Slider = (_Slider as any).default || _Slider;
 
 const Cart = () => {
+    const dispatch = useAppDispatch();
     const { cartItems: cart, loading } = useAppSelector((state: RootState) => state.cart);
+    const { isAuthenticated } = useAppSelector((state: RootState) => state.auth);
+    const [recommendedCourses, setRecommendedCourses] = useState([]);
+    const sliderRef = useRef<typeof Slider>(null);
+
+    const sliderSettings = {
+        dots: false,
+        infinite: recommendedCourses.length > 5,
+        speed: 600,
+        autoplay: true,
+        autoplaySpeed: 3000,
+        pauseOnHover: true,
+        slidesToShow: 6,
+        slidesToScroll: 1,
+        arrows: false,
+        responsive: [
+            { breakpoint: 1280, settings: { slidesToShow: 5 } },
+            { breakpoint: 1024, settings: { slidesToShow: 4 } },
+            { breakpoint: 768,  settings: { slidesToShow: 3 } },
+            { breakpoint: 560,  settings: { slidesToShow: 2 } },
+            { breakpoint: 400,  settings: { slidesToShow: 1 } },
+        ],
+    };
+
+    useEffect(() => {
+        dispatch(viewCartDetails());
+        if (isAuthenticated) {
+            dispatch(viewWishlistAction());
+        }
+    }, [dispatch, isAuthenticated]);
 
     const { totalPrice, originalPrice, discountCount } = useMemo(() => {
         const total = cart.reduce((sum, item) => sum + (item.course_info?.price || 0), 0);
@@ -21,6 +60,26 @@ const Cart = () => {
             discountCount: original - total
         };
     }, [cart]);
+
+
+
+    const getRecommendedCourses = async () => {
+        const payload = {
+            course_id: cart.map((item: any) => item.course_info?.id).join(","),
+        }
+        if (cart.length > 0) {
+            const response = await getRelatedCourseApi(payload.course_id);
+            if (response) {
+                setRecommendedCourses(response.data);
+            }
+        }
+    }
+
+    useEffect(() => {
+        getRecommendedCourses();
+    }, [cart]);
+
+
 
     if (loading && cart.length === 0) {
         return (
@@ -68,14 +127,38 @@ const Cart = () => {
                     </div>
 
                     {/* Recommendations Section */}
-                    <section className="mt-20">
-                        <h2 className="text-[18px] font-bold mb-6">You might also like</h2>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
-                            {[1, 2, 3, 4, 5, 6].map((i) => (
-                                <RecommendationCard key={i} index={i} />
-                            ))}
-                        </div>
-                    </section>
+                    {recommendedCourses.length > 0 && (
+                        <section className="mt-16">
+                            <div className="flex items-center justify-between mb-5">
+                                <h2 className="text-[18px] font-bold tracking-tight">You might also like</h2>
+                                <div className="flex items-center gap-1">
+                                    <button
+                                        onClick={() => (sliderRef.current as any)?.slickPrev()}
+                                        className="p-1.5 rounded border border-gray-200 text-gray-500 hover:border-indigo-500 hover:text-indigo-600 transition-colors"
+                                        aria-label="Previous"
+                                    >
+                                        <ChevronLeft className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                        onClick={() => (sliderRef.current as any)?.slickNext()}
+                                        className="p-1.5 rounded border border-gray-200 text-gray-500 hover:border-indigo-500 hover:text-indigo-600 transition-colors"
+                                        aria-label="Next"
+                                    >
+                                        <ChevronRight className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="-mx-2">
+                                <Slider ref={sliderRef} {...sliderSettings}>
+                                    {recommendedCourses.map((course: any, index: number) => (
+                                        <div key={course.id ?? index} className="px-2 outline-none">
+                                            <RecommendationCard index={index} course={course} />
+                                        </div>
+                                    ))}
+                                </Slider>
+                            </div>
+                        </section>
+                    )}
                 </main>
             </div>
         </>

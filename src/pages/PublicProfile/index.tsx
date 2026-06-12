@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import MainHeader from '../../layouts/MainHeader';
 import Footer from '../../layouts/Footer';
 import ProfileTab from '../../components/ProfileComponents/ProfileTab';
@@ -9,7 +9,7 @@ import NotificationTab from '../../components/ProfileComponents/NotificationTab'
 import PlaceholderTab from '../../components/ProfileComponents/PlaceholderTab';
 import { getUserProfileApi } from '../../utils/service';
 import toast from 'react-hot-toast';
-import { Loader2, User, Camera, Bell, ShieldCheck, ChevronRight, Settings } from 'lucide-react';
+import { Loader2, User, Camera, Bell, ShieldCheck, ChevronRight, Settings, ReceiptText } from 'lucide-react';
 
 // ─── CONFIGURATION ───────────────────────────────────────────────────────────
 
@@ -24,6 +24,7 @@ const TAB_CONFIG = [
 
 const PublicProfile = () => {
     const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
     const currentTab = searchParams.get('tab') || 'profile';
     const [profileData, setProfileData] = React.useState<any>(null);
     const [isLoading, setIsLoading] = React.useState(true);
@@ -114,6 +115,14 @@ const PublicProfile = () => {
                                         </button>
                                     );
                                 })}
+
+                                <button
+                                    onClick={() => navigate('/purchase-history')}
+                                    className="flex items-center gap-3 px-4 py-3 rounded-lg text-[13px] md:text-[14px] font-medium transition-all shrink-0 lg:shrink text-[#4E5566] hover:bg-[#F8F9FB] hover:text-[#5624D0]"
+                                >
+                                    <ReceiptText className="w-4.5 h-4.5 text-[#8C94A3]" />
+                                    <span className="whitespace-nowrap">Purchase History</span>
+                                </button>
                             </nav>
                         </div>
                     </aside>

@@ -8,5 +8,9 @@ export const storeUserProfile = (userProfile: string) => localStorage.setItem("u
 
 
 export const clearToken = () => {
+  const deviceId = localStorage.getItem("device_id");
   localStorage.clear();
+  if (deviceId) {
+    localStorage.setItem("device_id", deviceId);
+  }
 }
