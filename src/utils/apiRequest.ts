@@ -2,7 +2,7 @@
 import { API_BASE_URL } from "./apiEndpoints";
 import tryRefreshToken from "./tokenService";
 
-import { getToken } from "./tokenStorage";
+import { getToken, clearToken } from "./tokenStorage";
 
 export async function apiRequest<T>(
   url: string,
@@ -37,7 +37,7 @@ export async function apiRequest<T>(
     }
     else{
       console.error("Token refresh failed, please log in again.");
-      localStorage.clear()
+      clearToken()
     }
   }
 

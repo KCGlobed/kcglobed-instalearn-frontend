@@ -244,6 +244,20 @@ export const getPurchaseHistory = async (): Promise<any> => {
   return await apiRequest(`${API_ENDPOINTS.PURCHASE_HISTORY}`, 'GET');
 }
 
+export const socialLoginApi = async (payload: {
+  name: string;
+  email: string;
+  social_id: string;
+  social_type: string;
+  token: string;
+  role: string;
+  device_id: string;
+  device_type: string;
+}): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.SOCIAL_LOGIN, 'POST', payload);
+}
+
+
 
 
 
