@@ -123,9 +123,29 @@ const SkeltonLoader = ({ loaderType }: { loaderType: string }) => {
                                     ))}
                                 </>
                             ) :
-                                (
-                                    <div>SkeltonLoader</div>
-                                )
+                                loaderType === "reminder" ? (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full">
+                                        {[1, 2, 3, 4].map((item) => (
+                                            <div
+                                                key={item}
+                                                className="bg-white border border-[#E9EAF0] rounded-[4px] p-5 flex flex-col justify-between min-h-[180px] animate-pulse"
+                                            >
+                                                <div className="space-y-3 flex-1">
+                                                    <div className="h-5 bg-gray-200 rounded w-3/4 mb-4"></div>
+                                                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                                                    <div className="h-4 bg-gray-200 rounded w-2/5"></div>
+                                                </div>
+                                                <div className="pt-3 border-t border-[#F1F2F4] space-y-2 mt-auto">
+                                                    <div className="h-3 bg-gray-200 rounded w-1/4"></div>
+                                                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) :
+                                    (
+                                        <div>SkeltonLoader</div>
+                                    )
             }
         </>
 

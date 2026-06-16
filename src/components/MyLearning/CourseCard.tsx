@@ -22,6 +22,20 @@ const CourseCard: React.FC<CourseCardProps> = ({
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navigate = useNavigate();
 
+    const handleEnrolledCourseClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!course.course_started) {
+            navigate(`/my-commitment`, {
+                state: {
+                    course: course,
+                }
+            });
+        } else {
+            navigate(`/learning/dashboard/${course.id}`);
+        }
+    };
+
     // Enrolled Card View
     if (type === 'enrolled') {
         return (
@@ -29,7 +43,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
                 className={`group bg-white rounded-[4px] border border-[#E9EAF0] transition-all duration-300 flex flex-col h-full relative ${isMenuOpen ? 'z-50 shadow-2xl' : 'z-10 hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] hover:-translate-y-2 hover:z-20'}`}
             >
                 {/* Image Section */}
-                <div onClick={() => navigate(`/learning/dashboard/${course.id}`)} className=" cursor-pointer relative aspect-video overflow-hidden rounded-t-[4px] bg-gray-100">
+                <div onClick={(e) => handleEnrolledCourseClick(e)} className=" cursor-pointer relative aspect-video overflow-hidden rounded-t-[4px] bg-gray-100">
                     <img
                         src={course.image}
                         alt={course.name}
@@ -64,11 +78,11 @@ const CourseCard: React.FC<CourseCardProps> = ({
 
                 {/* Content Section */}
                 <div className="p-4 flex flex-col flex-1">
-                    <Link to={`/learning/dashboard/${course.id}`} className="hover:text-[#5624D0] transition-colors">
+                    <div onClick={handleEnrolledCourseClick} className="cursor-pointer hover:text-[#5624D0] transition-colors">
                         <h3 className="text-[15px] font-bold text-[#1D2026] line-clamp-2 leading-snug mb-2">
                             {course.name}
                         </h3>
-                    </Link>
+                    </div>
                     <p className="text-[12px] text-[#6E7485] line-clamp-2 mb-4 flex-1">
                         {course.short_description?.replace(/<[^>]*>?/gm, '') || "No description available"}
                     </p>
