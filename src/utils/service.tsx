@@ -257,6 +257,10 @@ export const socialLoginApi = async (payload: {
   return await apiRequest(API_ENDPOINTS.SOCIAL_LOGIN, 'POST', payload);
 }
 
+export const markCourseStartedApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.MARK_COURSE_STARTED, 'POST', payload);
+}
+
 
 
 

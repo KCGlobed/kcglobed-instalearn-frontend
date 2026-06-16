@@ -16,10 +16,7 @@ const MyLearning = () => {
     const tabConfig: TabConfig[] = useMemo(() => [
         { key: 'courses', label: 'My Courses', component: <MyCoursesTab /> },
         { key: 'wishlist', label: 'Wishlist', component: <WishlistTab /> },
-        { key: 'reminder', label: 'Reminder', component: <MyAllReminderTab /> },
-        // { key: 'overview', label: 'Overview', component: <OverviewTab /> },
-        // { key: 'learning-paths', label: 'Learning paths', component: <div className="text-center py-24 text-gray-500 bg-gray-50 rounded-3xl border border-gray-100">Learning paths feature is coming soon!</div> },
-        // { key: 'archived', label: 'Archived', component: <div className="text-center py-24 text-gray-500 bg-gray-50 rounded-3xl border border-gray-100">You have no archived courses.</div> },
+        { key: 'reminder', label: 'Reminder', component: <MyAllReminderTab /> }
     ], []);
 
     const handleTabChange = (key: string) => {

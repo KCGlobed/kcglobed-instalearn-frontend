@@ -65,4 +65,5 @@ export const API_ENDPOINTS = {
     DOWNLOAD_CERTIFICATE: "user_study/get-course-certificate/",
     PURCHASE_HISTORY: "subscription/get-purchase-history/",
     SOCIAL_LOGIN: "user/social-login/",
+    MARK_COURSE_STARTED: "user_study/mark-course-started/",
 }

@@ -22,6 +22,7 @@ import { useModal } from '../Modals/ModalContext';
 import { LearningRemiderForm } from '../Forms/LearningRemiderForm';
 import toast from 'react-hot-toast';
 import DeleteModal from '../Modals/DeleteModal';
+import SkeltonLoader from '../Loader/SkeltonLoader';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type FrequencyType = 'Daily' | 'Weekly' | 'Once';
@@ -134,10 +135,7 @@ const MyAllReminderTab = () => {
 
     if (loading && reminders.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center py-20 bg-white border border-[#E9EAF0] rounded-[4px]">
-                <Loader2 className="w-9 h-9 animate-spin text-[#5624D0] mb-3" />
-                <p className="text-xs text-[#6E7485] font-semibold">Loading reminders…</p>
-            </div>
+            <SkeltonLoader loaderType="reminder" />
         );
     }
 

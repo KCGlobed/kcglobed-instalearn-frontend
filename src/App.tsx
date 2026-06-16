@@ -14,6 +14,7 @@ import Blogs from "./pages/Blog"
 import BlogDetail from "./pages/Blog/BlogDetail"
 import HelpCentre from "./pages/Help/Index"
 import PurchaseHistory from "./pages/PurchaseHistory"
+import MyCommitment from "./pages/MyCommitment"
 
 
 // Lazy-loaded components
@@ -51,12 +52,14 @@ function App() {
         <Route path="/blogs/:slug" element={<BlogDetail />} />
         <Route path="/help-centre" element={<HelpCentre />} />
 
+
         <Route element={<PrivateRoute />}>
           <Route path="/my-learning" element={<MyLearning />} />
           <Route path="/notifications" element={<Notification />} />
           <Route path="/profile" element={<PublicProfile />} />
           <Route path="/learning/dashboard/:slug" element={<LearningDashboard />} />
           <Route path="/purchase-history" element={<PurchaseHistory />} />
+          <Route path="/my-commitment" element={<MyCommitment />} />
         </Route>
 
       </Routes>
