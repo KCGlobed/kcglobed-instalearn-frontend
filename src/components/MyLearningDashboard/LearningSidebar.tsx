@@ -7,6 +7,7 @@ import { fetchDashboardChapterBySlug } from "../../store/slices/courseDashboardC
 import type { RootState } from "../../store/store";
 import type { Lecture } from "../../store/slices/courseDashboardLectureSlice";
 import ChapterAccordion from "./ChapterAccordion";
+import SkeltonLoader from "../Loader/SkeltonLoader";
 
 interface CourseSidebarProps {}
 
@@ -27,12 +28,7 @@ export default function CourseSidebar({}: CourseSidebarProps) {
 
       {/* Content Area */}
       <div className="flex-1 overflow-y-auto bg-white [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#d1d7dc] [&::-webkit-scrollbar-track]:bg-[#f7f9fa]">
-        {loading && (
-          <div className="flex flex-col items-center justify-center py-24 gap-3">
-            <div className="w-8 h-8 border-[3px] border-[#a435f0] border-t-transparent rounded-full animate-spin" />
-            <span className="text-[10px] font-bold text-[#6a6f73] uppercase tracking-widest animate-pulse">Loading modules...</span>
-          </div>
-        )}
+        {loading && <SkeltonLoader loaderType="sidebar" />}
 
         {!loading && error && (
           <div className="px-6 py-10 text-center">

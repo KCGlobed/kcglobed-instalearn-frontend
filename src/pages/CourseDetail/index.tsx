@@ -14,6 +14,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import RecommendationCard from '../../components/Cart/RecommendationCard';
+import SkeltonLoader from '../../components/Loader/SkeltonLoader';
 // Vite ESM fix — same pattern as ToolSlider.tsx
 const Slider = (_Slider as any).default || _Slider;
 
@@ -54,7 +55,19 @@ const CourseDetail = () => {
         }
     }, [courseDetail]);
 
-
+    if (loading) {
+        return (
+            <>
+                <MainHeader />
+                <div className="bg-[#f9fafb] min-h-screen py-8 md:py-12">
+                    <div className="container mx-auto px-4 md:px-6 lg:max-w-7xl">
+                        <SkeltonLoader loaderType="course_detail" />
+                    </div>
+                </div>
+                <Footer />
+            </>
+        );
+    }
 
     return (
         <>

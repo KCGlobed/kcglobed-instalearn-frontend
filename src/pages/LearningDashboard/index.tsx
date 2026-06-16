@@ -20,6 +20,7 @@ import Announcements from "../../components/MyLearningDashboard/Announcements";
 import LearningReminder from "../../components/MyLearningDashboard/LearningReminder";
 import ReviewsPanel from "../../components/CourseDetail/tabs/ReviewsPanel";
 import Certificate from "../../components/MyLearningDashboard/Certificate";
+import SkeltonLoader from "../../components/Loader/SkeltonLoader";
 
 export default function LMSCoursePage() {
   const dispatch = useAppDispatch();
@@ -169,9 +170,7 @@ export default function LMSCoursePage() {
               <div className="mt-10 text-[#2d2f31] text-sm leading-relaxed ">
                 {activeTab === "Overview" && (
                   CourseDetailLoading ? (
-                    <div className="flex items-center justify-center h-64">
-                      <Loader2 className="w-8 h-8 animate-spin text-[#a435f0]" />
-                    </div>
+                    <SkeltonLoader loaderType="course_overview" />
                   ) : CourseDetailError ? (
                     <div className="py-24 text-center border-2 border-dashed border-red-200 rounded-xl bg-red-50">
                       <p className="text-red-600">Failed to load course details</p>

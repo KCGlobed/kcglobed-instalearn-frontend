@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, Maximize2, Minimize2, Expand, Shrink, Settin
 import type { Lecture } from "../../store/slices/courseDashboardLectureSlice";
 import VideoViewer from "./VideoViewer";
 import PdfViewer from "./PdfViewer";
+import SkeltonLoader from "../Loader/SkeltonLoader";
 
 interface MediaViewerSectionProps {
   activeLesson: Lecture | null;
@@ -49,12 +50,7 @@ export default function MediaViewerSection({
 
   // ── Loading ────────────────────────────────────────────────────────────────
   if (loading) {
-    return (
-      <div className="relative bg-black flex flex-col items-center justify-center gap-4 text-gray-600" style={{ aspectRatio: "16/9" }}>
-        <div className="w-10 h-10 border-4 border-[#a435f0]/20 border-t-[#a435f0] rounded-full animate-spin" />
-        <span className="text-[11px] font-bold text-[#9b9da2] uppercase tracking-[0.2em]">Loading Course Content</span>
-      </div>
-    );
+    return <SkeltonLoader loaderType="media_player" />;
   }
 
   if (isEmpty && !activeLesson) {
