@@ -143,9 +143,103 @@ const SkeltonLoader = ({ loaderType }: { loaderType: string }) => {
                                         ))}
                                     </div>
                                 ) :
-                                    (
-                                        <div>SkeltonLoader</div>
-                                    )
+                                    loaderType === "course_overview" ? (
+                                        <div className="space-y-10 mb-12 animate-pulse w-full">
+                                            {/* What you'll learn */}
+                                            <div className="bg-indigo-50/40 border border-indigo-100/50 rounded-2xl p-6 space-y-4">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-5 h-5 bg-gray-200 rounded-full shrink-0"></div>
+                                                    <div className="h-5 bg-gray-200 rounded w-40"></div>
+                                                </div>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                                    {[1, 2, 3, 4].map((i) => (
+                                                        <div key={i} className="flex items-start gap-3 bg-white rounded-xl px-4 py-3 border border-indigo-100/40">
+                                                            <div className="w-4 h-4 bg-gray-200 rounded-full shrink-0 mt-0.5"></div>
+                                                            <div className="h-4 bg-gray-200 rounded w-full"></div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            {/* Description */}
+                                            <div className="space-y-4">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-5 h-5 bg-gray-200 rounded-full shrink-0"></div>
+                                                    <div className="h-5 bg-gray-200 rounded w-44"></div>
+                                                </div>
+                                                <div className="space-y-3">
+                                                    <div className="h-4 bg-gray-200 rounded w-full"></div>
+                                                    <div className="h-4 bg-gray-200 rounded w-11/12"></div>
+                                                    <div className="h-4 bg-gray-200 rounded w-4/5"></div>
+                                                </div>
+                                            </div>
+
+                                            {/* Requirements */}
+                                            <div className="bg-amber-50/40 border border-amber-100/50 rounded-2xl p-6 space-y-4">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-5 h-5 bg-gray-200 rounded-full shrink-0"></div>
+                                                    <div className="h-5 bg-gray-200 rounded w-36"></div>
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                                                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ) :
+                                        loaderType === "sidebar" ? (
+                                            <div className="space-y-4 p-4 animate-pulse w-full">
+                                                {[1, 2, 3, 4, 5, 6].map((item) => (
+                                                    <div key={item} className="space-y-2 border-b border-gray-100 pb-3">
+                                                        <div className="h-6 bg-gray-200 rounded w-full"></div>
+                                                        <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) :
+                                            loaderType === "media_player" ? (
+                                                <div className="relative w-full bg-gray-900 flex flex-col items-center justify-center animate-pulse" style={{ aspectRatio: "16/9" }}>
+                                                    <div className="w-16 h-16 rounded-full bg-gray-800 flex items-center justify-center">
+                                                        <div className="w-6 h-6 bg-gray-700 rounded-full"></div>
+                                                    </div>
+                                                    <div className="h-4 bg-gray-800 rounded w-1/4 mt-4"></div>
+                                                </div>
+                                            ) :
+                                                loaderType === "course_detail" ? (
+                                                    <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start w-full animate-pulse">
+                                                        {/* Left Column */}
+                                                        <div className="flex-1 w-full lg:max-w-[calc(100%-420px)] space-y-8">
+                                                            {/* Header Skeleton */}
+                                                            <div className="space-y-4">
+                                                                <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                                                                <div className="h-8 bg-gray-200 rounded w-3/4"></div>
+                                                                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                                                            </div>
+                                                            {/* Preview Skeleton */}
+                                                            <div className="aspect-video bg-gray-200 rounded-2xl w-full"></div>
+                                                            {/* Tabs Skeleton */}
+                                                            <div className="border-t pt-6 space-y-4">
+                                                                <div className="flex gap-4 border-b pb-3">
+                                                                    <div className="h-6 bg-gray-200 rounded w-20"></div>
+                                                                    <div className="h-6 bg-gray-200 rounded w-20"></div>
+                                                                    <div className="h-6 bg-gray-200 rounded w-20"></div>
+                                                                </div>
+                                                                <div className="h-32 bg-gray-100 rounded-2xl"></div>
+                                                            </div>
+                                                        </div>
+                                                        {/* Right Sidebar Skeleton */}
+                                                        <aside className="w-full lg:w-[380px] shrink-0">
+                                                            <div className="bg-white border rounded-2xl shadow-sm p-6 space-y-6">
+                                                                <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+                                                                <div className="h-12 bg-gray-200 rounded w-full"></div>
+                                                                <div className="h-12 bg-gray-200 rounded w-full"></div>
+                                                            </div>
+                                                        </aside>
+                                                    </div>
+                                                ) :
+                                                    (
+                                                        <div>SkeltonLoader</div>
+                                                    )
             }
         </>
 
