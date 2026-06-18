@@ -53,7 +53,9 @@ const BrowseDropdown = () => {
 
     const handleBrowseNavigate = (cat: any) => {
         setOpen(false);
-        navigate(`/categories/${cat.id}`)
+        navigate(`/categories/${cat.id}`, {
+            state: { categoryName: cat.name }
+        })
     }
 
     return (

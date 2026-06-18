@@ -4,6 +4,7 @@ import { startPayment, completePayment } from '../utils/service';
 import { loadRazorpayScript } from '../utils/razorpayLoader';
 import toast from 'react-hot-toast';
 import type { RazorpayOptions, RazorpaySuccessResponse } from '../types/razorpay';
+import { getDeviceId } from '../store/slices/courseCartSlice';
 
 export type PaymentStatus = 'idle' | 'initializing' | 'paying' | 'verifying' | 'success' | 'failed';
 
@@ -73,6 +74,7 @@ export const useRazorpayPayment = () => {
               razorpay_order_id: response.razorpay_order_id,
               razorpay_signature: response.razorpay_signature,
               payment_session_id: payment_session_id || '',
+              device_id: getDeviceId()
             });
 
             if (verificationResponse && verificationResponse.status !== 'failed') {

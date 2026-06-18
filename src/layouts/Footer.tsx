@@ -1,4 +1,20 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Facebook, Instagram, Linkedin, Twitter, Youtube, ChevronDown } from "lucide-react";
+import { getTopCoursesApi, getTopCategoriesApi } from "../utils/service";
+
+// Dark skeleton loading placeholder for footer links
+const FooterLinkSkeleton = () => (
+    <div className="animate-pulse space-y-3.5 mt-2">
+        {[...Array(5)].map((_, i) => (
+            <div 
+                key={i} 
+                className="h-3.5 bg-[#363B47]/60 rounded-sm animate-pulse" 
+                style={{ width: `${60 + (i % 3) * 15}%` }} 
+            />
+        ))}
+    </div>
+);
 
 /**
  * Footer component for InstaLearn
@@ -9,36 +25,97 @@ import { Facebook, Instagram, Linkedin, Twitter, Youtube, ChevronDown } from "lu
  * - Bottom bar with copyright and language selector
  */
 const Footer = () => {
+    const [topCategories, setTopCategories] = useState<any[]>([]);
+    const [topCourses, setTopCourses] = useState<any[]>([]);
+    const [loadingCategories, setLoadingCategories] = useState(true);
+    const [loadingCourses, setLoadingCourses] = useState(true);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        getTopCategoriesApi()
+            .then((res: any) => {
+                if (!isMounted) return;
+                const data = res?.data || res;
+                if (Array.isArray(data)) {
+                    setTopCategories(data.slice(0, 5));
+                } else if (data && Array.isArray(data.data)) {
+                    setTopCategories(data.data.slice(0, 5));
+                } else {
+                    setTopCategories([]);
+                }
+            })
+            .catch((err) => {
+                console.error("Error fetching top categories:", err);
+                if (isMounted) setTopCategories([]);
+            })
+            .finally(() => {
+                if (isMounted) setLoadingCategories(false);
+            });
+
+        getTopCoursesApi()
+            .then((res: any) => {
+                if (!isMounted) return;
+                const data = res?.data || res;
+                if (Array.isArray(data)) {
+                    setTopCourses(data.slice(0, 5));
+                } else if (data && Array.isArray(data.data)) {
+                    setTopCourses(data.data.slice(0, 5));
+                } else {
+                    setTopCourses([]);
+                }
+            })
+            .catch((err) => {
+                console.error("Error fetching top courses:", err);
+                if (isMounted) setTopCourses([]);
+            })
+            .finally(() => {
+                if (isMounted) setLoadingCourses(false);
+            });
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
+
     const skillLinks = [
-        "Development",
-        "Finance & Accounting",
-        "Design",
-        "Business",
-        "Data Science",
+        { id: 3, name: "Development" },
+        { id: 2, name: "Finance & Accounting" },
+        { id: 26, name: "Design" },
+        { id: 17, name: "Business" },
+        { id: 3, name: "Data Science" },
     ];
 
     const courseLinks = [
-        "Business Analytics",
-        "Business Analytics",
-        "Business Analytics",
-        "Business Analytics",
-        "Business Analytics",
+        { name: "Python for Data Science", path: "/courses" },
+        { name: "Web Development Bootcamp", path: "/courses" },
+        { name: "Financial Analysis & Valuation", path: "/courses" },
+        { name: "UI/UX Graphic Design Masterclass", path: "/courses" },
+        { name: "Digital Marketing Strategy", path: "/courses" },
     ];
 
     const resourceLinks = [
-        "Blogs",
-        "Success Story",
-        "Career Guidance",
-        "Help Centre",
-        "Contact Support",
+        { name: "Blogs", path: "/blogs" },
+        { name: "Success Story", path: "/coming-soon" },
+        { name: "Career Guidance", path: "/coming-soon" },
+        { name: "Help Centre", path: "/help-centre" },
+        { name: "Support", path: "/support" },
     ];
 
     const companyLinks = [
-        "About Us",
-        "Partner",
-        "Terms & Condition",
-        "Careers",
-        "Privacy Policy",
+        { name: "About Us", path: "/coming-soon" },
+        { name: "Partner", path: "/coming-soon" },
+        { name: "Terms & Condition", path: "/coming-soon" },
+        { name: "Careers", path: "/coming-soon" },
+        { name: "Privacy Policy", path: "/coming-soon" },
+    ];
+
+    const socialLinks = [
+        { icon: <Facebook className="w-4.5 h-4.5 text-white" />, url: "https://www.facebook.com" },
+        { icon: <Instagram className="w-4.5 h-4.5 text-white" />, url: "https://www.instagram.com" },
+        { icon: <Linkedin className="w-4.5 h-4.5 text-white fill-white" />, url: "https://www.linkedin.com" },
+        { icon: <Twitter className="w-4.5 h-4.5 text-white" />, url: "https://twitter.com" },
+        { icon: <Youtube className="w-4.5 h-4.5 text-white" />, url: "https://www.youtube.com" },
     ];
 
     return (
@@ -51,14 +128,16 @@ const Footer = () => {
                         {/* Branding Column - Precise Figma dimensions (424px width, ~168px height) */}
                         <div className="flex flex-col w-full lg:max-w-[424px]">
                             <div className="mb-4">
-                                <img
-                                    src="/instalogo_white.png"
-                                    alt="KC Globed"
-                                    className="h-10 w-auto"
-                                    onError={(e) => {
-                                        e.currentTarget.src = 'https://placehold.co/150x40?text=KC+Globed&bg=1b1e22&fontcolor=ffffff';
-                                    }}
-                                />
+                                <Link to="/">
+                                    <img
+                                        src="/instalogo_white.png"
+                                        alt="KC Globed"
+                                        className="h-10 w-auto"
+                                        onError={(e) => {
+                                            e.currentTarget.src = 'https://placehold.co/150x40?text=KC+Globed&bg=1b1e22&fontcolor=ffffff';
+                                        }}
+                                    />
+                                </Link>
                             </div>
                             <p className="text-[#8C94A3] text-[13px] leading-[22px] mb-8 max-w-[280px]">
                                 Learn new skills, advance your career
@@ -66,21 +145,17 @@ const Footer = () => {
 
                             {/* Social Icons row */}
                             <div className="flex items-center gap-2">
-                                <a href="#" className="w-10 h-10 flex items-center justify-center bg-[#242932] hover:bg-[#6A67F1] transition-all rounded-sm">
-                                    <Facebook className="w-4.5 h-4.5 text-white" />
-                                </a>
-                                <a href="#" className="w-10 h-10 flex items-center justify-center bg-[#242932] hover:bg-[#6A67F1] transition-all rounded-sm">
-                                    <Instagram className="w-4.5 h-4.5 text-white" />
-                                </a>
-                                <a href="#" className="w-10 h-10 flex items-center justify-center bg-[#242932] hover:bg-[#6A67F1] transition-all rounded-sm ">
-                                    <Linkedin className="w-4.5 h-4.5 text-white fill-white" />
-                                </a>
-                                <a href="#" className="w-10 h-10 flex items-center justify-center bg-[#242932] hover:bg-[#6A67F1] transition-all rounded-sm">
-                                    <Twitter className="w-4.5 h-4.5 text-white" />
-                                </a>
-                                <a href="#" className="w-10 h-10 flex items-center justify-center bg-[#242932] hover:bg-[#6A67F1] transition-all rounded-sm">
-                                    <Youtube className="w-4.5 h-4.5 text-white" />
-                                </a>
+                                {socialLinks.map((social, index) => (
+                                    <a
+                                        key={index}
+                                        href={social.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="w-10 h-10 flex items-center justify-center bg-[#242932] hover:bg-[#6A67F1] transition-all rounded-sm"
+                                    >
+                                        {social.icon}
+                                    </a>
+                                ))}
                             </div>
                         </div>
 
@@ -88,22 +163,36 @@ const Footer = () => {
                         <div>
                             <h4 className="text-white text-[12px] font-bold tracking-widest uppercase mb-6">Popular Skills</h4>
                             <ul className="flex flex-col gap-3">
-                                {skillLinks.map((link) => (
-                                    <li key={link}>
-                                        <a href="#" className="text-[#8C94A3] hover:text-white text-[14px] transition-colors font-normal">{link}</a>
-                                    </li>
-                                ))}
+                                {loadingCategories ? (
+                                    <FooterLinkSkeleton />
+                                ) : (
+                                    (topCategories.length > 0 ? topCategories : skillLinks).map((link: any, idx: number) => {
+                                        const path = link.id ? `/categories/${link.id}` : (link.path || "/courses");
+                                        return (
+                                            <li key={link.id || idx}>
+                                                <Link to={path} state={{ categoryName: link.name }} className="text-[#8C94A3] hover:text-white text-[14px] transition-colors font-normal line-clamp-1">{link.name}</Link>
+                                            </li>
+                                        );
+                                    })
+                                )}
                             </ul>
                         </div>
 
                         <div>
                             <h4 className="text-white text-[12px] font-bold tracking-widest uppercase mb-6">Top Courses</h4>
                             <ul className="flex flex-col gap-3">
-                                {courseLinks.map((link, idx) => (
-                                    <li key={idx}>
-                                        <a href="#" className="text-[#8C94A3] hover:text-white text-[14px] transition-colors font-normal">{link}</a>
-                                    </li>
-                                ))}
+                                {loadingCourses ? (
+                                    <FooterLinkSkeleton />
+                                ) : (
+                                    (topCourses.length > 0 ? topCourses : courseLinks).map((link: any, idx: number) => {
+                                        const path = link.id ? `/courses/detail/${link.id}` : (link.path || "/courses");
+                                        return (
+                                            <li key={link.id || idx}>
+                                                <Link to={path} className="text-[#8C94A3] hover:text-white text-[14px] transition-colors font-normal line-clamp-1">{link.name}</Link>
+                                            </li>
+                                        );
+                                    })
+                                )}
                             </ul>
                         </div>
 
@@ -111,8 +200,8 @@ const Footer = () => {
                             <h4 className="text-white text-[12px] font-bold tracking-widest uppercase mb-6">Resources</h4>
                             <ul className="flex flex-col gap-3">
                                 {resourceLinks.map((link) => (
-                                    <li key={link}>
-                                        <a href="#" className="text-[#8C94A3] hover:text-white text-[14px] transition-colors font-normal">{link}</a>
+                                    <li key={link.name}>
+                                        <Link to={link.path} className="text-[#8C94A3] hover:text-white text-[14px] transition-colors font-normal">{link.name}</Link>
                                     </li>
                                 ))}
                             </ul>
@@ -122,8 +211,8 @@ const Footer = () => {
                             <h4 className="text-white text-[12px] font-bold tracking-widest uppercase mb-6">Company</h4>
                             <ul className="flex flex-col gap-3">
                                 {companyLinks.map((link) => (
-                                    <li key={link}>
-                                        <a href="#" className="text-[#8C94A3] hover:text-white text-[14px] transition-colors font-normal">{link}</a>
+                                    <li key={link.name}>
+                                        <Link to={link.path} className="text-[#8C94A3] hover:text-white text-[14px] transition-colors font-normal">{link.name}</Link>
                                     </li>
                                 ))}
                             </ul>

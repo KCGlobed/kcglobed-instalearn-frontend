@@ -44,7 +44,9 @@ const TopCollege = () => {
                                     backgroundColor: cat.bg_code,
                                 }}
                                 onClick={() =>
-                                    navigate(`/categories/${cat.id}`)
+                                    navigate(`/categories/${cat.id}`, {
+                                        state: { categoryName: cat.name }
+                                    })
                                 }
                             >
                                 <div
