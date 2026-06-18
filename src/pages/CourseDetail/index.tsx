@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import type { RootState } from '../../store/store';
 import { useEffect, useRef, useState } from 'react';
 import { fetchCourseById } from '../../store/slices/courseDetailSlice';
+import { fetchMyCoursesAction } from '../../store/slices/myLearningSlice';
 import _Slider from 'react-slick';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import 'slick-carousel/slick/slick.css';
@@ -45,9 +46,14 @@ const CourseDetail = () => {
         ],
     };
 
+    const { isAuthenticated } = useAppSelector((state: RootState) => state.auth);
+
     useEffect(() => {
         dispatch(fetchCourseById(Number(id)));
-    }, [id]);
+        if (isAuthenticated) {
+            dispatch(fetchMyCoursesAction());
+        }
+    }, [id, isAuthenticated, dispatch]);
 
     useEffect(() => {
         if (courseDetail?.related_course && courseDetail.related_course.length > 0) {

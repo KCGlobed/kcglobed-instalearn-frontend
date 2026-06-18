@@ -7,10 +7,10 @@ import { getTopCoursesApi, getTopCategoriesApi } from "../utils/service";
 const FooterLinkSkeleton = () => (
     <div className="animate-pulse space-y-3.5 mt-2">
         {[...Array(5)].map((_, i) => (
-            <div 
-                key={i} 
-                className="h-3.5 bg-[#363B47]/60 rounded-sm animate-pulse" 
-                style={{ width: `${60 + (i % 3) * 15}%` }} 
+            <div
+                key={i}
+                className="h-3.5 bg-[#363B47]/60 rounded-sm animate-pulse"
+                style={{ width: `${60 + (i % 3) * 15}%` }}
             />
         ))}
     </div>
@@ -103,8 +103,9 @@ const Footer = () => {
     ];
 
     const companyLinks = [
-        { name: "About Us", path: "/coming-soon" },
-        { name: "Partner", path: "/coming-soon" },
+        // { name: "About Us", path: "/coming-soon" },
+        { name: "KC GlobEd", path: "https://www.kcglobed.com/" },
+        { name: "GCC School", path: "https://www.gccschool.com/" },
         { name: "Terms & Condition", path: "/coming-soon" },
         { name: "Careers", path: "/coming-soon" },
         { name: "Privacy Policy", path: "/coming-soon" },

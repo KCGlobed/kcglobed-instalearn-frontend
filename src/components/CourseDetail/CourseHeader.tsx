@@ -1,9 +1,15 @@
-import { Star } from 'lucide-react';
+import { Star, CheckCircle2 } from 'lucide-react';
 import { useAppSelector } from '../../hooks/useRedux';
 import type { RootState } from '../../store/store';
 
 const CourseHeader = () => {
     const { courseDetail, loading, error } = useAppSelector((state: RootState) => state.courseDetail);
+    const { enrolledCourses } = useAppSelector((state: RootState) => state.myLearning);
+    const { isAuthenticated } = useAppSelector((state: RootState) => state.auth);
+
+    const purchasedCourse = isAuthenticated && enrolledCourses?.find(
+        (course: any) => course.id === courseDetail?.id
+    );
     return (
         <div className="mb-8">
             {/* Breadcrumb */}
@@ -18,9 +24,9 @@ const CourseHeader = () => {
             </nav> */}
 
             {/* Category Badges */}
-            {(courseDetail?.categories?.length ?? 0) > 0 && (
-                <div className="flex flex-wrap gap-2 mb-3">
-                    {courseDetail?.categories?.map((cat: any) => {
+            <div className="flex flex-wrap items-center gap-2 mb-3">
+                {(courseDetail?.categories?.length ?? 0) > 0 && 
+                    courseDetail?.categories?.map((cat: any) => {
                         const info = cat.category_info;
                         if (!info?.name) return null;
 
@@ -36,9 +42,14 @@ const CourseHeader = () => {
                                 {info.name}
                             </span>
                         );
-                    })}
-                </div>
-            )}
+                    })
+                }
+                {purchasedCourse && (
+                    <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-sm bg-green-100 text-green-800 border border-green-200 flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3 h-3 text-green-700" /> Purchased
+                    </span>
+                )}
+            </div>
 
             {/* Course Title */}
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-4">

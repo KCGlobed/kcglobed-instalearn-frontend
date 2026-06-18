@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { myCoursesApi } from "../../utils/service";
+import { myCoursesApi, getCourseProgressApi } from "../../utils/service";
 
 export interface MyLearningState {
     enrolledCourses: any[];
@@ -7,6 +7,8 @@ export interface MyLearningState {
     error: string | null;
     success: boolean;
     message: string | null;
+    courseProgress: any | null;
+    progressLoading: boolean;
 }
 
 const initialState: MyLearningState = {
@@ -15,6 +17,8 @@ const initialState: MyLearningState = {
     error: null,
     success: false,
     message: null,
+    courseProgress: null,
+    progressLoading: false,
 };
 
 export const fetchMyCoursesAction = createAsyncThunk<any, void, { rejectValue: string }>(
@@ -25,6 +29,18 @@ export const fetchMyCoursesAction = createAsyncThunk<any, void, { rejectValue: s
             return response;
         } catch (error: any) {
             return rejectWithValue(error.message || "Something went wrong while fetching your courses");
+        }
+    }
+);
+
+export const fetchCourseProgressAction = createAsyncThunk<any, number, { rejectValue: string }>(
+    "myLearning/fetchCourseProgress",
+    async (courseId, { rejectWithValue }) => {
+        try {
+            const response = await getCourseProgressApi(courseId);
+            return response;
+        } catch (error: any) {
+            return rejectWithValue(error.message || "Failed to fetch course progress");
         }
     }
 );
@@ -59,6 +75,18 @@ const myLearningSlice = createSlice({
                 state.loading = false;
                 state.success = false;
                 state.error = action.payload || "Failed to fetch courses";
+            })
+            // Progress
+            .addCase(fetchCourseProgressAction.pending, (state) => {
+                state.progressLoading = true;
+            })
+            .addCase(fetchCourseProgressAction.fulfilled, (state, action) => {
+                state.progressLoading = false;
+                state.courseProgress = action.payload?.data ?? action.payload ?? null;
+            })
+            .addCase(fetchCourseProgressAction.rejected, (state) => {
+                state.progressLoading = false;
+                state.courseProgress = null;
             });
     },
 });

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { useAppSelector } from "../../hooks/useRedux";
 import type { RootState } from "../../store/store";
@@ -25,6 +25,7 @@ import SkeltonLoader from "../../components/Loader/SkeltonLoader";
 export default function LMSCoursePage() {
   const dispatch = useAppDispatch();
   const { slug } = useParams();
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState<string>("Overview");
   const [courseProgress, setCourseProgress] = useState<{ percentage: number, name: string } | null>(null);
   const { courseDetail, loading: CourseDetailLoading, error: CourseDetailError } = useAppSelector((state: RootState) => state.courseDetail);
@@ -48,33 +49,58 @@ export default function LMSCoursePage() {
     };
   }, [dispatch, slug]);
 
-  // Auto-select last watched lecture (or fallback to first lecture)
+  // Auto-select target lecture from router state (direct nav) or localStorage (last watched)
   useEffect(() => {
     if (!activeLesson && chapters.length > 0) {
       const courseId = Number(slug);
+
+      // Priority 1: Router state (set by CurriculumPanel direct navigation)
+      const routerTargetLectureId: number | undefined = location.state?.targetLectureId;
+      const routerTargetChapterId: number | undefined = location.state?.targetChapterId;
+
+      // Priority 2: localStorage (last watched session)
       const lastChapterIdStr = localStorage.getItem(`course_last_chapter_${courseId}`);
       const lastLectureIdStr = localStorage.getItem(`course_last_lecture_${courseId}`);
 
-      if (lastChapterIdStr && lastLectureIdStr) {
-        const lastChapterId = Number(lastChapterIdStr);
-        const lastLectureId = Number(lastLectureIdStr);
+      const targetLectureId = routerTargetLectureId ?? (lastLectureIdStr ? Number(lastLectureIdStr) : undefined);
+      const targetChapterId = routerTargetChapterId ?? (lastChapterIdStr ? Number(lastChapterIdStr) : undefined);
 
-        // Verify that the chapter is actually one of the chapters of this course
-        const chapterExists = chapters.some(ch => ch.chapter_info.id === lastChapterId);
-
-        if (chapterExists) {
-          const chapterLectures = lecturesByChapter[lastChapterId];
-          if (chapterLectures) {
-            const foundLecture = chapterLectures.find(l => l.id === lastLectureId);
-            if (foundLecture) {
-              dispatch(setActiveLesson(foundLecture));
+      if (targetLectureId && targetChapterId) {
+        // First, try to find the lecture in already-loaded chapters
+        // Search across ALL loaded lectures (not just the stored chapter) in case IDs differ
+        for (const ch of chapters) {
+          const chId = ch.chapter_info.id;
+          const chLectures = lecturesByChapter[chId];
+          if (chLectures) {
+            const found = chLectures.find(l => l.id === targetLectureId);
+            if (found) {
+              dispatch(setActiveLesson(found));
               return;
             }
-          } else if (!loadingChapters.includes(lastChapterId)) {
-            dispatch(fetchChapterLectures(lastChapterId));
-            return;
           }
         }
+
+        // Not found yet — fetch the target chapter's lectures
+        // Try the stored chapter ID first, then try all unloaded chapters
+        const chapterExists = chapters.some(ch => ch.chapter_info.id === targetChapterId);
+        if (chapterExists) {
+          if (!loadingChapters.includes(targetChapterId)) {
+            dispatch(fetchChapterLectures(targetChapterId));
+          }
+          return; // wait for lectures to load, then effect re-runs
+        }
+
+        // If chapter ID from storage doesn't match dashboard chapters (ID mismatch between APIs)
+        // fetch lectures for ALL unloaded chapters so we can find the lecture by its ID
+        let fetchedAny = false;
+        for (const ch of chapters) {
+          const chId = ch.chapter_info.id;
+          if (!lecturesByChapter[chId] && !loadingChapters.includes(chId)) {
+            dispatch(fetchChapterLectures(chId));
+            fetchedAny = true;
+          }
+        }
+        if (fetchedAny) return; // wait for lectures to load
       }
 
       // Default fallback: Auto-select first lecture of first chapter
@@ -86,7 +112,7 @@ export default function LMSCoursePage() {
         dispatch(fetchChapterLectures(firstChapterId));
       }
     }
-  }, [dispatch, chapters, activeLesson, lecturesByChapter, loadingChapters, slug]);
+  }, [dispatch, chapters, activeLesson, lecturesByChapter, loadingChapters, slug, location.state]);
 
   // Build a flat ordered lecture list across all loaded chapters
   const flatLectures = useMemo(() => {
