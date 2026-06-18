@@ -3,12 +3,25 @@ import { BookOpen, Clock, PlayCircle, Lock, ChevronDown, ChevronUp, FileText } f
 import SectionTitle from './SectionTitle';
 import { useModal } from '../../Modals/ModalContext';
 import SampleVideo from '../../Modals/SampleVideo';
+import { useAppSelector } from '../../../hooks/useRedux';
+import type { RootState } from '../../../store/store';
+import { useNavigate } from 'react-router-dom';
 
 const CurriculumPanel: React.FC<{ courseDetail: any }> = ({ courseDetail }) => {
     const videos = courseDetail?.sample_videos ?? [];
     const chapters = courseDetail?.course_chapters ?? courseDetail?.chapters ?? [];
     const { showModal } = useModal();
     const [openChapterId, setOpenChapterId] = useState<number | null>(chapters.length > 0 ? chapters[0].id : null);
+    const navigate = useNavigate();
+
+    const { enrolledCourses } = useAppSelector((state: RootState) => state.myLearning);
+    const { isAuthenticated } = useAppSelector((state: RootState) => state.auth);
+
+    const purchasedCourse = isAuthenticated && enrolledCourses?.find(
+        (course: any) => course.id === courseDetail?.id
+    );
+
+    const isUnlockAll = purchasedCourse && purchasedCourse.progress > 0;
 
     const handlePlayVideo = (videoId: number) => {
         showModal({
@@ -20,6 +33,20 @@ const CurriculumPanel: React.FC<{ courseDetail: any }> = ({ courseDetail }) => {
 
     const toggleChapter = (id: number) => {
         setOpenChapterId(prev => (prev === id ? null : id));
+    };
+
+    const handleLectureClick = (chapter: any, lecture: any) => {
+        if (isUnlockAll && courseDetail?.id) {
+            const courseId = courseDetail.id;
+            const chapterId = chapter.chapter_info?.id || chapter.id;
+            // Store in localStorage as backup
+            localStorage.setItem(`course_last_lecture_${courseId}`, lecture.id.toString());
+            localStorage.setItem(`course_last_chapter_${courseId}`, chapterId.toString());
+            // Pass via router state for reliable direct navigation
+            navigate(`/learning/dashboard/${courseId}`, {
+                state: { targetLectureId: lecture.id, targetChapterId: chapterId }
+            });
+        }
     };
 
     return (
@@ -111,21 +138,30 @@ const CurriculumPanel: React.FC<{ courseDetail: any }> = ({ courseDetail }) => {
                                                 const isEbook = lecture.ebook_info && Object.keys(lecture.ebook_info).length > 0;
 
                                                 const name = isVideo ? lecture.video_info.name : (isEbook ? lecture.ebook_info.name : "Lecture");
-                                                
+
                                                 const durationSec = Number(lecture.video_info?.video_duration || 0);
                                                 const mins = Math.ceil(durationSec / 60);
-
                                                 return (
-                                                    <div 
-                                                        key={lecture.id} 
-                                                        className="flex items-start gap-3 px-6 py-4 text-gray-700 hover:bg-gray-50 rounded-lg mx-2 transition-colors group cursor-default"
+                                                    <div
+                                                        key={lecture.id}
+                                                        onClick={() => handleLectureClick(chapter, lecture)}
+                                                        className={`flex items-start gap-3 px-6 py-4 text-gray-700 rounded-lg mx-2 transition-colors group ${isUnlockAll
+                                                                ? 'cursor-pointer hover:bg-indigo-50/70 hover:text-indigo-900'
+                                                                : 'cursor-default hover:bg-gray-50'
+                                                            }`}
                                                     >
                                                         {/* Type Icon */}
                                                         <div className="mt-0.5 shrink-0">
                                                             {isVideo ? (
-                                                                <PlayCircle className="w-4 h-4 text-indigo-300 group-hover:text-indigo-500 transition-colors" />
+                                                                <PlayCircle className={`w-4 h-4 transition-colors ${isUnlockAll
+                                                                        ? 'text-indigo-500 group-hover:text-indigo-700'
+                                                                        : 'text-indigo-300 group-hover:text-indigo-500'
+                                                                    }`} />
                                                             ) : isEbook ? (
-                                                                <FileText className="w-4 h-4 text-orange-300 group-hover:text-orange-500 transition-colors" />
+                                                                <FileText className={`w-4 h-4 transition-colors ${isUnlockAll
+                                                                        ? 'text-orange-500 group-hover:text-orange-700'
+                                                                        : 'text-orange-300 group-hover:text-orange-500'
+                                                                    }`} />
                                                             ) : (
                                                                 <Lock className="w-4 h-4 text-gray-300 group-hover:text-gray-500 transition-colors" />
                                                             )}
@@ -136,7 +172,7 @@ const CurriculumPanel: React.FC<{ courseDetail: any }> = ({ courseDetail }) => {
                                                             <p className="text-[14px] font-medium leading-snug group-hover:text-gray-900 transition-colors">
                                                                 {name}
                                                             </p>
-                                                            <Lock className="w-3 h-3 text-gray-300" />
+                                                            {!isUnlockAll && <Lock className="w-3 h-3 text-gray-300" />}
                                                         </div>
 
                                                         {/* Meta */}
