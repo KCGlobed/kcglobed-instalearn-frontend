@@ -12,8 +12,8 @@ const TopHeader = () => {
                     {/* Nav Links */}
                     <div className="flex items-center gap-6">
                         <a href="/" className="text-white text-sm font-medium">Home</a>
-                        <a href="/coming-soon" className="text-gray-400 text-sm hover:text-white transition-colors">Courses</a>
-                        <a href="/coming-soon" className="text-gray-400 text-sm hover:text-white transition-colors">About</a>
+                        <a href="/courses" className="text-gray-400 text-sm hover:text-white transition-colors">Courses</a>
+                        <a href="https://www.kcglobed.com/" target="_blank" className="text-gray-400 text-sm hover:text-white transition-colors">KC GlobEd</a>
                         <a href="/coming-soon" className="text-gray-400 text-sm hover:text-white transition-colors">Contact</a>
                         <a href="/blogs" className="text-gray-400 text-sm hover:text-white transition-colors">Blog</a>
 

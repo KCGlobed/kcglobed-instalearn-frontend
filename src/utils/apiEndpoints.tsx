@@ -66,4 +66,10 @@ export const API_ENDPOINTS = {
     PURCHASE_HISTORY: "subscription/get-purchase-history/",
     SOCIAL_LOGIN: "user/social-login/",
     MARK_COURSE_STARTED: "user_study/mark-course-started/",
+    HELP_AND_SUPPORT_TOPIC_LIST: "cms/get-help-support-topics/",
+    HELP_AND_SUPPORT_SUBTOPIC_LIST: "cms/get-help-support-subtopics/",
+    HELP_AND_SUPPORT_ARTICLE_LIST: "cms/get-help-support-articles/",
+    HELP_AND_SUPPORT_ARTICLE_DETAIL: "cms/get-help-support-article-detail/",
+    GET_TOP_COURSES: "course/footer-top-courses-list/",
+    GET_TOP_CATEGORIES: "course/footer-top-category-list/",
 }

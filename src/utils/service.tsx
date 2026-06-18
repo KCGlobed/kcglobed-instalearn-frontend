@@ -261,6 +261,29 @@ export const markCourseStartedApi = async (payload: any): Promise<any> => {
   return await apiRequest(API_ENDPOINTS.MARK_COURSE_STARTED, 'POST', payload);
 }
 
+export const getHelpAndSupportTopicListApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.HELP_AND_SUPPORT_TOPIC_LIST, 'GET');
+}
+
+export const getHelpAndSupportSubtopicListApi = async (slug: string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.HELP_AND_SUPPORT_SUBTOPIC_LIST}${slug}`, 'GET');
+}
+
+export const getHelpAndSupportArticleListApi = async (slug: string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.HELP_AND_SUPPORT_ARTICLE_LIST}${slug}`, 'GET');
+}
+
+export const getHelpAndSupportArticleDetailApi = async (slug: string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.HELP_AND_SUPPORT_ARTICLE_DETAIL}${slug}`, 'GET');
+}
+
+export const getTopCoursesApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.GET_TOP_COURSES, 'GET');
+}
+
+export const getTopCategoriesApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.GET_TOP_CATEGORIES, 'GET');
+}
 
 
 
