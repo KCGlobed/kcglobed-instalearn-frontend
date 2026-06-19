@@ -32,6 +32,7 @@ export interface FilterCourseParams {
     tags?: number[];
     level?: number[];
     rating?: number[];
+    ordering?: string;
 }
 
 const getQueryParamsFromUrl = (url: string): string => {
@@ -68,6 +69,10 @@ export const filterCoursesListParams = createAsyncThunk<{ courses: any[], pagina
 
             if (filter?.rating?.length) {
                 params.append("rating", filter.rating.join(","));
+            }
+
+            if (filter?.ordering?.length) {
+                params.append("ordering", filter.ordering);
             }
 
             const response: any = await getCourseSearchFilteApi(params.toString());
