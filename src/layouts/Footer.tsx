@@ -107,7 +107,7 @@ const Footer = () => {
         { name: "KC GlobEd", path: "https://www.kcglobed.com/" },
         { name: "GCC School", path: "https://www.gccschool.com/" },
         { name: "Terms & Condition", path: "/coming-soon" },
-        { name: "Careers", path: "/coming-soon" },
+        { name: "Careers", path: "/career" },
         { name: "Privacy Policy", path: "/coming-soon" },
     ];
 

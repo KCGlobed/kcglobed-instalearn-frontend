@@ -285,6 +285,11 @@ export const getTopCategoriesApi = async (): Promise<any> => {
   return await apiRequest(API_ENDPOINTS.GET_TOP_CATEGORIES, 'GET');
 }
 
+export const submitApplicationFormApi = async (payload: FormData): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.SUBMIT_APPLICATION_FORM, 'POST', payload);
+};
+
+
 
 
 

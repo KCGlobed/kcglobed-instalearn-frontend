@@ -56,6 +56,7 @@ export const API_ENDPOINTS = {
     GET_COURSE_REVIEW_COMMENTS: "course/course-review-rating",
     GET_GLOBAL_SEARCH: "course/search/dropdown/",
     CREATE_QUICK_CONTACT: "cms/contact-us/",
+    SUBMIT_APPLICATION_FORM: "cms/submit-application-form/",
     RELATED_COURSE: "course/get-related-courses-list",
     BLOG_CATEGORY: "cms/get-blog-categories/",
     BLOG_BY_CATEGORY: "cms/get-category-wise-blogs/",
