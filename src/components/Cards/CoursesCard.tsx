@@ -11,99 +11,6 @@ interface CoursesCardProps {
 }
 
 const CoursesCard: React.FC<CoursesCardProps> = ({ isSidebarOpen = true, courses, loading, error, onCourseClick }) => {
-    // Mock course data matching the design screenshot
-    // const courses_dummy = [
-    //     {
-    //         id: 1,
-    //         category: "DESIGN",
-    //         categoryBg: "bg-[#FFEEE8]",
-    //         categoryText: "text-[#FF6636]",
-    //         title: "Machine Learning A-Z™: Hands-On Python & R In Data Science",
-    //         price: "57",
-    //         rating: "5.0",
-    //         students: "265.7K",
-    //         image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=600"
-    //     },
-    //     {
-    //         id: 2,
-    //         category: "DEVELOPMENTS",
-    //         categoryBg: "bg-[#EBEBFF]",
-    //         categoryText: "text-[#5624D0]",
-    //         title: "The Complete 2021 Web Development Bootcamp",
-    //         price: "57",
-    //         rating: "5.0",
-    //         students: "265.7K",
-    //         image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=600"
-    //     },
-    //     {
-    //         id: 3,
-    //         category: "BUSINESS",
-    //         categoryBg: "bg-[#E1F7E3]",
-    //         categoryText: "text-[#15711F]",
-    //         title: "Learn Python Programming Masterclass",
-    //         price: "57",
-    //         rating: "5.0",
-    //         students: "265.7K",
-    //         image: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=600"
-    //     },
-    //     {
-    //         id: 4,
-    //         category: "MARKETING",
-    //         categoryBg: "bg-[#FFF2E5]",
-    //         categoryText: "text-[#FD8E1F]",
-    //         title: "The Complete Digital Marketing Course - 12 Courses in 1",
-    //         price: "$57",
-    //         rating: "5.0",
-    //         students: "265.7K",
-    //         image: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?auto=format&fit=crop&q=80&w=600"
-    //     },
-    //     {
-    //         id: 5,
-    //         category: "IT & SOFTWARE",
-    //         categoryBg: "bg-[#FFEEE8]",
-    //         categoryText: "text-[#FF6636]",
-    //         title: "Reiki Level I, II and Master/Teacher Program",
-    //         price: "$57",
-    //         rating: "5.0",
-    //         students: "265.7K",
-    //         image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=600"
-    //     },
-    //     {
-    //         id: 6,
-    //         category: "MUSIC",
-    //         categoryBg: "bg-[#EBEBFF]",
-    //         categoryText: "text-[#5624D0]",
-    //         title: "The Complete Foundation Stock Trading Course",
-    //         price: "$57",
-    //         rating: "5.0",
-    //         students: "265.7K",
-    //         image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&q=80&w=600"
-    //     },
-    //     {
-    //         id: 7,
-    //         category: "MARKETING",
-    //         categoryBg: "bg-[#FFF2E5]",
-    //         categoryText: "text-[#FD8E1F]",
-    //         title: "Beginner to Pro in Excel: Financial Modeling and Valuation",
-    //         price: "$57",
-    //         rating: "5.0",
-    //         students: "265.7K",
-    //         image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=600"
-    //     },
-    //     {
-    //         id: 8,
-    //         category: "HEALTH & FITNESS",
-    //         categoryBg: "bg-[#E1F7E3]",
-    //         categoryText: "text-[#15711F]",
-    //         title: "The Python Mega Course: Build 10 Real World Applications",
-    //         price: "$57",
-    //         rating: "5.0",
-    //         students: "265.7K",
-    //         image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&q=80&w=600"
-    //     }
-    // ];
-
-    console.log(courses, "all finance cousre")
 
     if (loading) {
         return (
@@ -133,46 +40,68 @@ const CoursesCard: React.FC<CoursesCardProps> = ({ isSidebarOpen = true, courses
         <div className="w-full">
             {/* Course Grid - Dynamic columns based on Sidebar State */}
             <div className={`grid grid-cols-1 sm:grid-cols-2 ${isSidebarOpen ? 'lg:grid-cols-3 xl:grid-cols-3' : 'lg:grid-cols-4'} gap-6 transition-all duration-300`}>
-                {courses.map((course) => (
-                    <div
-                        key={course.id}
-                        className="bg-white group cursor-pointer border border-[#E9EAF0] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] hover:-translate-y-2 transition-all duration-300 rounded-[4px] overflow-hidden flex flex-col h-full"
-                        onClick={() => onCourseClick?.(course)}
-                    >
-                        <div className="relative overflow-hidden aspect-[16/10] shrink-0">
-                            <img
-                                src={course.image}
-                                alt={course.title}
-                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                            />
-                        </div>
+                {courses.map((course) => {
+                    const instructor =
+                        course.instrcutor_info?.[0]?.instructor_info ||
+                        course.instructors?.[0]?.instructor_info ||
+                        course.instructor_info ||
+                        course.course_instructor?.[0]?.instructor ||
+                        null;
 
-                        <div className="p-4 flex flex-col flex-1">
-                            <div className="flex justify-between items-center mb-4">
-                                <span style={{ backgroundColor: course?.categories?.[0]?.category_info?.bg_code, color: course?.categories?.[0]?.category_info?.text_code }} className={`px-2 py-0.5 text-[10px] font-bold uppercase`}>
-                                    {course?.categories?.[0]?.category_info?.name}
-                                </span>
-                                <span className="text-[#FF6636] font-bold text-[18px]">
-                                    ₹{course?.price}
-                                </span>
+                    const instructorName =
+                        instructor?.text_1 ||
+                        (course.created_by ? `${course.created_by.first_name} ${course.created_by.last_name}`.trim() : "") ||
+                        "Super Admin";
+
+                    const rating = Number.parseFloat(course?.avg_rating);
+
+                    return (
+                        <div
+                            key={course.id}
+                            className="bg-white group cursor-pointer border border-[#E9EAF0] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] hover:-translate-y-2 transition-all duration-300 rounded-[4px] overflow-hidden flex flex-col h-full"
+                            onClick={() => onCourseClick?.(course)}
+                        >
+                            <div className="relative overflow-hidden aspect-[16/10] shrink-0">
+                                <img
+                                    src={course.image}
+                                    alt={course.name}
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                />
                             </div>
 
-                            <h3 className="text-[#1D2026] text-sm font-medium mb-4 line-clamp-2 min-h-[40px] group-hover:text-[#5624D0] transition-colors leading-[20px]">
-                                {course.name}
-                            </h3>
-
-                            <div className="mt-auto pt-4 border-t border-[#E9EAF0] flex items-center justify-between">
-                                <div className="flex items-center gap-1">
-                                    <Star className="w-4 h-4 text-[#FD8E1F] fill-[#FD8E1F]" />
-                                    <span className="text-[#1D2026] text-[13px] font-semibold">{parseFloat(course?.avg_rating).toFixed(1)}</span>
+                            <div className="p-4 flex flex-col flex-1">
+                                <div className="flex justify-between items-center mb-3">
+                                    <span style={{ backgroundColor: course?.categories?.[0]?.category_info?.bg_code, color: course?.categories?.[0]?.category_info?.text_code }} className={`px-2 py-0.5 text-[10px] font-bold uppercase`}>
+                                        {course?.categories?.[0]?.category_info?.name}
+                                    </span>
+                                    <span className="text-[#FF6636] font-bold text-[18px]">
+                                        ₹{course?.price}
+                                    </span>
                                 </div>
-                                <div className="text-[12px] text-[#4E5566]">
-                                    <span className="font-semibold">180K</span> students
+
+                                <h3 className="text-[#1D2026] text-sm font-medium mb-1 line-clamp-2 group-hover:text-[#5624D0] transition-colors leading-[20px]">
+                                    {course.name}
+                                </h3>
+
+                                {instructorName && (
+                                    <span className="text-[12px] text-[#8C94A3] font-normal truncate block mb-3">
+                                        {instructorName}
+                                    </span>
+                                )}
+
+                                <div className="mt-auto pt-3 border-t border-[#E9EAF0] flex items-center justify-between">
+                                    <div className="flex items-center gap-1">
+                                        <Star className="w-4 h-4 text-[#FD8E1F] fill-[#FD8E1F]" />
+                                        <span className="text-[#1D2026] text-[13px] font-semibold">{Number.isNaN(rating) ? "0.0" : rating.toFixed(1)}</span>
+                                    </div>
+                                    <div className="text-[12px] text-[#4E5566]">
+                                        <span className="font-semibold">180K</span> students
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
 
             <style>{`

@@ -20,7 +20,17 @@ interface CourseItem {
         total_students?: number | string;
         categories: { category_info: { name: string } }[];
         enrolled_students?: number | string
+        instrcutor_info?: any[];
+        instructors?: any[];
+        instructor_info?: any;
+        course_instructor?: any[];
+        created_by?: any;
     };
+    instrcutor_info?: any[];
+    instructors?: any[];
+    instructor_info?: any;
+    course_instructor?: any[];
+    created_by?: any;
 }
 
 // ---------------------------------------------------------------------------
@@ -30,9 +40,28 @@ const CourseCard = memo(({ course }: { course: CourseItem }) => {
     const navigate = useNavigate();
 
     const info = course.courses;
+    const instructor =
+        info?.instrcutor_info?.[0]?.instructor_info ||
+        course.instrcutor_info?.[0]?.instructor_info ||
+        info?.instructors?.[0]?.instructor_info ||
+        course.instructors?.[0]?.instructor_info ||
+        info?.instructor_info ||
+        course.instructor_info ||
+        info?.course_instructor?.[0]?.instructor ||
+        course.course_instructor?.[0]?.instructor ||
+        null;
+
+    const instructorName =
+        instructor?.text_1 ||
+        (info?.created_by ? `${info.created_by.first_name} ${info.created_by.last_name}`.trim() : "") ||
+        (course.created_by ? `${course.created_by.first_name} ${course.created_by.last_name}`.trim() : "") ||
+        "Super Admin";
+
+    const rating = Number.parseFloat(info?.avg_rating?.toString() || "");
+
     const handleNagivate = useCallback(() => {
         navigate(`/courses/detail/${course?.courses?.id}`);
-    }, [navigate, course.id]);
+    }, [navigate, course?.courses?.id]);
 
 
     return (
@@ -47,7 +76,7 @@ const CourseCard = memo(({ course }: { course: CourseItem }) => {
             </div>
 
             <div className="p-4 flex flex-col min-h-[180px]">
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex justify-between items-center mb-3">
                     <span className="px-2 py-0.5 text-[10px] font-bold uppercase bg-[#EBEBFF] text-[#5624D0]">
                         {info?.categories?.[0]?.category_info?.name}
                     </span>
@@ -56,15 +85,21 @@ const CourseCard = memo(({ course }: { course: CourseItem }) => {
                     </span>
                 </div>
 
-                <h3 onClick={() => handleNagivate()} className="text-[#1D2026] text-sm font-medium mb-4 line-clamp-2 h-10 group-hover:text-[#5624D0] transition-colors leading-[20px]">
+                <h3 onClick={() => handleNagivate()} className="text-[#1D2026] text-sm font-medium mb-1 line-clamp-2 group-hover:text-[#5624D0] transition-colors leading-[20px]">
                     {info?.name}
                 </h3>
 
-                <div className="mt-auto pt-4 border-t border-[#E9EAF0] flex items-center justify-between">
+                {instructorName && (
+                    <span className="text-[12px] text-[#8C94A3] font-normal truncate block mb-3">
+                        {instructorName}
+                    </span>
+                )}
+
+                <div className="mt-auto pt-3 border-t border-[#E9EAF0] flex items-center justify-between">
                     <div className="flex items-center gap-1">
                         <Star className="w-4 h-4 text-[#FD8E1F] fill-[#FD8E1F]" />
                         <span className="text-[#1D2026] text-[13px] font-semibold">
-                            {parseFloat(info?.avg_rating?.toString() as string).toFixed(1) ?? 5}
+                            {Number.isNaN(rating) ? "0.0" : rating.toFixed(1)}
                         </span>
                     </div>
                     <div className="text-[12px] text-[#4E5566]">
@@ -142,8 +177,6 @@ const AllInOneFinance = () => {
     const handleTabClick = useCallback((id: number) => {
         setActiveTab(id);
     }, []);
-
-    console.log(courses, "all finance cousre")
 
     return (
         <section className="bg-[#FFFFFE] py-20 px-4 xl:px-0">

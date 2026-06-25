@@ -16,6 +16,7 @@ import HelpCentre from "./pages/Help/Index"
 import PurchaseHistory from "./pages/PurchaseHistory"
 import MyCommitment from "./pages/MyCommitment"
 import Support from "./pages/Support"
+import Career from "./pages/Career"
 
 
 // Lazy-loaded components
@@ -53,7 +54,7 @@ function App() {
         <Route path="/blogs/:slug" element={<BlogDetail />} />
         <Route path="/help-centre" element={<HelpCentre />} />
         <Route path="/support" element={<Support />} />
-
+        <Route path="/career" element={<Career />} />
 
         <Route element={<PrivateRoute />}>
           <Route path="/my-learning" element={<MyLearning />} />

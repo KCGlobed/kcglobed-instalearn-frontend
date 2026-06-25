@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import {
-    SlidersHorizontal, Search, ChevronDown, ChevronUp,
+    SlidersHorizontal, Search, ChevronDown,
 } from "lucide-react";
 import CoursesCard from "../Cards/CoursesCard";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
@@ -17,7 +17,9 @@ const CourseListFilter = () => {
     const [selectedLevels, setSelectedLevels] = useState<number[]>([]);
     const [selectedRatings, setSelectedRatings] = useState<number[]>([]);
     const [selectedTags, setSelectedTags] = useState<number[]>([]);
-    const [name, setName] = useState("");
+    const [ordering, setOrdering] = useState<string>("");
+    const [isSortOpen, setIsSortOpen] = useState(false);
+    const sortDropdownRef = useRef<HTMLDivElement | null>(null);
 
     // expandedCategories controls which category accordions are open
     const [expandedCategories, setExpandedCategories] = useState<number[]>([]);
@@ -32,8 +34,6 @@ const CourseListFilter = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const observerRef = useRef<IntersectionObserver | null>(null);
-
-    // Select category list & course filters from redux state
     const { category: categories } = useAppSelector((state: any) => state.filterCategory);
     const { courses, loading, error, isFetchingMore, pagination } = useAppSelector(
         (state: any) => state.filterCourseParams
@@ -53,6 +53,19 @@ const CourseListFilter = () => {
     };
 
     // -------------------------------------------------------------------
+    // Hydrate sort dropdown click-outside behavior
+    // -------------------------------------------------------------------
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (sortDropdownRef.current && !sortDropdownRef.current.contains(event.target as Node)) {
+                setIsSortOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    // -------------------------------------------------------------------
     // URL → State hydration (runs only once when categories are ready)
     // Handles deep-link navigation: /courses?category=IT&subcategory=Dev
     // -------------------------------------------------------------------
@@ -64,6 +77,7 @@ const CourseListFilter = () => {
         const searchVal = searchParams.get("search") || "";
         const catVal = searchParams.get("category") || "";
         const subVal = searchParams.get("subcategory") || "";
+        const orderingVal = searchParams.get("ordering") || "";
 
         let initialSubIds: number[] = [];
         let initialExpandedIds: number[] = [];
@@ -102,7 +116,7 @@ const CourseListFilter = () => {
 
         if (initialExpandedIds.length > 0) setExpandedCategories(initialExpandedIds);
         if (searchVal) setSearchQuery(searchVal);
-        if (searchVal) setName(searchVal);
+        if (orderingVal) setOrdering(orderingVal);
 
         if (initialSubIds.length > 0) {
             setSelectedSubcategories(initialSubIds);
@@ -112,7 +126,7 @@ const CourseListFilter = () => {
     }, [categories]);
 
     // -------------------------------------------------------------------
-    // Sync search input, filters, and expanded categories with URL params post-initialization
+    // Sync filters and expanded categories with URL params post-initialization
     // -------------------------------------------------------------------
     useEffect(() => {
         if (!urlInitialized || !categories || categories.length === 0) return;
@@ -121,10 +135,10 @@ const CourseListFilter = () => {
         const searchVal = searchParams.get("search") || "";
         const catVal = searchParams.get("category") || "";
         const subVal = searchParams.get("subcategory") || "";
+        const orderingVal = searchParams.get("ordering") || "";
 
-        // Sync search inputs
-        setName(searchVal);
         setSearchQuery(searchVal);
+        setOrdering(orderingVal);
 
         if (catVal) {
             // Case 1: Category/subcategory explicitly provided in URL
@@ -145,7 +159,7 @@ const CourseListFilter = () => {
                 }
             }
         } else if (searchVal) {
-            // Case 2: Pure search query. Let's auto-expand categories containing matching subcategories!
+            // Case 2: Pure search query — auto-expand matching categories
             const lowerSearch = searchVal.toLowerCase();
             const matchedCategoryIds: number[] = [];
             for (const cat of categories) {
@@ -160,7 +174,7 @@ const CourseListFilter = () => {
                 setExpandedCategories(prev => Array.from(new Set([...prev, ...matchedCategoryIds])));
             }
         } else {
-            // Case 3: Empty query (e.g. cleared filters or went back to /courses)
+            // Case 3: Empty query (cleared filters or navigated back to /courses)
             setSelectedSubcategories([]);
             setSelectedLevels([]);
             setSelectedRatings([]);
@@ -168,21 +182,6 @@ const CourseListFilter = () => {
             setExpandedCategories([]);
         }
     }, [location.search, urlInitialized, categories]);
-
-    // Debounced search input → URL update
-    useEffect(() => {
-        const searchParams = new URLSearchParams(location.search);
-        const currentSearchVal = searchParams.get("search") || "";
-        if (name === currentSearchVal) return;
-
-        const handler = setTimeout(() => {
-            const newParams = new URLSearchParams();
-            if (name.trim()) newParams.set("search", name.trim());
-            navigate(`/courses?${newParams.toString()}`);
-        }, 400);
-
-        return () => clearTimeout(handler);
-    }, [name, navigate]);
 
     // -------------------------------------------------------------------
     // Dispatch API whenever selected filters change (local state driven)
@@ -192,14 +191,16 @@ const CourseListFilter = () => {
         levels: number[],
         ratings: number[],
         tags: number[],
-        search: string
+        search: string,
+        order: string
     ) => {
         dispatch(filterCoursesListParams({
             subcategory: subIds,
             name: search,
             level: levels,
             rating: ratings,
-            tags: tags
+            tags: tags,
+            ordering: order
         }));
     }, [dispatch]);
 
@@ -239,8 +240,8 @@ const CourseListFilter = () => {
     // -------------------------------------------------------------------
     useEffect(() => {
         if (!urlInitialized) return;
-        dispatchFilter(selectedSubcategories, selectedLevels, selectedRatings, selectedTags, searchQuery);
-    }, [urlInitialized, selectedSubcategories, selectedLevels, selectedRatings, selectedTags, searchQuery, dispatchFilter]);
+        dispatchFilter(selectedSubcategories, selectedLevels, selectedRatings, selectedTags, searchQuery, ordering);
+    }, [urlInitialized, selectedSubcategories, selectedLevels, selectedRatings, selectedTags, searchQuery, ordering, dispatchFilter]);
 
     // -------------------------------------------------------------------
     // Clear all filters
@@ -251,9 +252,22 @@ const CourseListFilter = () => {
         setSelectedRatings([]);
         setSelectedTags([]);
         setExpandedCategories([]);
-        setName("");
         setSearchQuery("");
+        setOrdering("");
         navigate("/courses");
+    };
+
+    // -------------------------------------------------------------------
+    // Sort dropdown change handler — updates URL query params
+    // -------------------------------------------------------------------
+    const handleSortChange = (value: string) => {
+        const searchParams = new URLSearchParams(location.search);
+        if (value) {
+            searchParams.set("ordering", value);
+        } else {
+            searchParams.delete("ordering");
+        }
+        navigate(`/courses?${searchParams.toString()}`);
     };
 
     // -------------------------------------------------------------------
@@ -307,72 +321,115 @@ const CourseListFilter = () => {
           )
         : [];
 
+    const sortOptions = [
+        { label: "Trending", value: "" },
+        { label: "Newest", value: "-created_at" },
+        { label: "Most Reviewed", value: "-total_reviews" },
+        { label: "Most Rated", value: "-avg_rating" }
+    ];
+
+    const currentOption = sortOptions.find(opt => opt.value === ordering) || sortOptions[0];
+
+    const activeFilterCount = selectedSubcategories.length + selectedLevels.length + selectedRatings.length + selectedTags.length;
+
     return (
         <section className="bg-white px-4 xl:px-0">
-            <div className="max-w-[1320px] mx-auto pt-8 pb-6 border-b border-[#E9EAF0]">
-                {/* Top Row: Filter, Search, Sort */}
-                <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
+            <div className="max-w-[1320px] mx-auto">
 
-                    {/* Left: Filter & Search */}
-                    <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto">
+                {/* ── Toolbar: single unified row ── */}
+                <div className="flex items-center justify-between gap-4 py-4 border-b border-[#E9EAF0]">
 
-                        {/* Filter Toggle Button */}
+                    {/* LEFT: Filter button + divider + results count */}
+                    <div className="flex items-center gap-0 min-w-0">
+
+                        {/* Filter Toggle */}
                         <button
                             onClick={() => setIsFilterOpen(!isFilterOpen)}
-                            className="flex items-center justify-center gap-2 h-[48px] px-5 border border-[#5624D0] bg-[#F5F4FF] text-[#5624D0] rounded-[4px] font-semibold text-[15px] transition-colors hover:bg-[#ebe6ff] shrink-0 w-full sm:w-auto"
+                            className={`flex items-center gap-2 h-[42px] px-4 border rounded-[4px] font-semibold text-[14px] transition-all shrink-0 ${
+                                isFilterOpen
+                                    ? "border-[#5624D0] bg-[#F5F4FF] text-[#5624D0] hover:bg-[#ebe6ff]"
+                                    : "border-[#E9EAF0] bg-white text-[#4E5566] hover:border-[#5624D0] hover:text-[#5624D0] hover:bg-[#F5F4FF]"
+                            }`}
                         >
-                            <SlidersHorizontal className="w-[18px] h-[18px]" strokeWidth={2.5} />
-                            <span>Filter</span>
-                            {(selectedSubcategories.length + selectedLevels.length + selectedRatings.length + selectedTags.length) > 0 && (
-                                <span className="w-6 h-6 flex items-center justify-center bg-[#5624D0] text-white text-[12px] font-bold rounded ml-1">
-                                    {selectedSubcategories.length + selectedLevels.length + selectedRatings.length + selectedTags.length}
+                            <SlidersHorizontal className="w-[16px] h-[16px]" strokeWidth={2.5} />
+                            <span>{isFilterOpen ? "Hide Filters" : "Show Filters"}</span>
+                            {activeFilterCount > 0 && (
+                                <span className="w-5 h-5 flex items-center justify-center bg-[#5624D0] text-white text-[11px] font-bold rounded-full">
+                                    {activeFilterCount}
                                 </span>
                             )}
                         </button>
 
-                        {/* Search Input */}
-                        <div className="flex items-center gap-3 h-[48px] px-4 border border-[#E9EAF0] bg-white rounded-[4px] w-full sm:w-[380px] md:w-[480px] transition-colors focus-within:border-[#5624D0]">
-                            <Search className="w-5 h-5 text-[#8C94A3]" />
-                            <input
-                                type="text"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                placeholder="Search courses..."
-                                className="w-full h-full bg-transparent outline-none text-[#1D2026] text-[15px] placeholder:text-[#8C94A3]"
-                            />
-                        </div>
+                        {/* Vertical divider */}
+                        <div className="w-px h-6 bg-[#E9EAF0] mx-4 shrink-0" />
 
-                    </div>
+                        {/* Results count */}
+                        <p className="text-[14px] text-[#6E7485] truncate">
+                            <span className="font-semibold text-[#1D2026]">
+                                {pagination?.total_results || filteredCourses.length}
+                            </span>{" "}
+                            results
+                            {searchQuery && (
+                                <> for{" "}
+                                    <span className="font-semibold text-[#5624D0]">"{searchQuery}"</span>
+                                </>
+                            )}
+                        </p>
 
-                    {/* Right: Sort By */}
-                    <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto shrink-0">
-                        <span className="text-[#8C94A3] text-[14px] whitespace-nowrap">Sort by:</span>
-                        <div className="relative group shrink-0 flex-1 sm:flex-none">
-                            <button className="flex items-center justify-between h-[48px] px-4 border border-[#E9EAF0] bg-white rounded-[4px] min-w-[180px] sm:min-w-[200px] w-full text-[#1D2026] text-[14px] font-medium transition-colors group-hover:border-[#8C94A3]">
-                                <span>Trending</span>
-                                <ChevronDown className="w-4 h-4 text-[#8C94A3] stroke-[2px]" />
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-
-                {/* Results count */}
-                <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between mt-6 gap-4">
-                    <div className="flex flex-wrap items-center gap-y-2 gap-x-3 text-[14px]">
-                        {selectedSubcategories.length > 0 && (
-                            <button
-                                onClick={handleClearFilters}
-                                className="text-[#FF6636] font-medium hover:underline transition-all text-[13px]"
-                            >
-                                Clear all filters ✕
-                            </button>
+                        {/* Clear filters pill (only when active) */}
+                        {activeFilterCount > 0 && (
+                            <>
+                                <div className="w-px h-6 bg-[#E9EAF0] mx-4 shrink-0" />
+                                <button
+                                    onClick={handleClearFilters}
+                                    className="flex items-center gap-1.5 text-[13px] text-[#FF6636] font-medium hover:underline whitespace-nowrap shrink-0"
+                                >
+                                    Clear filters
+                                    <span className="text-[11px]">✕</span>
+                                </button>
+                            </>
                         )}
                     </div>
-                    <div className="text-[14px] text-[#8C94A3] shrink-0 lg:text-right">
-                        Showing <span className="font-bold text-[#1D2026]">{filteredCourses.length}</span> of{" "}
-                        <span className="font-bold text-[#1D2026]">{pagination?.total_results || filteredCourses.length}</span> results
-                        {searchQuery && <> for "<span className="font-bold text-[#1D2026]">{searchQuery}</span>"</>}
+
+                    {/* RIGHT: Sort By */}
+                    <div className="flex items-center gap-2.5 shrink-0 z-20">
+                        <span className="text-[#6E7485] text-[13px] whitespace-nowrap hidden sm:block">Sort by</span>
+                        <div ref={sortDropdownRef} className="relative">
+                            <button
+                                onClick={() => setIsSortOpen(!isSortOpen)}
+                                className="flex items-center gap-2 h-[42px] px-4 border border-[#E9EAF0] bg-white rounded-[4px] min-w-[160px] text-[#1D2026] text-[14px] font-medium transition-colors hover:border-[#5624D0] hover:bg-[#F5F4FF]"
+                            >
+                                <span className="flex-1 text-left">{currentOption?.label || "Trending"}</span>
+                                <ChevronDown
+                                    className={`w-4 h-4 text-[#8C94A3] transition-transform duration-200 ${isSortOpen ? "rotate-180" : ""}`}
+                                    strokeWidth={2}
+                                />
+                            </button>
+
+                            {isSortOpen && (
+                                <div className="absolute right-0 top-full mt-1 w-full min-w-[160px] bg-white border border-[#E9EAF0] rounded-[6px] shadow-xl py-1 z-30 animate-in fade-in slide-in-from-top-1 duration-150">
+                                    {sortOptions.map((option) => (
+                                        <button
+                                            key={option.value}
+                                            onClick={() => {
+                                                handleSortChange(option.value);
+                                                setIsSortOpen(false);
+                                            }}
+                                            className={`w-full px-4 py-2.5 text-left text-[14px] transition-colors flex items-center justify-between gap-2 ${
+                                                ordering === option.value
+                                                    ? "bg-[#F5F4FF] text-[#5624D0] font-semibold"
+                                                    : "text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0]"
+                                            }`}
+                                        >
+                                            {option.label}
+                                            {ordering === option.value && (
+                                                <span className="w-2 h-2 rounded-full bg-[#5624D0] shrink-0" />
+                                            )}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
