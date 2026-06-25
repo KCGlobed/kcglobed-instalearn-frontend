@@ -20,6 +20,7 @@ interface PaymentUser {
   pincode?: string;
   user_id: string;
   device_id: string;
+  coupon_code?: string;
 }
 
 /**

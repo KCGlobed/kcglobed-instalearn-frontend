@@ -73,4 +73,5 @@ export const API_ENDPOINTS = {
     HELP_AND_SUPPORT_ARTICLE_DETAIL: "cms/get-help-support-article-detail/",
     GET_TOP_COURSES: "course/footer-top-courses-list/",
     GET_TOP_CATEGORIES: "course/footer-top-category-list/",
+    VALIDATE_COUPON_CODE: "subscription/validate-coupon/"
 }

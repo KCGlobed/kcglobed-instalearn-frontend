@@ -1,6 +1,15 @@
 import { createAsyncThunk, createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { addToCart, checkCourseCart, viewCart } from "../../utils/service";
 
+const getStoredCoupon = () => {
+    try {
+        const stored = sessionStorage.getItem('applied_coupon');
+        return stored ? JSON.parse(stored) : null;
+    } catch {
+        return null;
+    }
+};
+
 export interface CartState {
     itemCount: number;
     loading: boolean;
@@ -9,6 +18,7 @@ export interface CartState {
     message: string | null;
     isInCart: boolean;
     cartItems: any[];
+    appliedCoupon: any | null;
 }
 
 const initialState: CartState = {
@@ -19,6 +29,7 @@ const initialState: CartState = {
     success: false,
     message: null,
     isInCart: false,
+    appliedCoupon: getStoredCoupon(),
 };
 
 export const getDeviceId = () => {
@@ -86,10 +97,20 @@ const cartSlice = createSlice({
         updateItemCount: (state, action: PayloadAction<number>) => {
             state.itemCount = action.payload;
         },
+        applyCouponSuccess: (state, action: PayloadAction<any>) => {
+            state.appliedCoupon = action.payload;
+            sessionStorage.setItem('applied_coupon', JSON.stringify(action.payload));
+        },
+        removeCoupon: (state) => {
+            state.appliedCoupon = null;
+            sessionStorage.removeItem('applied_coupon');
+        },
         removeFromCart: (state, action: PayloadAction<number>) => {
             console.log("id", action.payload);
             state.cartItems = state.cartItems.filter((item: any) => item.id !== action.payload);
             state.itemCount = state.cartItems.length;
+            state.appliedCoupon = null;
+            sessionStorage.removeItem('applied_coupon');
         }
     },
     extraReducers: (builder) => {
@@ -132,5 +153,5 @@ const cartSlice = createSlice({
     },
 });
 
-export const { clearCartStatus, updateItemCount, removeFromCart } = cartSlice.actions;
+export const { clearCartStatus, updateItemCount, removeFromCart, applyCouponSuccess, removeCoupon } = cartSlice.actions;
 export default cartSlice.reducer;
