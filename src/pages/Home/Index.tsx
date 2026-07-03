@@ -9,6 +9,7 @@ import RecentlyAddedCourses from "../../components/HomeComponent/RecentlyAddedCo
 import HomeBanner from "../../components/HomeComponent/HomeBanner"
 import LearningFocus from "../../components/HomeComponent/LearningFocus"
 import GoogleOneTap from "../../components/Auth/GoogleOneTap"
+import PromoStrip from "../../layouts/PromoStrip"
 
 
 const HomePage = () => {
@@ -16,6 +17,7 @@ const HomePage = () => {
         <>
             {/* Google One Tap — auto-prompts unauthenticated users */}
             <GoogleOneTap />
+            <PromoStrip />
             <TopHeader />
             <MainHeader />
             <HomeBanner />
