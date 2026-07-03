@@ -90,7 +90,7 @@ const FloatingField: React.FC<FloatingFieldProps> = ({
 
 const CheckoutPage = () => {
     const navigate = useNavigate();
-    const { cartItems: cart } = useAppSelector((state: RootState) => state.cart);
+    const { cartItems: cart, appliedCoupon } = useAppSelector((state: RootState) => state.cart);
     const userID = localStorage.getItem('userID') || '';
     const deviceID = getDeviceId();
     const isLogin = !!localStorage.getItem('token');
@@ -125,8 +125,9 @@ const CheckoutPage = () => {
 
     // GST Calculation (18% on discounted total)
     const GST_RATE = 0.18;
-    const gstAmount = Math.round(totalPrice * GST_RATE);
-    const totalPayable = totalPrice + gstAmount;
+    const finalSubtotal = appliedCoupon ? appliedCoupon.summary.final_total : totalPrice;
+    const gstAmount = Math.round(finalSubtotal * GST_RATE);
+    const totalPayable = finalSubtotal + gstAmount;
 
     // Payload — always send clean 10-digit phone
     const userDataForPayment = {
@@ -136,6 +137,7 @@ const CheckoutPage = () => {
         phone: sanitizePhone(watchedData.phone) || '9999999999',
         user_id: userID,
         device_id: deviceID,
+        coupon_code: appliedCoupon ? appliedCoupon.coupon_code : undefined,
     };
 
     // Strip non-digits on phone input (native event, doesn't interfere with RHF)
@@ -301,9 +303,15 @@ const CheckoutPage = () => {
                                         <span className="text-[#6a6f73]">Discounts:</span>
                                         <span className="text-green-600 font-medium">-₹{discountCount.toFixed(2)}</span>
                                     </div>
+                                    {appliedCoupon && (
+                                        <div className="flex justify-between text-[14px]">
+                                            <span className="text-[#6a6f73]">Coupon ({appliedCoupon.coupon_code}):</span>
+                                            <span className="text-green-600 font-medium">-₹{appliedCoupon.summary.discount_applied.toFixed(2)}</span>
+                                        </div>
+                                    )}
                                     <div className="flex justify-between text-[14px]">
                                         <span className="text-[#6a6f73]">Subtotal:</span>
-                                        <span className="text-[#2d2f31] font-medium">₹{totalPrice.toFixed(2)}</span>
+                                        <span className="text-[#2d2f31] font-medium">₹{finalSubtotal.toFixed(2)}</span>
                                     </div>
                                     <div className="flex justify-between text-[14px]">
                                         <span className="text-[#6a6f73]">GST (18%):</span>

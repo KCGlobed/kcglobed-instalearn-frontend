@@ -49,9 +49,23 @@ export async function apiRequest<T>(
       throw new Error("Unexpected API error");
     }
     
+    // Try to extract validation errors (e.g. from errors.data or data directly)
+    let apiErrorMessage = "";
+    const errorSource = errorData?.errors?.data || errorData?.data;
+    if (errorSource && typeof errorSource === 'object') {
+      const messages = Object.values(errorSource).flatMap((val: any) =>
+        Array.isArray(val) ? val : [val]
+      );
+      if (messages.length > 0) {
+        apiErrorMessage = messages.join(", ");
+      }
+    } else if (errorData?.errors && typeof errorData.errors === 'string') {
+      apiErrorMessage = errorData.errors;
+    }
+
     // Extract detailed error message if available in the structure provided by the user
     const detailedError = errorData?.error?.errors?.[0]?.detail;
-    const errorMessage = detailedError || errorData?.message || "API error";
+    const errorMessage = apiErrorMessage || detailedError || errorData?.message || errorData?.errors?.message || "API error";
     
     throw new Error(errorMessage);
   }

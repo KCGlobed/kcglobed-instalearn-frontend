@@ -289,6 +289,10 @@ export const submitApplicationFormApi = async (payload: FormData): Promise<any> 
   return await apiRequest(API_ENDPOINTS.SUBMIT_APPLICATION_FORM, 'POST', payload);
 };
 
+export const validateCouponApi = async (payload: { device_id: string; code: string }): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.VALIDATE_COUPON_CODE, 'POST', payload);
+};
+
 
 
 
