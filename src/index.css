@@ -66,3 +66,152 @@
 .animate-fade-in-right {
   animation: fade-in-right 0.8s ease-out forwards;
 }
+
+.promo-skeleton-pulse {
+  animation: promoPulse 1.5s ease-in-out infinite;
+  background-color: #e5e7eb;
+  border-radius: 4px;
+}
+
+.promo-strip {
+  width: 100%;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 48px 5px 16px;
+  min-height: 44px;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1000;
+}
+
+.promo-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: nowrap;
+}
+
+.promo-divider {
+  width: 1px;
+  height: 28px;
+  background-color: #e5e7eb;
+  flex-shrink: 0;
+}
+
+.promo-emoji {
+  font-size: 26px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.promo-text-block {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+
+.promo-offer-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  white-space: nowrap;
+}
+
+.promo-sub-text {
+  font-size: 12px;
+  color: #4b5563;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  white-space: nowrap;
+}
+
+.promo-code {
+  color: #ef4444;
+  letter-spacing: 0.03em;
+}
+
+.promo-countdown {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.promo-time-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 34px;
+}
+
+.promo-time-value {
+  font-size: 17px;
+  font-weight: 700;
+  color: #111827;
+  font-family: 'Inter', 'Segoe UI', monospace;
+  line-height: 1.1;
+}
+
+.promo-time-label {
+  font-size: 9px;
+  font-weight: 600;
+  color: #9ca3af;
+  letter-spacing: 0.08em;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+.promo-dot {
+  font-size: 16px;
+  font-weight: 700;
+  color: #9ca3af;
+  line-height: 1;
+  align-self: center;
+  margin-bottom: 8px;
+}
+
+.promo-cta {
+  background-color: #2563eb;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 8px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+  display: inline-block;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.promo-cta:hover {
+  background-color: #1d4ed8;
+  transform: scale(1.03);
+}
+
+.promo-close {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #9ca3af;
+  font-size: 14px;
+  padding: 4px 6px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: color 0.15s ease;
+}
+
+.promo-close:hover {
+  color: #4b5563;
+}

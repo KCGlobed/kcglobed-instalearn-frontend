@@ -74,5 +74,6 @@ export const API_ENDPOINTS = {
     GET_TOP_COURSES: "course/footer-top-courses-list/",
     GET_TOP_CATEGORIES: "course/footer-top-category-list/",
     VALIDATE_COUPON_CODE: "subscription/validate-coupon/",
+    CAMPAIGN: "cms/get-promotional-banner/",
 
 }

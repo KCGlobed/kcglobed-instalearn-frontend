@@ -293,6 +293,10 @@ export const validateCouponApi = async (payload: { device_id: string; code: stri
   return await apiRequest(API_ENDPOINTS.VALIDATE_COUPON_CODE, 'POST', payload);
 };
 
+export const getCampaignApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.CAMPAIGN, 'GET');
+};
+
 
 
 
