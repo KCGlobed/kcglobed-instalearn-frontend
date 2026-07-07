@@ -1,6 +1,6 @@
 import { BookOpen, Bell, FileText, Star, Wrench } from "lucide-react";
 
-const TABS = ["Overview", "Notes", "Announcements", "Reviews", "Learning tools", "Certificate"] as const;
+const TABS = ["Overview", "Notes", "Announcements", "Reviews", "Learning tools", "Certificate", "Quiz"] as const;
 
 interface CourseTabsProps {
   active: string;
@@ -18,8 +18,8 @@ export default function CourseTabs({ active, setActive }: CourseTabsProps) {
             key={tab}
             onClick={() => setActive(tab)}
             className={`relative py-3 text-sm font-bold transition-all shrink-0 ${isActive
-                ? "text-[#2d2f31]"
-                : "text-[#6a6f73] hover:text-[#2d2f31]"
+              ? "text-[#2d2f31]"
+              : "text-[#6a6f73] hover:text-[#2d2f31]"
               }`}
           >
             <span className="tracking-tight">{tab}</span>

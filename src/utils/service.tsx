@@ -297,6 +297,43 @@ export const getCampaignApi = async (): Promise<any> => {
   return await apiRequest(API_ENDPOINTS.CAMPAIGN, 'GET');
 };
 
+export const getChapterQuizApi = async (chapterInfoId: string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_CHAPTER_QUIZZES_LIST}${chapterInfoId}`, 'GET');
+}
+
+export const startChapterQuizApi = async (payload: { course_id: number; quiz_id: number }): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.START_QUIZ, 'POST', payload);
+}
+
+export const submitChapterQuizApi = async (payload: { test_id: number; answers: { test_question_id: number; selected_option_id: number }[] }): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.SUBMIT_QUIZ, 'POST', payload);
+}
+
+// Per-question submission (called on every Next / Finish click)
+export const submitQuizAnswerApi = async (payload: {
+  practice_test_id: number;
+  question_id: number;
+  selected_option_id: number;
+  time_taken: number;
+  is_completed: 0 | 1;
+}): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.SUBMIT_QUIZ, 'POST', payload);
+}
+
+export const getQuizResultApi = async (testId: number): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_QUIZ_RESULT}${testId}`, 'GET');
+}
+
+export const getQuizHistoryApi = async (courseId: number, chapterId: number, quizId: number): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.QUIZ_HISTORY}${courseId}/${chapterId}/${quizId}`, 'GET');
+}
+
+
+
+
+
+
+
 
 
 

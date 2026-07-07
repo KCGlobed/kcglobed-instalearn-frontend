@@ -75,5 +75,9 @@ export const API_ENDPOINTS = {
     GET_TOP_CATEGORIES: "course/footer-top-category-list/",
     VALIDATE_COUPON_CODE: "subscription/validate-coupon/",
     CAMPAIGN: "cms/get-promotional-banner/",
-
+    GET_CHAPTER_QUIZZES_LIST: "questions/get-chapter-quiz-list/",
+    START_QUIZ: "questions/start-chapter-quiz/",
+    GET_QUIZ_RESULT: "questions/get-quiz-test-result/",
+    SUBMIT_QUIZ: "questions/submit-quiz-test-answer/",
+    QUIZ_HISTORY: "questions/get-completed-quiz-list/",
 }

@@ -21,6 +21,9 @@ import LearningReminder from "../../components/MyLearningDashboard/LearningRemin
 import ReviewsPanel from "../../components/CourseDetail/tabs/ReviewsPanel";
 import Certificate from "../../components/MyLearningDashboard/Certificate";
 import SkeltonLoader from "../../components/Loader/SkeltonLoader";
+import QuizCard from "../../components/QuizComponent/QuizCard";
+import QuizSection from "../../components/QuizComponent/QuizSection";
+
 
 export default function LMSCoursePage() {
   const dispatch = useAppDispatch();
@@ -31,6 +34,10 @@ export default function LMSCoursePage() {
   const { courseDetail, loading: CourseDetailLoading, error: CourseDetailError } = useAppSelector((state: RootState) => state.courseDetail);
   const { chapters, loading: chaptersLoading } = useAppSelector((state: RootState) => state.courseDashboardChapter);
   const { activeLesson, lecturesByChapter, loadingChapters } = useAppSelector((state: RootState) => state.courseDashboardLecture);
+  //----quiz state ----//
+  const [quizState, setQuizState] = useState<"idle" | "starter" | "active" | "result">("idle");
+  const [selectedQuizId, setSelectedQuizId] = useState<number | null>(null);
+
 
   // Fetch Chapters on Mount
   useEffect(() => {
@@ -166,6 +173,14 @@ export default function LMSCoursePage() {
   }, [slug]);
 
 
+  const currentChapter = chapters.find(ch => ch.chapter_info.id === activeLesson?.chapter) ?? null;
+  console.log("chapter get ", currentChapter);
+
+  const handleStartCurrentQuiz = (qId: any) => {
+    console.log(qId, "check current quiz main");
+    setSelectedQuizId(qId);
+    setQuizState("starter");
+  }
 
 
 
@@ -178,14 +193,19 @@ export default function LMSCoursePage() {
 
           {/* Player Section - Kept dark for cinematic focus */}
           <div className="w-full bg-[#1c1d1f] shrink-0 shadow-lg relative z-10">
-            <MediaViewerSection
-              activeLesson={activeLesson}
-              loading={chaptersLoading}
-              isEmpty={chapters.length === 0}
-              prevLesson={prevLesson}
-              nextLesson={nextLesson}
-              onNavigate={handleNavigate}
-            />
+            {
+              quizState !== "idle" ?
+                <QuizSection currentChapter={currentChapter} state={quizState} quizId={selectedQuizId} setQuizState={setQuizState} courseId={Number(slug)} /> :
+                <MediaViewerSection
+                  activeLesson={activeLesson}
+                  loading={chaptersLoading}
+                  isEmpty={chapters.length === 0}
+                  prevLesson={prevLesson}
+                  nextLesson={nextLesson}
+                  onNavigate={handleNavigate}
+                />
+            }
+
           </div>
 
           {/* Bottom Tabs Section */}
@@ -228,6 +248,11 @@ export default function LMSCoursePage() {
                 {
                   activeTab === "Certificate" && (
                     <Certificate courseId={Number(slug)} progress={courseProgress?.percentage ?? 0} courseName={courseProgress?.name ?? ""} />
+                  )
+                }
+                {
+                  activeTab === "Quiz" && (
+                    <QuizCard currentChapter={currentChapter} onStartQuiz={(qId) => { handleStartCurrentQuiz(qId); }} />
                   )
                 }
 

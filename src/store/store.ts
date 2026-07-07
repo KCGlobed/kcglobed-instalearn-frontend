@@ -22,6 +22,7 @@ import notesReducer from "./slices/noteSlice";
 import reviewReducer from "./slices/reviewSlice";
 import announcementReducer from "./slices/announcementSlice";
 import reminderReducer from "./slices/reminderSlice";
+import quizReducer from "./slices/quizSlice";
 
 
 
@@ -52,6 +53,8 @@ export const store = configureStore({
     review: reviewReducer,
     announcement: announcementReducer,
     reminders: reminderReducer,
+    quiz: quizReducer,
+
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(videoApi.middleware),
