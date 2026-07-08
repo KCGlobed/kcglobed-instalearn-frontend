@@ -128,7 +128,7 @@ const PublicProfile = () => {
                     </aside>
 
                     {/* Content Area */}
-                    <section className="flex-1 w-full bg-white rounded-xl border border-[#E9EAF0] shadow-sm overflow-hidden min-h-[500px] md:min-h-[600px]">
+                    <section className="flex-1 w-full bg-white rounded-xl border border-[#E9EAF0] shadow-sm min-h-[500px] md:min-h-[600px]">
                         <div className="px-6 py-6 md:px-8 md:py-6 border-b border-[#E9EAF0]">
                             <h2 className="text-xl font-bold text-[#1D2026]">{activeTab.label}</h2>
                             <p className="text-[#6E7485] text-sm mt-1">{activeTab.description}</p>
