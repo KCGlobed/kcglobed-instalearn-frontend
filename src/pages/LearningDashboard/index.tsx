@@ -37,6 +37,7 @@ export default function LMSCoursePage() {
   //----quiz state ----//
   const [quizState, setQuizState] = useState<"idle" | "starter" | "active" | "result">("idle");
   const [selectedQuizId, setSelectedQuizId] = useState<number | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
 
   // Fetch Chapters on Mount
@@ -186,7 +187,13 @@ export default function LMSCoursePage() {
 
   return (
     <div className="fixed inset-0 overflow-hidden bg-[#f7f9fa] flex flex-col font-sans selection:bg-[#a435f0]/30 text-[#2d2f31]">
-      <Header courseName={courseProgress?.name ?? ""} progress={courseProgress?.percentage ?? 0} courseTitle={courseTitle} />
+      <Header
+        courseName={courseProgress?.name ?? ""}
+        progress={courseProgress?.percentage ?? 0}
+        courseTitle={courseTitle}
+        sidebarOpen={isSidebarOpen}
+        toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+      />
 
       <div className="flex flex-1 overflow-hidden">
         <main className="flex-1 h-full overflow-y-auto bg-[#f7f9fa] flex flex-col [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
@@ -271,7 +278,7 @@ export default function LMSCoursePage() {
           </div>
         </main>
 
-        <CourseSidebar />
+        {isSidebarOpen && <CourseSidebar onClose={() => setIsSidebarOpen(false)} />}
       </div>
     </div>
   );
