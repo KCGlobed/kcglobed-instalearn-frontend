@@ -163,16 +163,6 @@ const CourseSidebar = () => {
     const discountedPrice = price - (price * discountPct) / 100;
 
 
-    const addCourseToCart = () => {
-        if (!courseDetail?.id) return;
-        const data = {
-            course_id: courseDetail.id,
-        }
-        dispatch(addToCartAction(data));
-
-    }
-
-
     const isCart = useMemo(() => {
         if (!courseDetail?.id || !cartItems?.length) return false;
         return cartItems.some((item: any) => item?.course_info?.id === courseDetail.id);
@@ -183,19 +173,46 @@ const CourseSidebar = () => {
         return wishListItems.some((item: any) => item?.course_info?.id === courseDetail.id);
     }, [wishListItems, courseDetail?.id]);
 
+    const addCourseToCart = async () => {
+        if (!courseDetail?.id) return;
+
+        if (isCart) {
+            navigate('/cart');
+            return;
+        }
+
+        const data = {
+            course_id: courseDetail.id,
+        };
+        try {
+            await dispatch(addToCartAction(data)).unwrap();
+            if (isWishlist) {
+                await dispatch(toggleWishlistAction(data)).unwrap();
+                dispatch(toggleCourseWishlistStatus());
+            }
+        } catch (err: any) {
+            toast.error(err || "Failed to add to cart");
+        }
+    };
 
     const handleWishList = async () => {
         try {
             if (!courseDetail?.id) return;
+
+            if (isCart) {
+                toast.error("This course is already in your cart.");
+                return;
+            }
+
             const data = {
                 course_id: courseDetail.id,
-            }
+            };
             await dispatch(toggleWishlistAction(data)).unwrap();
             dispatch(toggleCourseWishlistStatus());
         } catch (error) {
             toast.error(error as string);
         }
-    }
+    };
 
 
     const formatDuration = (seconds: string | number | null | undefined) => {
