@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Play, Pause } from "lucide-react";
 import { useWatchVideoMutation } from "../../store/api/videoApi";
 import type { Lecture } from "../../store/slices/courseDashboardLectureSlice";
 const BASE_VIDEO_URL = "https://storage.googleapis.com/instalearn-public-bucket/";
@@ -31,6 +32,7 @@ export default function VideoViewer({
   const videoRef = useRef<HTMLVideoElement>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
   // Ref to track last synced duration to avoid redundant calls
   const lastSyncedDurationRef = useRef<number>(-1);
@@ -163,8 +165,13 @@ export default function VideoViewer({
       syncProgress();
     };
 
+    const handlePlayState = () => setIsPlaying(true);
+    const handlePauseState = () => setIsPlaying(false);
+
     video.addEventListener("play", startTracking);
     video.addEventListener("pause", stopTracking);
+    video.addEventListener("play", handlePlayState);
+    video.addEventListener("pause", handlePauseState);
     video.addEventListener("ended", stopTracking);
     video.addEventListener("timeupdate", handleTimeUpdate);
 
@@ -177,6 +184,8 @@ export default function VideoViewer({
       if (video) {
         video.removeEventListener("play", startTracking);
         video.removeEventListener("pause", stopTracking);
+        video.removeEventListener("play", handlePlayState);
+        video.removeEventListener("pause", handlePauseState);
         video.removeEventListener("ended", stopTracking);
         video.removeEventListener("timeupdate", handleTimeUpdate);
         video.removeEventListener("loadedmetadata", restoreProgress);
@@ -208,6 +217,16 @@ export default function VideoViewer({
       ? { width: "100%", height: "100%", minHeight: 0 }
       : { aspectRatio: "16/9", width: "100%", maxWidth: "1380px", margin: "0 auto" };
 
+  const handleTogglePlay = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (video.paused) {
+      video.play().catch((e) => console.debug("Error playing video:", e));
+    } else {
+      video.pause();
+    }
+  };
+
   return (
     <div className="relative bg-black overflow-hidden w-full h-full flex items-center justify-center" style={containerStyle}>
       <video
@@ -218,6 +237,26 @@ export default function VideoViewer({
         onPlaying={() => setLoading(false)}
         onEnded={onNext}
       />
+
+      {/* Clickable video overlay (does not block bottom native controls) */}
+      {!loading && !error && (
+        <div
+          onClick={handleTogglePlay}
+          className="absolute inset-x-0 top-0 bottom-14 z-20 flex items-center justify-center cursor-pointer group"
+        >
+          {isPlaying ? (
+            /* Pause icon overlay on hover when playing */
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-black/50 text-white shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-90 group-hover:scale-100">
+              <Pause className="h-8 w-8 fill-white text-white" />
+            </div>
+          ) : (
+            /* Play icon overlay when paused */
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-black/50 text-white shadow-2xl transition-all duration-300 transform scale-100 hover:scale-110">
+              <Play className="h-8 w-8 fill-white text-white ml-1" />
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Loading overlay */}
       {loading && !error && (
