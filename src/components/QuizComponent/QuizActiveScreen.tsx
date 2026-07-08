@@ -39,7 +39,7 @@ const QuizActiveScreen: React.FC<QuizActiveScreenProps> = ({ setQuizState }) => 
     // ── Global Countdown Timer ───────────────────────────────
     const calculateTimeLeft = useCallback(() => {
         if (!activeQuiz?.created_at) return 1800; // 30 minutes in seconds
-        
+
         let createdAtStr = activeQuiz.created_at.replace(" ", "T");
         // Ensure timezone offset is correctly defined for standard browsers
         if (!createdAtStr.includes("Z") && !createdAtStr.includes("+") && !/-\d{2}:\d{2}$/.test(createdAtStr)) {
@@ -166,9 +166,9 @@ const QuizActiveScreen: React.FC<QuizActiveScreenProps> = ({ setQuizState }) => 
         }
     };
 
-    /** Skip just moves to the next question without any API call */
-    const handleSkip = () => {
-        if (currentIdx < totalQuestions - 1) setCurrentIdx((prev) => prev + 1);
+    /** Prev just moves to the previous question without any API call */
+    const handlePrev = () => {
+        if (currentIdx > 0) setCurrentIdx((prev) => prev - 1);
     };
 
     const statusFor = (idx: number) => {
@@ -192,6 +192,7 @@ const QuizActiveScreen: React.FC<QuizActiveScreenProps> = ({ setQuizState }) => 
 
     const { question_detail, options } = currentQuestion.question_info;
     const selectedOptionId = answers[currentQuestion.id];
+    const isOptionSelected = selectedOptionId !== undefined && selectedOptionId !== null;
     const isLast = currentIdx === totalQuestions - 1;
 
     return (
@@ -274,17 +275,19 @@ const QuizActiveScreen: React.FC<QuizActiveScreenProps> = ({ setQuizState }) => 
 
                     {/* Action buttons */}
                     <div className="mt-8 flex justify-end gap-3">
-                        <button
-                            onClick={handleSkip}
-                            disabled={submitting || isLast}
-                            className="rounded-lg border px-5 py-2 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
-                        >
-                            Skip
-                        </button>
+                        {currentIdx > 0 && (
+                            <button
+                                onClick={handlePrev}
+                                disabled={submitting}
+                                className="rounded-lg border px-5 py-2 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
+                            >
+                                Prev
+                            </button>
+                        )}
 
                         <button
                             onClick={handleNext}
-                            disabled={submitting}
+                            disabled={submitting || !isOptionSelected}
                             className="flex min-w-[90px] items-center justify-center gap-2 rounded-lg bg-orange-500 px-5 py-2 text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
                         >
                             {submitting ? (
