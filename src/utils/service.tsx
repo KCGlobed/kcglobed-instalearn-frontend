@@ -328,6 +328,18 @@ export const getQuizHistoryApi = async (courseId: number, chapterId: number, qui
   return await apiRequest(`${API_ENDPOINTS.QUIZ_HISTORY}${courseId}/${chapterId}/${quizId}`, 'GET');
 }
 
+export const getSubscriptionPlansApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.SUBSCRIPTION_PLANS, 'GET');
+}
+
+export const startSubscriptionApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.START_SUBSCRIPTION, 'POST', payload);
+}
+
+export const completeSubscriptionApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.COMPLETE_SUBSCRIPTION, 'POST', payload);
+}
+
 
 
 

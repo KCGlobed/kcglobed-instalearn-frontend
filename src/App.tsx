@@ -17,7 +17,10 @@ import PurchaseHistory from "./pages/PurchaseHistory"
 import MyCommitment from "./pages/MyCommitment"
 import Support from "./pages/Support"
 import Career from "./pages/Career"
+import EnrollTeam from "./pages/EnrollTeam"
 
+
+const SubscripitonCheckoutPage = lazy(() => import("./pages/EnrollTeam/SubscripitonCheckoutPage"))
 
 // Lazy-loaded components
 const Home = lazy(() => import("./pages/Home/Index"))
@@ -30,6 +33,7 @@ const CategoryPage = lazy(() => import("./pages/Categories"))
 const CourseDetail = lazy(() => import("./pages/CourseDetail"))
 const ComingSoon = lazy(() => import("./pages/CommingSoon"))
 const WatchCourse = lazy(() => import("./pages/WatchCourse"))
+const CorporateManagement = lazy(() => import("./pages/CorporateManagement"))
 
 function App() {
   return (
@@ -55,6 +59,8 @@ function App() {
         <Route path="/help-centre" element={<HelpCentre />} />
         <Route path="/support" element={<Support />} />
         <Route path="/career" element={<Career />} />
+        <Route path="/enroll-team" element={<EnrollTeam />} />
+        <Route path="/enroll-team/checkout" element={<SubscripitonCheckoutPage />} />
 
         <Route element={<PrivateRoute />}>
           <Route path="/my-learning" element={<MyLearning />} />
@@ -63,6 +69,7 @@ function App() {
           <Route path="/learning/dashboard/:slug" element={<LearningDashboard />} />
           <Route path="/purchase-history" element={<PurchaseHistory />} />
           <Route path="/my-commitment" element={<MyCommitment />} />
+          <Route path="/corporate-management" element={<CorporateManagement />} />
         </Route>
 
       </Routes>

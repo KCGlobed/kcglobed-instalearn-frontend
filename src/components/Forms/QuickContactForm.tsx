@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { User, Mail, Phone, MessageSquare, Send } from "lucide-react";
+import { User, Mail, Phone, MessageSquare, Send, X } from "lucide-react";
 import toast from "react-hot-toast";
 import { useModal } from "../Modals/ModalContext";
 import { quickContactApi } from "../../utils/service";
@@ -43,8 +43,16 @@ export default function QuickContactForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="p-6 md:p-8 bg-white text-left">
-            <div className="mb-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="relative p-6 md:p-8 bg-white text-left">
+            <button
+                type="button"
+                onClick={hideModal}
+                className="absolute cursor-pointer top-4 right-4 md:top-6 md:right-6 w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-black hover:bg-gray-100 transition-colors"
+                aria-label="Close modal"
+            >
+                <X className="w-5 h-5" />
+            </button>
+            <div className="mb-6 pr-8">
                 <h3 className="text-xl font-bold text-[#1D2026] tracking-tight">Quick Inquiry</h3>
                 <p className="text-sm text-[#6E7485] mt-1 leading-relaxed">
                     Have questions? Leave your details below and our team will connect with you soon.
@@ -123,9 +131,18 @@ export default function QuickContactForm() {
                             placeholder="john@example.com"
                             {...register("email", {
                                 required: "Email Address is required",
-                                pattern: {
-                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                    message: "Invalid email address"
+                                validate: {
+                                    validFormat: (value) => {
+                                        const trimmed = value.trim();
+                                        if (trimmed !== value) {
+                                            return "Email address cannot contain leading or trailing spaces";
+                                        }
+                                        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                                        if (!emailRegex.test(value)) {
+                                            return "Please enter a valid email address (e.g. name@domain.com)";
+                                        }
+                                        return true;
+                                    }
                                 }
                             })}
                             className={`w-full h-12 pl-10 pr-4 border ${errors.email ? "border-rose-500 bg-rose-50/30" : "border-[#E9EAF0]"
@@ -151,14 +168,18 @@ export default function QuickContactForm() {
                         <input
                             id="phone"
                             type="tel"
-                            placeholder="+91 98765 43210"
+                            placeholder="9876543210"
+                            maxLength={10}
                             {...register("phone", {
                                 required: "Phone number is required",
                                 pattern: {
-                                    value: /^[+]?[0-9\s-]{10,15}$/,
-                                    message: "Please enter a valid phone number"
+                                    value: /^[6-9][0-9]{9}$/,
+                                    message: "Please enter a valid 10-digit Indian mobile number (starting with 6-9)"
                                 }
                             })}
+                            onInput={(e) => {
+                                e.currentTarget.value = e.currentTarget.value.replace(/[^0-9]/g, '');
+                            }}
                             className={`w-full h-12 pl-10 pr-4 border ${errors.phone ? "border-rose-500 bg-rose-50/30" : "border-[#E9EAF0]"
                                 } rounded-md text-[14px] text-[#1D2026] placeholder:text-[#9499A3] focus:outline-none focus:border-[#FF9F00] focus:ring-1 focus:ring-[#FF9F00] transition-all`}
                         />

@@ -3,9 +3,12 @@ import Button from "../Button"
 import public_speaker from "../../assets/public_speaker.svg"
 import career from "../../assets/career.svg"
 import thinking from "../../assets/thinking.svg"
+import { useNavigate } from "react-router-dom"
 
 
 const HomeBanner = () => {
+    const navigate = useNavigate()
+
     return (
         <div className="banner px-4 md:px-8 xl:px-0">
             <div className="max-w-[1200px] mx-auto overflow-hidden lg:overflow-visible">
@@ -28,7 +31,7 @@ const HomeBanner = () => {
                             <Button
                                 variant="light-gray"
                                 title="Enroll Team now"
-                                onClick={() => console.log("Enroll now")}
+                                onClick={() => navigate('/enroll-team')}
                                 className="h-[48px] px-6 rounded bg-light-gray text-white flex items-center justify-center gap-2 w-full sm:w-auto"
                             />
                         </div>

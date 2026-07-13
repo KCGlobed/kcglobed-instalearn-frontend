@@ -80,4 +80,7 @@ export const API_ENDPOINTS = {
     GET_QUIZ_RESULT: "questions/get-quiz-test-result/",
     SUBMIT_QUIZ: "questions/submit-quiz-test-answer/",
     QUIZ_HISTORY: "questions/get-completed-quiz-list/",
+    SUBSCRIPTION_PLANS: "subscription/get-subscription-plan-list/",
+    START_SUBSCRIPTION: "subscription/start-subscription/",
+    COMPLETE_SUBSCRIPTION: "subscription/complete-subscription/",
 }
