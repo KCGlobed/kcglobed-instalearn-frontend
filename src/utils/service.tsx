@@ -340,6 +340,14 @@ export const completeSubscriptionApi = async (payload: any): Promise<any> => {
   return await apiRequest(API_ENDPOINTS.COMPLETE_SUBSCRIPTION, 'POST', payload);
 }
 
+export const getMyActiveSubscriptionApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.MY_ACTIVE_SUBSCRIPTION, 'GET');
+}
+
+export const cancelActiveSubscriptionApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.CANCEL_SUBSCRIPTION, 'POST', payload);
+}
+
 
 
 

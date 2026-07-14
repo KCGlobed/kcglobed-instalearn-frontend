@@ -83,4 +83,6 @@ export const API_ENDPOINTS = {
     SUBSCRIPTION_PLANS: "subscription/get-subscription-plan-list/",
     START_SUBSCRIPTION: "subscription/start-subscription/",
     COMPLETE_SUBSCRIPTION: "subscription/complete-subscription/",
+    MY_ACTIVE_SUBSCRIPTION: "subscription/get-my-active-subscription/",
+    CANCEL_SUBSCRIPTION: "subscription/cancel-subscription/",
 }
