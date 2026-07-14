@@ -53,7 +53,7 @@ export const OrderSummaryCard: React.FC<OrderSummaryCardProps> = React.memo(({
           <div>
             <h4 className="text-sm font-bold text-slate-900">{plan.plan_name} Plan</h4>
             <span className="text-xs text-slate-500 font-medium">
-              {plan.plan_type === 3 ? 'Annual Billing' : 'Monthly Billing'}
+              {plan.plan_type === 1 ? 'Monthly Billing' : plan.plan_type === 2 ? 'Half Yearly Billing' : 'Annual Billing'}
             </span>
           </div>
         </div>
@@ -104,7 +104,9 @@ export const OrderSummaryCard: React.FC<OrderSummaryCardProps> = React.memo(({
         <div className="flex justify-between items-end py-2">
           <div>
             <span className="text-base font-bold text-slate-900 block leading-none">Total Payable</span>
-            <span className="text-[10px] text-slate-500 mt-1 block">Billed annually in {plan.currency || 'INR'}</span>
+            <span className="text-[10px] text-slate-500 mt-1 block">
+              Billed {plan.plan_type === 1 ? 'monthly' : plan.plan_type === 2 ? 'half-yearly' : 'annually'} in {plan.currency || 'INR'}
+            </span>
           </div>
           <span className="text-3xl font-extrabold text-slate-900 tracking-tight">
             {sym}{formatVal(calculations.total)}

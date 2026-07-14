@@ -70,16 +70,7 @@ export const useSubscriptionCheckout = (planId: string | null) => {
         const found = apiPlans.find((p: any) => p.plan_id === planId || String(p.id) === planId);
         
         if (found) {
-          const isRec = found.banner_text?.toLowerCase() === 'recommended';
-          const isNew = found.banner_text?.toLowerCase() === 'new';
-          if (isRec || isNew) {
-            setPlan(found);
-          } else {
-            // Not a standard checkout plan, redirect to whatsapp
-            const message = encodeURIComponent(`Hi, I'm interested in the ${found.plan_name} plan for our team training.`);
-            window.open(`https://wa.me/919915039343?text=${message}`, '_blank');
-            navigate('/enroll-team');
-          }
+          setPlan(found);
         } else {
           toast.error("Plan not found. Please choose a valid plan.");
           navigate('/enroll-team');

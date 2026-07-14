@@ -1,7 +1,6 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ShieldCheck, ChevronRight } from 'lucide-react';
-import { Toaster } from 'react-hot-toast';
 import { useSubscriptionCheckout } from '../../hooks/useSubscriptionCheckout';
 import { CompanyInfoForm } from '../../components/EnrollTeamComponent/CompanyInfoForm';
 import { OrderSummaryCard } from '../../components/EnrollTeamComponent/OrderSummaryCard';
@@ -13,7 +12,15 @@ import Footer from '../../layouts/Footer';
 
 const SubscripitonCheckoutPage: React.FC = () => {
   const navigate = useNavigate();
-  const selectedPlanId = sessionStorage.getItem('selected_plan_id');
+  const location = useLocation();
+  
+  // Sync selected plan ID from navigation state to sessionStorage if present
+  const statePlanId = location.state?.planId;
+  if (statePlanId) {
+    sessionStorage.setItem('selected_plan_id', String(statePlanId));
+  }
+  
+  const selectedPlanId = statePlanId || sessionStorage.getItem('selected_plan_id');
   
   const {
     plan,
@@ -83,7 +90,6 @@ const SubscripitonCheckoutPage: React.FC = () => {
 
   return (
     <>
-      <Toaster position="top-center" />
       <PromoStrip />
       <TopHeader />
       <MainHeader />

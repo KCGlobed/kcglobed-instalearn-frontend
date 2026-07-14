@@ -87,8 +87,8 @@ const EnrollTeamSubscriptionPlan: React.FC<EnrollTeamSubscriptionPlanProps> = ({
                     {plans.map((p) => {
                         const isRec = p.banner_text?.toLowerCase() === 'recommended';
                         const isNew = p.banner_text?.toLowerCase() === 'new';
-                        const isPaymentPlan = isRec || isNew;
-                        const isEnt = !isPaymentPlan;
+                        const isEnt = p.plan_id === 'enterprise';
+                        const isPaymentPlan = !isEnt;
                         const sym = getCurrencySymbol(p.currency);
 
                         return (
@@ -107,7 +107,7 @@ const EnrollTeamSubscriptionPlan: React.FC<EnrollTeamSubscriptionPlanProps> = ({
 
                                     <div className="mt-6 flex items-baseline">
                                         <span className="text-4xl font-extrabold text-slate-900">{isEnt ? 'Custom' : `${sym}${Math.round(p.amount)}`}</span>
-                                        {!isEnt && <span className="text-sm font-semibold text-gray-400 ml-1">/{p.plan_type == 1 ? "Monthly" : "Yearly"}</span>}
+                                        {!isEnt && <span className="text-sm font-semibold text-gray-400 ml-1">/{p.plan_type === 1 ? "Monthly" : p.plan_type === 2 ? "Half Yearly" : "Yearly"}</span>}
                                     </div>
                                     <span className="text-sm font-medium text-indigo-600 mt-2 block">
                                         {isEnt ? 'Unlimited seats available' : `${p.no_of_licence} seats included`}

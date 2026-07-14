@@ -10,10 +10,9 @@ const EnrollTeam = () => {
     const navigate = useNavigate();
 
     const onSelectPlan = (id: any) => {
+        sessionStorage.setItem('selected_plan_id', String(id));
         navigate('/enroll-team/checkout', { state: { planId: id } });
     }
-
-
 
     return (
         <>
