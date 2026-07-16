@@ -349,6 +349,38 @@ export const cancelActiveSubscriptionApi = async (payload: any): Promise<any> =>
 }
 
 
+export const getCorporateUsersListApi = async (page?: number): Promise<any> => {
+  const url = page ? `${API_ENDPOINTS.GET_CORPORATE_USERS_LIST}?page=${page}` : API_ENDPOINTS.GET_CORPORATE_USERS_LIST;
+  return await apiRequest(url, 'GET');
+}
+
+export const shareCourseAccessApi = async (payload: {
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  course_id: number[];
+}): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.SHARE_COURSE_ACCESS, 'POST', payload);
+}
+
+export const courseCatalogListApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.COURSE_CATALOG_LIST, 'GET');
+}
+
+export const courseAssignToMember = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.ASSIGN_COURSE_TO_STUDENTS, 'POST', payload);
+}
+
+export const courseRemoveToMember = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.REMOVE_COURSE_TO_STUDENTS, 'POST', payload);
+}
+
+export const getCorporateDashboardCountersApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.GET_CORPORATE_DASHBOARD_COUNTERS, 'GET');
+}
+
+
 
 
 

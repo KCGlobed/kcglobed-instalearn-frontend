@@ -85,4 +85,10 @@ export const API_ENDPOINTS = {
     COMPLETE_SUBSCRIPTION: "subscription/complete-subscription/",
     MY_ACTIVE_SUBSCRIPTION: "subscription/get-my-active-subscription/",
     CANCEL_SUBSCRIPTION: "subscription/cancel-subscription/",
+    GET_CORPORATE_USERS_LIST: "user_study/get-corporate-users-list/",
+    SHARE_COURSE_ACCESS: "user_study/share-course-access/",
+    COURSE_CATALOG_LIST: "course/get-course-list/",
+    REMOVE_COURSE_TO_STUDENTS: "user_study/remove-course-to-students/",
+    ASSIGN_COURSE_TO_STUDENTS: "user_study/assign-course-to-students/",
+    GET_CORPORATE_DASHBOARD_COUNTERS: "user_study/get-dashboard-counters/",
 }

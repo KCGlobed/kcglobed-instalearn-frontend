@@ -23,6 +23,8 @@ import reviewReducer from "./slices/reviewSlice";
 import announcementReducer from "./slices/announcementSlice";
 import reminderReducer from "./slices/reminderSlice";
 import quizReducer from "./slices/quizSlice";
+import corporateUserReducer from "./slices/corporateUserSlice";
+import corporateDashboardReducer from "./slices/corporateDashboardSlice";
 
 
 
@@ -54,6 +56,8 @@ export const store = configureStore({
     announcement: announcementReducer,
     reminders: reminderReducer,
     quiz: quizReducer,
+    corporateUser: corporateUserReducer,
+    corporateDashboard: corporateDashboardReducer,
 
   },
   middleware: (getDefaultMiddleware) =>

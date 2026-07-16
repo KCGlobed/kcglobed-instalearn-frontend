@@ -1,13 +1,59 @@
-import React from 'react'
-import { Users, Clock, GraduationCap, BookOpen, ChevronRight, TrendingUp } from 'lucide-react'
+import React, { useEffect } from 'react'
+import { Users, Clock, GraduationCap, BookOpen, ChevronRight, TrendingUp, Loader2 } from 'lucide-react'
+import { useAppDispatch, useAppSelector } from '../../hooks/useRedux'
+import { fetchCorporateDashboardCounters } from '../../store/slices/corporateDashboardSlice'
 
 const DashboardOverview = () => {
-    // Mock Statistics
+    const dispatch = useAppDispatch();
+    const { counters, loading } = useAppSelector((state) => state.corporateDashboard);
+
+    useEffect(() => {
+        dispatch(fetchCorporateDashboardCounters());
+    }, [dispatch]);
+
+    const formatLearningTime = (totalSeconds: number) => {
+        if (totalSeconds >= 3600) {
+            const hours = (totalSeconds / 3600).toFixed(1);
+            return `${parseFloat(hours)} hrs`;
+        }
+        const minutes = Math.round(totalSeconds / 60);
+        return `${minutes} mins`;
+    };
+
+    // Statistics from API & fallback to defaults
     const stats = [
-        { id: 1, title: 'Active Seats Used', value: '18 / 50', change: '+3 this month', icon: Users, color: 'bg-perple/10 text-perple' },
-        { id: 2, title: 'Total Learning Hours', value: '1,420 hrs', change: '+12% vs last week', icon: Clock, color: 'bg-emerald-100 text-emerald-700' },
-        { id: 3, title: 'Avg. Completion Rate', value: '64%', change: '+5% vs last month', icon: GraduationCap, color: 'bg-cyan-100 text-cyan-700' },
-        { id: 4, title: 'Active Assigned Courses', value: '8 Courses', change: '2 new this week', icon: BookOpen, color: 'bg-amber-100 text-amber-700' },
+        { 
+            id: 1, 
+            title: 'Active Seats Used', 
+            value: counters ? `${counters.license_used} / ${counters.no_of_licences}` : '0 / 0', 
+            change: counters ? `${counters.remaning_licence} vacant seats` : '0 vacant', 
+            icon: Users, 
+            color: 'bg-perple/10 text-perple' 
+        },
+        { 
+            id: 2, 
+            title: 'Total Learning Hours', 
+            value: counters ? formatLearningTime(counters.total_duration_video_watched) : '0 mins', 
+            change: counters ? `From ${counters.total_video_watched} videos` : '0 videos', 
+            icon: Clock, 
+            color: 'bg-emerald-100 text-emerald-700' 
+        },
+        { 
+            id: 3, 
+            title: 'Registered Users', 
+            value: counters ? `${counters.registered_users}` : '0', 
+            change: 'Active team members', 
+            icon: GraduationCap, 
+            color: 'bg-cyan-100 text-cyan-700' 
+        },
+        { 
+            id: 4, 
+            title: 'Active Assigned Courses', 
+            value: counters ? `${counters.assigned_courses} Courses` : '0 Courses', 
+            change: 'Enrolled in catalog', 
+            icon: BookOpen, 
+            color: 'bg-[#F8F7FA] text-amber-700' 
+        },
     ]
 
     // Mock Weekly Activity (representing learning hours)
@@ -36,6 +82,18 @@ const DashboardOverview = () => {
         { id: 3, text: 'Neha Gupta reached 90% progress in "Advanced Tax Law"', time: 'Yesterday', type: 'progress' },
         { id: 4, text: 'A new course "GST Implementation Guide" was assigned', time: '2 days ago', type: 'course' },
     ]
+
+    if (loading && !counters) {
+        return (
+            <div className="flex flex-col items-center justify-center py-24 gap-3 bg-white border border-gray-150 rounded-xl shadow-sm">
+                <Loader2 className="w-8 h-8 text-perple animate-spin" />
+                <span className="text-[11px] text-gray-400 font-medium">Loading overview counters...</span>
+            </div>
+        )
+    }
+
+
+
 
     return (
         <div className="flex flex-col gap-6 animate-in fade-in duration-300">
@@ -69,7 +127,7 @@ const DashboardOverview = () => {
 
             {/* Visual Analytics Row */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                
+
                 {/* Weekly Learning Hours Chart */}
                 <div className="lg:col-span-2 bg-white p-5 rounded-xl border border-gray-150 shadow-sm flex flex-col justify-between">
                     <div>
@@ -86,7 +144,7 @@ const DashboardOverview = () => {
                                         {d.hours}h
                                     </span>
                                     <div className="w-6 bg-perple/10 rounded-t-md relative h-32 overflow-hidden flex items-end">
-                                        <div 
+                                        <div
                                             className="w-full bg-perple hover:bg-[#5e50eb] rounded-t-md transition-all duration-500 ease-out"
                                             style={{ height: `${pct}%` }}
                                         />
@@ -113,7 +171,7 @@ const DashboardOverview = () => {
                                     <span className="text-gray-500">{dept.learners} Active • {dept.progress}%</span>
                                 </div>
                                 <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                                    <div 
+                                    <div
                                         className={`h-full rounded-full ${dept.color}`}
                                         style={{ width: `${dept.progress}%` }}
                                     />
@@ -141,11 +199,10 @@ const DashboardOverview = () => {
                     {recentActivities.map((act) => (
                         <div key={act.id} className="py-3 first:pt-0 last:pb-0 flex items-center justify-between gap-4">
                             <div className="flex items-center gap-3 min-w-0">
-                                <span className={`w-2 h-2 rounded-full shrink-0 ${
-                                    act.type === 'completion' ? 'bg-emerald-500' :
+                                <span className={`w-2 h-2 rounded-full shrink-0 ${act.type === 'completion' ? 'bg-emerald-500' :
                                     act.type === 'invite' ? 'bg-perple' :
-                                    act.type === 'progress' ? 'bg-cyan-500' : 'bg-amber-500'
-                                }`} />
+                                        act.type === 'progress' ? 'bg-cyan-500' : 'bg-amber-500'
+                                    }`} />
                                 <p className="text-xs text-gray-700 font-medium truncate">{act.text}</p>
                             </div>
                             <span className="text-[10px] text-gray-400 shrink-0 font-medium">{act.time}</span>

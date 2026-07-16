@@ -22,9 +22,10 @@ const CourseAnalytics = () => {
         { id: 5, title: 'Auditing & Corporate Governance', description: 'Standards of internal controls, forensic accounting, and compliance guidelines.', enrolledCount: 5, avgProgress: 25, certificatesCount: 0, category: 'Compliance' },
     ]);
 
+
     const [searchTerm, setSearchTerm] = useState('');
     const [categoryFilter, setCategoryFilter] = useState('All');
-    
+
     // Assign Modal state
     const [isAssignOpen, setIsAssignOpen] = useState(false);
     const [assignForm, setAssignForm] = useState({
@@ -36,14 +37,14 @@ const CourseAnalytics = () => {
 
     const filteredCourses = courses.filter(course => {
         const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                              course.description.toLowerCase().includes(searchTerm.toLowerCase());
+            course.description.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesCategory = categoryFilter === 'All' || course.category === categoryFilter;
         return matchesSearch && matchesCategory;
     });
 
     const handleAssignCourseSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         // Check if course already assigned (simulating updates)
         toast.success(`Course "${assignForm.courseTitle}" assigned to ${assignForm.targetDept}!`);
         setIsAssignOpen(false);
@@ -80,17 +81,16 @@ const CourseAnalytics = () => {
                         className="w-full h-9 pl-9 pr-4 border border-gray-250 rounded-md text-xs placeholder:text-gray-400 focus:outline-none focus:border-perple focus:ring-1 focus:ring-perple transition-all"
                     />
                 </div>
-                
+
                 <div className="flex gap-2 w-full sm:w-auto shrink-0">
                     {categories.map((cat) => (
                         <button
                             key={cat}
                             onClick={() => setCategoryFilter(cat)}
-                            className={`h-9 px-4 text-xs font-semibold rounded-md border transition-all cursor-pointer ${
-                                categoryFilter === cat
+                            className={`h-9 px-4 text-xs font-semibold rounded-md border transition-all cursor-pointer ${categoryFilter === cat
                                     ? 'bg-perple/10 border-perple text-perple'
                                     : 'bg-white border-gray-250 text-gray-600 hover:bg-gray-50'
-                            }`}
+                                }`}
                         >
                             {cat}
                         </button>
@@ -108,7 +108,7 @@ const CourseAnalytics = () => {
                                 <span className="inline-block text-[9px] font-bold text-perple bg-perple/5 px-2.5 py-0.5 rounded uppercase tracking-wider mb-3">
                                     {course.category}
                                 </span>
-                                
+
                                 <h3 className="text-xs font-bold text-[#2F2B3D] leading-snug">{course.title}</h3>
                                 <p className="text-[11px] text-gray-500 mt-1.5 leading-relaxed">{course.description}</p>
                             </div>
@@ -146,7 +146,7 @@ const CourseAnalytics = () => {
                                         <span className="text-[#2F2B3D]">{course.avgProgress}%</span>
                                     </div>
                                     <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                                        <div 
+                                        <div
                                             className="h-full bg-perple rounded-full"
                                             style={{ width: `${course.avgProgress}%` }}
                                         />
@@ -172,7 +172,7 @@ const CourseAnalytics = () => {
                         >
                             ✕
                         </button>
-                        
+
                         <div className="mb-5 pr-8">
                             <h3 className="text-sm font-bold text-[#2F2B3D] tracking-tight">Assign Course to Team</h3>
                             <p className="text-[11px] text-gray-500 mt-1">This will enroll selected departments or employees in the course.</p>
