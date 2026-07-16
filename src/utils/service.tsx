@@ -380,6 +380,12 @@ export const getCorporateDashboardCountersApi = async (): Promise<any> => {
   return await apiRequest(API_ENDPOINTS.GET_CORPORATE_DASHBOARD_COUNTERS, 'GET');
 }
 
+export const getUserStudyProgressApi = async (period: string = 'daily'): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_USER_STUDY_PROGRESS}?period=${period}`, 'GET');
+}
+
+
+
 
 
 

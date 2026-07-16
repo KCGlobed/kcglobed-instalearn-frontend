@@ -91,4 +91,5 @@ export const API_ENDPOINTS = {
     REMOVE_COURSE_TO_STUDENTS: "user_study/remove-course-to-students/",
     ASSIGN_COURSE_TO_STUDENTS: "user_study/assign-course-to-students/",
     GET_CORPORATE_DASHBOARD_COUNTERS: "user_study/get-dashboard-counters/",
+    GET_USER_STUDY_PROGRESS: "user_study/get-user-study-progress",
 }

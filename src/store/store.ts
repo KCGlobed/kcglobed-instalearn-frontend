@@ -25,6 +25,7 @@ import reminderReducer from "./slices/reminderSlice";
 import quizReducer from "./slices/quizSlice";
 import corporateUserReducer from "./slices/corporateUserSlice";
 import corporateDashboardReducer from "./slices/corporateDashboardSlice";
+import userStudyProgressReducer from "./slices/userStudyProgressSlice";
 
 
 
@@ -58,6 +59,7 @@ export const store = configureStore({
     quiz: quizReducer,
     corporateUser: corporateUserReducer,
     corporateDashboard: corporateDashboardReducer,
+    userStudyProgress: userStudyProgressReducer,
 
   },
   middleware: (getDefaultMiddleware) =>

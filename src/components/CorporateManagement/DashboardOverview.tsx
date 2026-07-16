@@ -2,14 +2,21 @@ import React, { useEffect } from 'react'
 import { Users, Clock, GraduationCap, BookOpen, ChevronRight, TrendingUp, Loader2 } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux'
 import { fetchCorporateDashboardCounters } from '../../store/slices/corporateDashboardSlice'
+import { fetchUserStudyProgress } from '../../store/slices/userStudyProgressSlice'
 
 const DashboardOverview = () => {
     const dispatch = useAppDispatch();
     const { counters, loading } = useAppSelector((state) => state.corporateDashboard);
+    const { data: progressData, loading: progressLoading, period } = useAppSelector((state) => state.userStudyProgress);
 
     useEffect(() => {
         dispatch(fetchCorporateDashboardCounters());
+        dispatch(fetchUserStudyProgress('daily'));
     }, [dispatch]);
+
+    const handlePeriodChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        dispatch(fetchUserStudyProgress(e.target.value));
+    };
 
     const formatLearningTime = (totalSeconds: number) => {
         if (totalSeconds >= 3600) {
@@ -22,50 +29,45 @@ const DashboardOverview = () => {
 
     // Statistics from API & fallback to defaults
     const stats = [
-        { 
-            id: 1, 
-            title: 'Active Seats Used', 
-            value: counters ? `${counters.license_used} / ${counters.no_of_licences}` : '0 / 0', 
-            change: counters ? `${counters.remaning_licence} vacant seats` : '0 vacant', 
-            icon: Users, 
-            color: 'bg-perple/10 text-perple' 
+        {
+            id: 1,
+            title: 'Active Seats Used',
+            value: counters ? `${counters.license_used} / ${counters.no_of_licences}` : '0 / 0',
+            change: counters ? `${counters.remaning_licence} vacant seats` : '0 vacant',
+            icon: Users,
+            color: 'bg-perple/10 text-perple'
         },
-        { 
-            id: 2, 
-            title: 'Total Learning Hours', 
-            value: counters ? formatLearningTime(counters.total_duration_video_watched) : '0 mins', 
-            change: counters ? `From ${counters.total_video_watched} videos` : '0 videos', 
-            icon: Clock, 
-            color: 'bg-emerald-100 text-emerald-700' 
+        {
+            id: 2,
+            title: 'Total Learning Hours',
+            value: counters ? formatLearningTime(counters.total_duration_video_watched) : '0 mins',
+            change: counters ? `From ${counters.total_video_watched} videos` : '0 videos',
+            icon: Clock,
+            color: 'bg-emerald-100 text-emerald-700'
         },
-        { 
-            id: 3, 
-            title: 'Registered Users', 
-            value: counters ? `${counters.registered_users}` : '0', 
-            change: 'Active team members', 
-            icon: GraduationCap, 
-            color: 'bg-cyan-100 text-cyan-700' 
+        {
+            id: 3,
+            title: 'Registered Users',
+            value: counters ? `${counters.registered_users}` : '0',
+            change: 'Active team members',
+            icon: GraduationCap,
+            color: 'bg-cyan-100 text-cyan-700'
         },
-        { 
-            id: 4, 
-            title: 'Active Assigned Courses', 
-            value: counters ? `${counters.assigned_courses} Courses` : '0 Courses', 
-            change: 'Enrolled in catalog', 
-            icon: BookOpen, 
-            color: 'bg-[#F8F7FA] text-amber-700' 
+        {
+            id: 4,
+            title: 'Active Assigned Courses',
+            value: counters ? `${counters.assigned_courses} Courses` : '0 Courses',
+            change: 'Enrolled in catalog',
+            icon: BookOpen,
+            color: 'bg-[#F8F7FA] text-amber-700'
         },
     ]
 
-    // Mock Weekly Activity (representing learning hours)
-    const weeklyActivity = [
-        { day: 'Mon', hours: 45 },
-        { day: 'Tue', hours: 60 },
-        { day: 'Wed', hours: 85 },
-        { day: 'Thu', hours: 55 },
-        { day: 'Fri', hours: 70 },
-        { day: 'Sat', hours: 30 },
-        { day: 'Sun', hours: 15 },
-    ]
+    // Calculate the maximum value to use as 100% reference
+    const maxValue = progressData && progressData.length > 0
+        ? Math.max(...progressData.map((d: any) => Number(d.value || d.hours || d.duration || d.progress || 0)))
+        : 100;
+    const chartMax = maxValue === 0 ? 100 : maxValue;
 
     // Mock Department Breakdown
     const departments = [
@@ -130,29 +132,58 @@ const DashboardOverview = () => {
 
                 {/* Weekly Learning Hours Chart */}
                 <div className="lg:col-span-2 bg-white p-5 rounded-xl border border-gray-150 shadow-sm flex flex-col justify-between">
-                    <div>
-                        <h3 className="text-xs font-bold text-[#2F2B3D]">Weekly Learning Hours</h3>
-                        <p className="text-[10px] text-gray-400 mt-0.5">Hours logged by team members daily.</p>
+                    <div className="flex justify-between items-start">
+                        <div>
+                            <h3 className="text-xs font-bold text-[#2F2B3D]">Learning Hours</h3>
+                            <p className="text-[10px] text-gray-400 mt-0.5">Hours logged by team members.</p>
+                        </div>
+                        <select
+                            value={period}
+                            onChange={handlePeriodChange}
+                            className="text-[10px] bg-gray-50 border border-gray-200 rounded-md px-2 py-1 outline-none focus:border-perple text-gray-600 cursor-pointer"
+                        >
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="half_yearly">Half Yearly</option>
+                            <option value="yearly">Yearly</option>
+                        </select>
                     </div>
 
-                    <div className="mt-6 flex items-end justify-between h-40 px-2 border-b border-gray-100 pb-2">
-                        {weeklyActivity.map((d, index) => {
-                            const pct = (d.hours / 100) * 100; // max reference 100 hours
+                    <div className="mt-6 flex items-end justify-between h-40 px-2 border-b border-gray-100 pb-2 relative">
+                        {progressLoading ? (
+                            <div className="absolute inset-0 flex items-center justify-center bg-white/50 z-10">
+                                <Loader2 className="w-6 h-6 text-perple animate-spin" />
+                            </div>
+                        ) : null}
+                        {progressData && progressData.length > 0 ? progressData.map((d: any, index: number) => {
+                            const val = Number(d.value || d.hours || d.duration || d.progress || 0);
+                            const label = d.label || d.day || d.name || d.date || '';
+                            const videoWatched = Number(d.video_watched || d.videos || d.videos_watched || 0);
+                            const pct = (val / chartMax) * 100;
                             return (
-                                <div key={index} className="flex flex-col items-center gap-2 group cursor-pointer w-10">
-                                    <span className="text-[9px] font-bold text-perple opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                                        {d.hours}h
-                                    </span>
-                                    <div className="w-6 bg-perple/10 rounded-t-md relative h-32 overflow-hidden flex items-end">
+                                <div key={index} className="flex flex-col items-center justify-end group cursor-pointer flex-1 relative h-full">
+                                    {/* Tooltip */}
+                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 flex flex-col items-center justify-center opacity-0 group-hover:-translate-y-2 group-hover:opacity-100 transition-all duration-300 pointer-events-none bg-[#2F2B3D] text-white rounded-md px-2 py-1.5 z-20 shadow-xl min-w-max">
+                                        <span className="text-[10px] font-bold leading-none mb-1">{formatLearningTime(val)}</span>
+                                        <span className="text-[8px] font-medium text-gray-300 leading-none">{videoWatched} videos</span>
+                                        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#2F2B3D] rotate-45"></div>
+                                    </div>
+                                    
+                                    <div className="w-6 bg-perple/10 rounded-t-md relative h-28 overflow-hidden flex items-end mb-2 mt-auto">
                                         <div
                                             className="w-full bg-perple hover:bg-[#5e50eb] rounded-t-md transition-all duration-500 ease-out"
                                             style={{ height: `${pct}%` }}
                                         />
                                     </div>
-                                    <span className="text-[10px] text-gray-500 font-semibold">{d.day}</span>
+                                    <span className="text-[10px] text-gray-500 font-semibold text-center break-words max-w-full leading-tight">{label}</span>
                                 </div>
                             )
-                        })}
+                        }) : !progressLoading ? (
+                            <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">
+                                No data available for this period.
+                            </div>
+                        ) : null}
                     </div>
                 </div>
 
