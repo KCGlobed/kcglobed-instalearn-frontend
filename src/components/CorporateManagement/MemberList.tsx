@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { UserPlus, Trash2, BookOpen, ShieldAlert } from 'lucide-react'
+import { UserPlus, Trash2, BookOpen, ShieldAlert, Lock, Key } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux'
 import { fetchCorporateUsers } from '../../store/slices/corporateUserSlice'
 import { useModal } from '../Modals/ModalContext'
@@ -7,6 +7,7 @@ import InviteMemberForm from '../Forms/InviteMemberForm'
 import DeleteModal from '../Modals/DeleteModal'
 import AssignCourseModal from '../Modals/AssignCourseModal'
 import toast from 'react-hot-toast'
+import ReshareLoginDetail from '../Modals/ReshareLoginDetail'
 
 interface Member {
     id: number;
@@ -82,6 +83,20 @@ const MemberList = () => {
             ),
             size: "md"
         });
+    }
+
+    const handleReshareLoginDetail = (member: Member) => {
+        showModal({
+            content: (
+                <ReshareLoginDetail
+                    userId={member.id}
+                    userName={member.name}
+                    member={member}
+                />
+            ),
+            size: "md"
+        });
+
     }
 
 
@@ -178,6 +193,13 @@ const MemberList = () => {
                                         {/* Actions */}
                                         <td className="py-4 px-4 text-right">
                                             <div className="flex items-center justify-end gap-2.5">
+                                                <button
+                                                    className="p-1 text-gray-400 hover:text-perple hover:bg-perple/5 rounded transition-colors cursor-pointer"
+                                                    title="Reshare Login Detail"
+                                                    onClick={() => handleReshareLoginDetail(member)}
+                                                >
+                                                    <Key className="w-4 h-4" />
+                                                </button>
                                                 <button
                                                     className="p-1 text-gray-400 hover:text-perple hover:bg-perple/5 rounded transition-colors cursor-pointer"
                                                     title="Assign Course"

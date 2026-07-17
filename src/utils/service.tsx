@@ -384,6 +384,14 @@ export const getUserStudyProgressApi = async (period: string = 'daily'): Promise
   return await apiRequest(`${API_ENDPOINTS.GET_USER_STUDY_PROGRESS}?period=${period}`, 'GET');
 }
 
+export const getCorporateAssignedCoursesApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.GET_USER_COURSES_PROGRESS, 'GET');
+}
+
+export const reshareUserLoginDetail = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.RESHARE_USER_LOGIN_DETAIL, 'POST', payload);
+}
+
 
 
 

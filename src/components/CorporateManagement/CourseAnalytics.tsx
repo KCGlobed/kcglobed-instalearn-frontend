@@ -1,27 +1,25 @@
-import React, { useState } from 'react'
-import { BookOpen, Users, GraduationCap, PlusCircle, Search, Award } from 'lucide-react'
+import React, { useState, useEffect } from 'react'
+import { BookOpen, Users, GraduationCap, PlusCircle, Search, Award, Star, Loader2 } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { useAppDispatch, useAppSelector } from '../../hooks/useRedux'
+import { fetchCorporateAssignedCourses } from '../../store/slices/corporateAssignedCoursesSlice'
 
-interface CourseProgress {
-    id: number;
-    title: string;
-    description: string;
-    enrolledCount: number;
-    avgProgress: number;
-    certificatesCount: number;
-    category: string;
-}
+const stripHtml = (html: string) => {
+    if (!html) return '';
+    let text = html.replace(/<[^>]*>/g, '');
+    text = text
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'");
+    return text.trim();
+};
 
 const CourseAnalytics = () => {
-    // Local state to make additions work live!
-    const [courses, setCourses] = useState<CourseProgress[]>([
-        { id: 1, title: 'Corporate Financial Basics', description: 'Fundamental concepts of bookkeeping, balance sheets, and cash flow analysis.', enrolledCount: 14, avgProgress: 82, certificatesCount: 6, category: 'Finance' },
-        { id: 2, title: 'Advanced Corporate Tax Law', description: 'Deep dive into corporate tax slabs, exemptions, filings, and audit processes.', enrolledCount: 10, avgProgress: 64, certificatesCount: 2, category: 'Tax' },
-        { id: 3, title: 'GST Implementation Guide', description: 'Comprehensive walkthrough of Goods and Services Tax compliance and filings.', enrolledCount: 18, avgProgress: 42, certificatesCount: 0, category: 'Tax' },
-        { id: 4, title: 'Management Accounting Principles', description: 'Decision-making models, budgeting, variance calculations, and cost control.', enrolledCount: 8, avgProgress: 70, certificatesCount: 3, category: 'Finance' },
-        { id: 5, title: 'Auditing & Corporate Governance', description: 'Standards of internal controls, forensic accounting, and compliance guidelines.', enrolledCount: 5, avgProgress: 25, certificatesCount: 0, category: 'Compliance' },
-    ]);
-
+    const dispatch = useAppDispatch();
+    const { data: courses, loading } = useAppSelector((state) => state.corporateAssignedCourses);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [categoryFilter, setCategoryFilter] = useState('All');
@@ -29,28 +27,45 @@ const CourseAnalytics = () => {
     // Assign Modal state
     const [isAssignOpen, setIsAssignOpen] = useState(false);
     const [assignForm, setAssignForm] = useState({
-        courseTitle: 'Corporate Financial Basics',
+        courseTitle: '',
         targetDept: 'All Employees'
     });
 
-    const categories = ['All', 'Finance', 'Tax', 'Compliance'];
+    useEffect(() => {
+        dispatch(fetchCorporateAssignedCourses());
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (courses.length > 0 && !assignForm.courseTitle) {
+            setAssignForm(prev => ({ ...prev, courseTitle: courses[0].name }));
+        }
+    }, [courses]);
+
+    // Parse unique categories from the courses data dynamically
+    const categories = ['All', ...new Set(courses.flatMap(course => course.categories?.map(c => c.category_info?.name) || []).filter(Boolean))];
 
     const filteredCourses = courses.filter(course => {
-        const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            course.description.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesCategory = categoryFilter === 'All' || course.category === categoryFilter;
+        const matchesSearch = course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            course.short_description.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesCategory = categoryFilter === 'All' || 
+            (course.categories && course.categories.some(c => c.category_info?.name === categoryFilter));
         return matchesSearch && matchesCategory;
     });
 
     const handleAssignCourseSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-
-        // Check if course already assigned (simulating updates)
         toast.success(`Course "${assignForm.courseTitle}" assigned to ${assignForm.targetDept}!`);
         setIsAssignOpen(false);
-
-        // Optional logic: if we want to simulate adding a new course to list if it was a new catalog item
     };
+
+    if (loading && courses.length === 0) {
+        return (
+            <div className="flex flex-col items-center justify-center py-24 gap-3 bg-white border border-gray-150 rounded-xl shadow-sm">
+                <Loader2 className="w-8 h-8 text-perple animate-spin" />
+                <span className="text-[11px] text-gray-400 font-medium">Loading assigned courses...</span>
+            </div>
+        )
+    }
 
     return (
         <div className="flex flex-col gap-6 animate-in fade-in duration-300">
@@ -82,19 +97,18 @@ const CourseAnalytics = () => {
                     />
                 </div>
 
-                <div className="flex gap-2 w-full sm:w-auto shrink-0">
-                    {categories.map((cat) => (
-                        <button
-                            key={cat}
-                            onClick={() => setCategoryFilter(cat)}
-                            className={`h-9 px-4 text-xs font-semibold rounded-md border transition-all cursor-pointer ${categoryFilter === cat
-                                    ? 'bg-perple/10 border-perple text-perple'
-                                    : 'bg-white border-gray-250 text-gray-600 hover:bg-gray-50'
-                                }`}
-                        >
-                            {cat}
-                        </button>
-                    ))}
+                <div className="w-full sm:w-48 shrink-0">
+                    <select
+                        value={categoryFilter}
+                        onChange={(e) => setCategoryFilter(e.target.value)}
+                        className="w-full h-9 px-3 border border-gray-250 bg-white rounded-md text-xs text-[#2F2B3D]/80 focus:outline-none focus:border-perple focus:ring-1 focus:ring-perple cursor-pointer"
+                    >
+                        {categories.map((cat) => (
+                            <option key={cat} value={cat}>
+                                {cat}
+                            </option>
+                        ))}
+                    </select>
                 </div>
             </div>
 
@@ -102,54 +116,94 @@ const CourseAnalytics = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {filteredCourses.length > 0 ? (
                     filteredCourses.map((course) => (
-                        <div key={course.id} className="bg-white rounded-xl border border-gray-150 shadow-sm p-5 flex flex-col justify-between transition-all duration-300 hover:shadow-md">
-                            <div>
-                                {/* Card Tag */}
-                                <span className="inline-block text-[9px] font-bold text-perple bg-perple/5 px-2.5 py-0.5 rounded uppercase tracking-wider mb-3">
-                                    {course.category}
-                                </span>
+                        <div key={course.id} className="group bg-white rounded-xl border border-gray-150 shadow-sm overflow-hidden flex flex-col justify-between transition-all duration-300 hover:shadow-md">
+                            {course.image && (
+                                <div className="w-full h-40 shrink-0 relative overflow-hidden bg-gray-100 border-b border-gray-100">
+                                    <img 
+                                        src={course.image} 
+                                        alt={course.name} 
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                    />
+                                </div>
+                            )}
+                            
+                            <div className="p-5 flex flex-col justify-between flex-1">
+                                <div>
+                                    {/* Card Tags */}
+                                    <div className="flex flex-wrap gap-1.5 mb-2.5">
+                                        {course.categories && course.categories.map((cat) => (
+                                            <span 
+                                                key={cat.id} 
+                                                className="text-[9px] font-bold px-2.5 py-0.5 rounded uppercase tracking-wider"
+                                                style={{ 
+                                                    backgroundColor: cat.category_info?.bg_code || 'rgba(94, 80, 235, 0.05)', 
+                                                    color: cat.category_info?.text_code || '#5e50eb' 
+                                                }}
+                                            >
+                                                {cat.category_info?.name}
+                                            </span>
+                                        ))}
+                                    </div>
 
-                                <h3 className="text-xs font-bold text-[#2F2B3D] leading-snug">{course.title}</h3>
-                                <p className="text-[11px] text-gray-500 mt-1.5 leading-relaxed">{course.description}</p>
-                            </div>
+                                    <h3 className="text-xs font-bold text-[#2F2B3D] leading-snug group-hover:text-perple transition-colors">{course.name}</h3>
+                                    
+                                    {/* Star Rating */}
+                                    {course.avg_rating !== undefined && (
+                                        <div className="flex items-center gap-1 mt-1 text-[10px] font-semibold text-gray-500">
+                                            <div className="flex items-center text-amber-500">
+                                                <Star className="w-3 h-3 fill-current" />
+                                            </div>
+                                            <span className="text-[#2F2B3D]">{course.avg_rating.toFixed(1)}</span>
+                                            <span>({course.total_reviews} {course.total_reviews === 1 ? 'review' : 'reviews'})</span>
+                                        </div>
+                                    )}
 
-                            <div className="mt-6 border-t border-gray-100 pt-4 flex flex-col gap-4">
-                                {/* Analytics Metrics */}
-                                <div className="grid grid-cols-3 gap-2">
-                                    <div className="flex flex-col">
-                                        <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Enrolled</span>
-                                        <span className="text-xs font-bold text-[#2F2B3D] mt-0.5 flex items-center gap-1.5">
-                                            <Users className="w-3.5 h-3.5 text-gray-400" />
-                                            {course.enrolledCount} team
-                                        </span>
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Avg Progress</span>
-                                        <span className="text-xs font-bold text-perple mt-0.5 flex items-center gap-1.5">
-                                            <GraduationCap className="w-3.5 h-3.5" />
-                                            {course.avgProgress}%
-                                        </span>
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Certificates</span>
-                                        <span className="text-xs font-bold text-emerald-600 mt-0.5 flex items-center gap-1.5">
-                                            <Award className="w-3.5 h-3.5" />
-                                            {course.certificatesCount} issued
-                                        </span>
-                                    </div>
+                                    <p 
+                                        className="text-[10px] text-gray-500 mt-2 leading-relaxed"
+                                        style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+                                    >
+                                        {stripHtml(course.short_description)}
+                                    </p>
                                 </div>
 
-                                {/* Progress Visual */}
-                                <div className="flex flex-col gap-1">
-                                    <div className="flex justify-between items-center text-[10px] text-gray-400 font-semibold">
-                                        <span>Average Program Completion</span>
-                                        <span className="text-[#2F2B3D]">{course.avgProgress}%</span>
+                                <div className="mt-5 border-t border-gray-100 pt-4 flex flex-col gap-4">
+                                    {/* Analytics Metrics */}
+                                    <div className="grid grid-cols-3 gap-2">
+                                        <div className="flex flex-col">
+                                            <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Enrolled</span>
+                                            <span className="text-xs font-bold text-[#2F2B3D] mt-0.5 flex items-center gap-1.5">
+                                                <Users className="w-3.5 h-3.5 text-gray-400" />
+                                                {course.enrolled_students} team
+                                            </span>
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Avg Progress</span>
+                                            <span className="text-xs font-bold text-perple mt-0.5 flex items-center gap-1.5">
+                                                <GraduationCap className="w-3.5 h-3.5" />
+                                                {course.avg_progress}%
+                                            </span>
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Certificates</span>
+                                            <span className="text-xs font-bold text-emerald-600 mt-0.5 flex items-center gap-1.5">
+                                                <Award className="w-3.5 h-3.5" />
+                                                {course.certificates} issued
+                                            </span>
+                                        </div>
                                     </div>
-                                    <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                                        <div
-                                            className="h-full bg-perple rounded-full"
-                                            style={{ width: `${course.avgProgress}%` }}
-                                        />
+
+                                    {/* Progress Visual */}
+                                    <div className="flex flex-col gap-1">
+                                        <div className="flex justify-between items-center text-[10px] text-gray-400 font-semibold">
+                                            <span>Average Program Completion</span>
+                                            <span className="text-[#2F2B3D]">{course.avg_progress}%</span>
+                                        </div>
+                                        <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                            <div
+                                                className="h-full bg-perple rounded-full"
+                                                style={{ width: `${course.avg_progress}%` }}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -186,11 +240,13 @@ const CourseAnalytics = () => {
                                     onChange={(e) => setAssignForm({ ...assignForm, courseTitle: e.target.value })}
                                     className="h-10 px-3 border border-gray-250 bg-white rounded-md text-xs text-[#2F2B3D]/80 focus:outline-none focus:border-perple cursor-pointer"
                                 >
-                                    <option value="Corporate Financial Basics">Corporate Financial Basics</option>
-                                    <option value="Advanced Corporate Tax Law">Advanced Corporate Tax Law</option>
-                                    <option value="GST Implementation Guide">GST Implementation Guide</option>
-                                    <option value="Management Accounting Principles">Management Accounting Principles</option>
-                                    <option value="Auditing & Corporate Governance">Auditing & Corporate Governance</option>
+                                    {courses.length > 0 ? (
+                                        courses.map((course) => (
+                                            <option key={course.id} value={course.name}>{course.name}</option>
+                                        ))
+                                    ) : (
+                                        <option value="">No courses available</option>
+                                    )}
                                 </select>
                             </div>
 
@@ -218,7 +274,8 @@ const CourseAnalytics = () => {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-5 h-9 bg-perple hover:bg-[#5e50eb] text-white text-xs font-bold rounded-md transition-all cursor-pointer"
+                                    disabled={courses.length === 0}
+                                    className="px-5 h-9 bg-perple hover:bg-[#5e50eb] text-white text-xs font-bold rounded-md transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     Assign Course
                                 </button>
