@@ -392,6 +392,12 @@ export const reshareUserLoginDetail = async (payload: any): Promise<any> => {
   return await apiRequest(API_ENDPOINTS.RESHARE_USER_LOGIN_DETAIL, 'POST', payload);
 }
 
+export const getUserRole = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.GET_USER_ROLE, 'POST', payload);
+}
+
+
+
 
 
 

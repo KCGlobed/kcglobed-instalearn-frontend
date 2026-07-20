@@ -6,6 +6,7 @@ interface SuccessModalProps {
   companyName: string;
   billingEmail: string;
   onNavigate: () => void;
+  isCorporate?: boolean;
 }
 
 export const SuccessModal: React.FC<SuccessModalProps> = React.memo(({
@@ -13,6 +14,7 @@ export const SuccessModal: React.FC<SuccessModalProps> = React.memo(({
   companyName,
   billingEmail,
   onNavigate,
+  isCorporate = true, // defaulting to true to not break other places if any
 }) => {
   if (!show) return null;
 
@@ -22,7 +24,7 @@ export const SuccessModal: React.FC<SuccessModalProps> = React.memo(({
         <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-6">
           <CheckCircle2 className="w-10 h-10 animate-bounce" />
         </div>
-        
+
         <h3 className="text-2xl font-extrabold text-slate-900 mb-2">Subscription Confirmed!</h3>
         <p className="text-slate-500 text-sm leading-relaxed mb-6">
           Congratulations! Your team subscription for <span className="font-semibold text-slate-800">{companyName}</span> is now active. We've sent a receipt and activation instructions to <span className="font-semibold text-[#A435F0]">{billingEmail}</span>.
@@ -32,7 +34,7 @@ export const SuccessModal: React.FC<SuccessModalProps> = React.memo(({
           onClick={onNavigate}
           className="w-full py-3 bg-[#A435F0] hover:bg-[#8B1AD3] text-white rounded font-bold transition-all shadow-md cursor-pointer"
         >
-          Go to Corporate Dashboard
+          {isCorporate ? 'Go to Corporate Dashboard' : 'Go to Home'}
         </button>
       </div>
     </div>

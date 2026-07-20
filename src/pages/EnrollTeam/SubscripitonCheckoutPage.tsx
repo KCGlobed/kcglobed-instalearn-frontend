@@ -13,15 +13,15 @@ import Footer from '../../layouts/Footer';
 const SubscripitonCheckoutPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   // Sync selected plan ID from navigation state to sessionStorage if present
   const statePlanId = location.state?.planId;
   if (statePlanId) {
     sessionStorage.setItem('selected_plan_id', String(statePlanId));
   }
-  
+
   const selectedPlanId = statePlanId || sessionStorage.getItem('selected_plan_id');
-  
+
   const {
     plan,
     loading,
@@ -36,6 +36,9 @@ const SubscripitonCheckoutPage: React.FC = () => {
     applyCoupon,
     placeOrder,
   } = useSubscriptionCheckout(selectedPlanId);
+
+  const userRole = localStorage.getItem("userRole") || "";
+  const isCorporate = userRole.toLowerCase().includes("corporate");
 
   if (!selectedPlanId) {
     return (
@@ -96,7 +99,7 @@ const SubscripitonCheckoutPage: React.FC = () => {
 
       <div className="py-12 md:py-16 bg-[#F8FAFC]">
         <div className="max-w-6xl mx-auto px-4">
-          
+
           {/* Breadcrumbs */}
           <div className="flex items-center gap-1.5 text-xs md:text-sm text-slate-500 mb-6">
             <span className="hover:text-indigo-600 cursor-pointer transition-colors" onClick={() => navigate('/enroll-team')}>Subscription</span>
@@ -110,7 +113,7 @@ const SubscripitonCheckoutPage: React.FC = () => {
           </p>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-            
+
             {/* Left Column - Company Information */}
             <div className="lg:col-span-7 space-y-6">
               <CompanyInfoForm
@@ -150,7 +153,8 @@ const SubscripitonCheckoutPage: React.FC = () => {
         show={showSuccess}
         companyName={formData.companyName}
         billingEmail={formData.email}
-        onNavigate={() => navigate('/corporate-management')}
+        isCorporate={isCorporate}
+        onNavigate={() => navigate(isCorporate ? '/corporate-management' : '/')}
       />
 
       <Footer />

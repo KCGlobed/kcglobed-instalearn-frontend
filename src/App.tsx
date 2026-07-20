@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom"
 import PageLoader from "./components/Loader/PageLoader"
 import Cart from "./pages/Cart"
 import PrivateRoute from "./utils/privateRoutes"
+import CorporateRoute from "./utils/CorporateRoute"
 import MyLearning from "./pages/MyLearning"
 
 import CheckoutPage from "./pages/Checkout"
@@ -69,6 +70,9 @@ function App() {
           <Route path="/learning/dashboard/:slug" element={<LearningDashboard />} />
           <Route path="/purchase-history" element={<PurchaseHistory />} />
           <Route path="/my-commitment" element={<MyCommitment />} />
+        </Route>
+
+        <Route element={<CorporateRoute />}>
           <Route path="/corporate-management" element={<CorporateManagement />} />
         </Route>
 

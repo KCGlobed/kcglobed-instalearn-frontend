@@ -93,5 +93,6 @@ export const API_ENDPOINTS = {
     GET_CORPORATE_DASHBOARD_COUNTERS: "user_study/get-dashboard-counters/",
     GET_USER_STUDY_PROGRESS: "user_study/get-user-study-progress",
     GET_USER_COURSES_PROGRESS: "user_study/get-user-courses-progress",
-    RESHARE_USER_LOGIN_DETAIL: "user_study/reshare-user-login-detail/"
+    RESHARE_USER_LOGIN_DETAIL: "user_study/reshare-user-login-detail/",
+    GET_USER_ROLE: "user/get-user-role/"
 }

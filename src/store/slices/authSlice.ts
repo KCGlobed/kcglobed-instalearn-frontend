@@ -37,7 +37,7 @@ export const loginUser = createAsyncThunk(
       storeToken(access);
       storeRefreshToken(refresh);
       storeUserID(response.data.user_id);
-      storeUserRole(response.data.user_role);
+      storeUserRole(JSON.stringify(response?.data?.user_role));
       storeUserProfile(JSON.stringify(response.data));
       return access;
     } catch (error: any) {
@@ -72,11 +72,10 @@ export const googleLogin = createAsyncThunk(
       const refresh = tokenData?.refresh ?? null;
 
       if (!access) throw new Error("No access token received from server");
-
       storeToken(access);
       if (refresh) storeRefreshToken(refresh);
       storeUserID(response?.data?.user_id ?? response?.user_id ?? "");
-      storeUserRole(response?.data?.user_role ?? response?.user_role ?? "Student");
+      storeUserRole(JSON.stringify(response?.data?.user_role ?? response?.user_role));
       storeUserProfile(JSON.stringify(response?.data ?? response));
 
       return access;

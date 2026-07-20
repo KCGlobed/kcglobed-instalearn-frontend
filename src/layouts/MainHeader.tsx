@@ -34,6 +34,21 @@ const formatTimeAgo = (dateString: string) => {
     if (days < 7) return `${days}d ago`;
     return date.toLocaleDateString();
 };
+
+const checkIsCorporate = () => {
+    try {
+        const storedRole = localStorage.getItem("userRole");
+        if (storedRole) {
+            const parsedRole = JSON.parse(storedRole);
+            const roleStr = Array.isArray(parsedRole) ? parsedRole.join("").toLowerCase() : String(parsedRole).toLowerCase();
+            return roleStr.includes("corporate");
+        }
+    } catch (e) {
+        console.error("Failed to parse userRole for corporate check", e);
+    }
+    return false;
+};
+
 // ─── Browse Dropdown ──────────────────────────────────────────────────────────
 
 const BrowseDropdown = () => {
@@ -573,6 +588,10 @@ const ProfileDropdown = () => {
     const { unreadCount } = useAppSelector((state: RootState) => state.notification);
     const [imageError, setImageError] = useState(false);
     const userProfile = localStorage.getItem("userProfile");
+    const isCorporate = checkIsCorporate();
+    let userRole: any = [];
+    try { userRole = JSON.parse(localStorage.getItem("userRole") || "[]"); } catch(e) {}
+    console.log(userRole, "User Role")
 
     let profile: any = null;
     try {
@@ -654,10 +673,13 @@ const ProfileDropdown = () => {
 
                     {/* Group 1 */}
                     <div className="py-1">
-                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/corporate-management'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Corporate Admin</a>
+                        {
+                            userRole.includes("CorporateAdmin") &&
+                            <a href="#" onClick={(e) => { e.preventDefault(); navigate('/corporate-management'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Corporate Admin</a>
+                        }
                         <a href="#" onClick={(e) => { e.preventDefault(); navigate('/my-learning'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">My Learning</a>
-                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/cart'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">My Cart</a>
-                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/my-learning?tab=wishlist'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Wishlist</a>
+                        {!isCorporate && <a href="#" onClick={(e) => { e.preventDefault(); navigate('/cart'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">My Cart</a>}
+                        {!isCorporate && <a href="#" onClick={(e) => { e.preventDefault(); navigate('/my-learning?tab=wishlist'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Wishlist</a>}
                         <a href="#" onClick={(e) => { e.preventDefault(); navigate('/purchase-history'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Purchase History</a>
                     </div>
 
@@ -703,6 +725,7 @@ const MainHeader = () => {
     const { isAuthenticated } = useAppSelector((s: RootState) => s.auth);
     // Toggle this to test logged in vs logged out UI
     const isLoggedIn = isAuthenticated;
+    const isCorporate = checkIsCorporate();
 
     const handleSignIn = () => {
         setDrawerOpen(false); // Close drawer if it's open
@@ -737,7 +760,7 @@ const MainHeader = () => {
                     </div>
 
                     {/* Cart */}
-                    <CartDropdown />
+                    {!isCorporate && <CartDropdown />}
                 </div>
 
                 {/* ── Tablet bar (md → lg) ── */}
@@ -763,8 +786,8 @@ const MainHeader = () => {
                     {/* Icons */}
                     <div className="flex items-center gap-2 shrink-0">
                         <NotificationDropdown />
-                        <WishlistDropdown />
-                        <CartDropdown />
+                        {!isCorporate && <WishlistDropdown />}
+                        {!isCorporate && <CartDropdown />}
 
                         <div className="w-px h-5 bg-[#E9EAF0] mx-1" />
 
@@ -811,8 +834,8 @@ const MainHeader = () => {
                     {/* Right actions */}
                     <div className="flex items-center gap-1 shrink-0 ml-auto">
                         <NotificationDropdown />
-                        <WishlistDropdown />
-                        <CartDropdown />
+                        {!isCorporate && <WishlistDropdown />}
+                        {!isCorporate && <CartDropdown />}
 
                         <div className="w-px h-6 bg-[#E9EAF0] mx-2" />
 

@@ -87,7 +87,7 @@ const CourseSidebar = () => {
             link.click();
             document.body.removeChild(link);
             window.URL.revokeObjectURL(downloadUrl);
-            
+
             toast.success("Downloaded successfully!", { id: loadToast });
         } catch (error: any) {
             console.error("Failed to download directly:", error);
@@ -123,9 +123,9 @@ const CourseSidebar = () => {
         const courseId = courseDetail.id;
         const lastChapterIdStr = localStorage.getItem(`course_last_chapter_${courseId}`);
         const lastLectureIdStr = localStorage.getItem(`course_last_lecture_${courseId}`);
-        
+
         const chapters = courseDetail.chapters ?? (courseDetail as any).course_chapters ?? [];
-        
+
         if (lastLectureIdStr) {
             const lastLectureId = Number(lastLectureIdStr);
             for (const chapter of chapters) {
@@ -140,7 +140,7 @@ const CourseSidebar = () => {
                 }
             }
         }
-        
+
         // Fallback to first lecture of first chapter if none in localStorage
         if (chapters.length > 0) {
             const firstChapter = chapters[0];
@@ -154,7 +154,7 @@ const CourseSidebar = () => {
                 return { lectureName, chapterName };
             }
         }
-        
+
         return null;
     }, [courseDetail, purchasedCourse]);
     // Safely compute prices — price and discount default to 0 while courseDetail is null
@@ -366,7 +366,7 @@ const CourseSidebar = () => {
                                 <PlayCircle className="w-5 h-5" />
                                 {purchasedCourse.progress > 0 ? "Continue Learning" : "Start Learning"}
                             </button>
-                            
+
                             {purchasedCourse.progress >= 50 && (
                                 <button
                                     onClick={handleDownloadCertificate}

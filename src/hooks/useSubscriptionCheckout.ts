@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getSubscriptionPlansApi, getUserProfileApi, startSubscriptionApi, completeSubscriptionApi } from '../utils/service';
+import { getSubscriptionPlansApi, getUserProfileApi, startSubscriptionApi, completeSubscriptionApi, getUserRole } from '../utils/service';
+import { storeUserRole } from '../utils/tokenStorage';
 import { loadRazorpayScript } from '../utils/razorpayLoader';
 import type { CheckoutFormData, CheckoutErrors, Plan, CheckoutCalculation } from '../components/EnrollTeamComponent/types';
 import { TAX_RATE, MOCK_COUPON_CODE, COUPON_DISCOUNT_PERCENT } from '../components/EnrollTeamComponent/constants';
@@ -68,7 +69,7 @@ export const useSubscriptionCheckout = (planId: string | null) => {
         const res = await getSubscriptionPlansApi();
         const apiPlans = res?.data || [];
         const found = apiPlans.find((p: any) => p.plan_id === planId || String(p.id) === planId);
-        
+
         if (found) {
           setPlan(found);
         } else {
@@ -98,13 +99,13 @@ export const useSubscriptionCheckout = (planId: string | null) => {
     const newErrors: CheckoutErrors = {};
     if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
     if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
-    
+
     if (!formData.email.trim()) {
       newErrors.email = "Email address is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Enter a valid email address";
     }
-    
+
     if (!formData.phone.trim()) {
       newErrors.phone = "Phone number is required";
     }
@@ -133,7 +134,7 @@ export const useSubscriptionCheckout = (planId: string | null) => {
   // Compute pricing totals (useMemo for optimal performance)
   const calculations = useMemo((): CheckoutCalculation | null => {
     if (!plan) return null;
-    
+
     const seatsPrice = plan.original_price || plan.amount * 1.5;
     const savings = seatsPrice - plan.amount;
     const couponDiscount = couponApplied ? plan.amount * COUPON_DISCOUNT_PERCENT : 0;
@@ -227,6 +228,17 @@ export const useSubscriptionCheckout = (planId: string | null) => {
             });
 
             if (verificationResponse && verificationResponse.status !== 'failed') {
+              try {
+                const userId = localStorage.getItem("userID");
+                if (userId) {
+                  const roleResponse = await getUserRole({ user_id: Number(userId) });
+                  if (roleResponse?.data?.user_role) {
+                    storeUserRole(JSON.stringify(roleResponse.data.user_role));
+                  }
+                }
+              } catch (roleError) {
+                console.error("Failed to fetch user role", roleError);
+              }
               setShowSuccess(true);
             } else {
               throw new Error(verificationResponse?.message || 'Payment verification failed.');
@@ -247,7 +259,7 @@ export const useSubscriptionCheckout = (planId: string | null) => {
       }
 
       const rzp = new (window as any).Razorpay(options);
-      
+
       rzp.on('payment.failed', (resp: any) => {
         setIsProcessing(false);
         toast.error(resp.error.description || 'Payment transaction failed.');
