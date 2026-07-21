@@ -94,5 +94,7 @@ export const API_ENDPOINTS = {
     GET_USER_STUDY_PROGRESS: "user_study/get-user-study-progress",
     GET_USER_COURSES_PROGRESS: "user_study/get-user-courses-progress",
     RESHARE_USER_LOGIN_DETAIL: "user_study/reshare-user-login-detail/",
-    GET_USER_ROLE: "user/get-user-role/"
+    GET_USER_ROLE: "user/get-user-role/",
+    GET_CORPORATE_STUDENTS_LIST: "user_study/get-corporate-students-list/",
+    ASSIGN_SINGLE_COURSE_TO_STUDENTS: "user_study/assign-single-course-to-students/"
 }

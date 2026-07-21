@@ -21,12 +21,15 @@ import { useAppSelector } from '../../hooks/useRedux';
 import toast from 'react-hot-toast';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { addToCartAction, viewCartDetails } from '../../store/slices/courseCartSlice';
-import SkeltonLoader from '../Loader/SkeltonLoader';
 import { useNavigate } from 'react-router-dom';
+import SkeltonLoader from '../Loader/SkeltonLoader';
+import { useIsCorporate } from '../../hooks/useIsCorporate';
 import SocialShare from '../UI/SocialShare';
 import { toggleWishlistAction } from '../../store/slices/courseWishList';
 import { toggleCourseWishlistStatus } from '../../store/slices/courseDetailSlice';
 import { getCourseCertificate } from '../../utils/service';
+import { useModal } from '../Modals/ModalContext';
+import AssignTeamMemberForm from '../Forms/AssignTeamMemberForm';
 
 const CourseSidebar = () => {
     const { courseDetail, loading, error } = useAppSelector((state: RootState) => state.courseDetail);
@@ -34,7 +37,9 @@ const CourseSidebar = () => {
     const { wishListItems, loading: wishlistLoading } = useAppSelector((state: RootState) => state.wishList);
     const { isAuthenticated } = useAppSelector((state: RootState) => state.auth);
     const { enrolledCourses } = useAppSelector((state: RootState) => state.myLearning);
+    const { showModal } = useModal();
     const navigate = useNavigate();
+    const isCorporate = useIsCorporate();
 
     const dispatch = useAppDispatch();
 
@@ -235,6 +240,18 @@ const CourseSidebar = () => {
         navigate('/cart');
     }
 
+    const handleAssignCourse = () => {
+        if (!courseDetail) return;
+        showModal({
+            content: (
+                <AssignTeamMemberForm
+                    courseId={courseDetail.id}
+                />
+            ),
+            size: "lg"
+        });
+    }
+
 
     if (loading) {
         return <SkeltonLoader loaderType="course_detail_sidebar" />
@@ -379,40 +396,46 @@ const CourseSidebar = () => {
                             )}
                         </>
                     ) : (
-                        <>
-                            {
-                                !isCart ?
+                        isCorporate ? (
+                            <button onClick={() => handleAssignCourse()} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98]">
+                                Assign to Team Member
+                            </button>
+                        ) : (
+                            <>
+                                {
+                                    !isCart ?
 
-                                    <button onClick={() => addCourseToCart()} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98]">
-                                        {cartLoading ?
-                                            <div className="flex items-center gap-2 justify-center">
-                                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                                                <span>Adding to cart...</span>
-                                            </div>
+                                        <button onClick={() => addCourseToCart()} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98]">
+                                            {cartLoading ?
+                                                <div className="flex items-center gap-2 justify-center">
+                                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                                    <span>Adding to cart...</span>
+                                                </div>
 
-                                            : "Add To Cart"}
-                                    </button>
-                                    :
-                                    <button onClick={() => gotoCart()} className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98]">
-                                        Go To Cart
-                                    </button>
-                            }
-                            {isAuthenticated && (
-                                <div className="flex gap-2">
-                                    <button onClick={() => handleWishList()} disabled={wishlistLoading} className={`flex-1 flex items-center justify-center gap-2 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-all text-sm font-semibold ${isWishlist ? 'text-rose-600' : 'text-gray-700'}`}>
-                                        {wishlistLoading ? (
-                                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600"></div>
-                                        ) : (
-                                            <Heart className={`w-4 h-4 ${isWishlist ? 'fill-current' : ''}`} />
-                                        )}
-                                        {isWishlist ? 'Wishlisted' : 'Add To Wishlist'}
-                                    </button>
-                                    <button disabled={true} className="flex-1 flex items-center justify-center gap-2 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-all text-sm font-semibold">
-                                        <Gift className="w-4 h-4" /> Gift Course
-                                    </button>
-                                </div>
-                            )}
-                        </>
+                                                : "Add To Cart"}
+                                        </button>
+                                        :
+                                        <button onClick={() => gotoCart()} className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98]">
+                                            Go To Cart
+                                        </button>
+                                }
+                                {isAuthenticated && (
+                                    <div className="flex gap-2">
+                                        <button onClick={() => handleWishList()} disabled={wishlistLoading} className={`flex-1 flex items-center justify-center gap-2 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-all text-sm font-semibold ${isWishlist ? 'text-rose-600' : 'text-gray-700'}`}>
+                                            {wishlistLoading ? (
+                                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600"></div>
+                                            ) : (
+                                                <Heart className={`w-4 h-4 ${isWishlist ? 'fill-current' : ''}`} />
+                                            )}
+                                            {isWishlist ? 'Wishlisted' : 'Add To Wishlist'}
+                                        </button>
+                                        <button disabled={true} className="flex-1 flex items-center justify-center gap-2 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-all text-sm font-semibold">
+                                            <Gift className="w-4 h-4" /> Gift Course
+                                        </button>
+                                    </div>
+                                )}
+                            </>
+                        )
                     )}
                 </div>
 

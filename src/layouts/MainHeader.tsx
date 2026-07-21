@@ -19,6 +19,7 @@ import { useAppDispatch } from "../hooks/useAppDispatch";
 import { viewCartDetails } from "../store/slices/courseCartSlice";
 import { viewWishlistAction } from "../store/slices/courseWishList";
 import { fetchUnreadNotifications, markNotificationAsRead } from "../store/slices/notificationSlice";
+import { useIsCorporate } from "../hooks/useIsCorporate";
 
 const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
@@ -35,19 +36,7 @@ const formatTimeAgo = (dateString: string) => {
     return date.toLocaleDateString();
 };
 
-const checkIsCorporate = () => {
-    try {
-        const storedRole = localStorage.getItem("userRole");
-        if (storedRole) {
-            const parsedRole = JSON.parse(storedRole);
-            const roleStr = Array.isArray(parsedRole) ? parsedRole.join("").toLowerCase() : String(parsedRole).toLowerCase();
-            return roleStr.includes("corporate");
-        }
-    } catch (e) {
-        console.error("Failed to parse userRole for corporate check", e);
-    }
-    return false;
-};
+
 
 // ─── Browse Dropdown ──────────────────────────────────────────────────────────
 
@@ -588,7 +577,7 @@ const ProfileDropdown = () => {
     const { unreadCount } = useAppSelector((state: RootState) => state.notification);
     const [imageError, setImageError] = useState(false);
     const userProfile = localStorage.getItem("userProfile");
-    const isCorporate = checkIsCorporate();
+    const isCorporate = useIsCorporate();
     let userRole: any = [];
     try { userRole = JSON.parse(localStorage.getItem("userRole") || "[]"); } catch(e) {}
     console.log(userRole, "User Role")
@@ -725,7 +714,7 @@ const MainHeader = () => {
     const { isAuthenticated } = useAppSelector((s: RootState) => s.auth);
     // Toggle this to test logged in vs logged out UI
     const isLoggedIn = isAuthenticated;
-    const isCorporate = checkIsCorporate();
+    const isCorporate = useIsCorporate();
 
     const handleSignIn = () => {
         setDrawerOpen(false); // Close drawer if it's open
@@ -795,7 +784,7 @@ const MainHeader = () => {
                             <ProfileDropdown />
                         ) : (
                             <>
-                                <Button onClick={() => useNavigate()} variant="secondary" title="Sign Up" className="h-[38px] px-4 !rounded-sm text-[13px]" />
+                                <Button onClick={() => navigate('/signup')} variant="secondary" title="Sign Up" className="h-[38px] px-4 !rounded-sm text-[13px]" />
                                 <Button variant="primary" title="Sign In" className="h-[38px] px-4 !rounded-sm text-[13px]"
                                     onClick={handleSignIn}
                                 />

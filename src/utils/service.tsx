@@ -396,6 +396,14 @@ export const getUserRole = async (payload: any): Promise<any> => {
   return await apiRequest(API_ENDPOINTS.GET_USER_ROLE, 'POST', payload);
 }
 
+export const getCorporateUserListApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.GET_CORPORATE_STUDENTS_LIST, 'GET');
+}
+
+export const assignSingleCourseToStudentsApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.ASSIGN_SINGLE_COURSE_TO_STUDENTS, 'POST', payload);
+}
+
 
 
 
