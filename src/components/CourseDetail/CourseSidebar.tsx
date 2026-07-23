@@ -384,6 +384,12 @@ const CourseSidebar = () => {
                                 {purchasedCourse.progress > 0 ? "Continue Learning" : "Start Learning"}
                             </button>
 
+                            {isCorporate && (
+                                <button onClick={() => handleAssignCourse()} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98]">
+                                    Assign to Team Member
+                                </button>
+                            )}
+
                             {purchasedCourse.progress >= 50 && (
                                 <button
                                     onClick={handleDownloadCertificate}
