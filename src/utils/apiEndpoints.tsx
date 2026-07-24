@@ -96,5 +96,9 @@ export const API_ENDPOINTS = {
     RESHARE_USER_LOGIN_DETAIL: "user_study/reshare-user-login-detail/",
     GET_USER_ROLE: "user/get-user-role/",
     GET_CORPORATE_STUDENTS_LIST: "user_study/get-corporate-students-list/",
-    ASSIGN_SINGLE_COURSE_TO_STUDENTS: "user_study/assign-single-course-to-students/"
+    ASSIGN_SINGLE_COURSE_TO_STUDENTS: "user_study/assign-single-course-to-students/",
+    VIEW_CORPORATE_USER_DETAIL: "user_study/view-corporate-user-detail/",
+    VIEW_STUDENT_VIDEO_REPORT: "user_study/view-student-video-report",
+    GET_STUDENT_NOTES_LISTING: "user_study/get-student-notes-listing",
+    GET_ATTEMPTED_QUIZ_LIST: "user_study/get-attempted-quiz-list",
 }

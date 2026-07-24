@@ -404,6 +404,22 @@ export const assignSingleCourseToStudentsApi = async (payload: any): Promise<any
   return await apiRequest(API_ENDPOINTS.ASSIGN_SINGLE_COURSE_TO_STUDENTS, 'POST', payload);
 }
 
+export const viewCorporateUserDetailApi = async (userId: number | string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.VIEW_CORPORATE_USER_DETAIL}${userId}`, 'GET');
+}
+
+export const viewStudentVideoReportApi = async (userId: number | string, courseId: number | string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.VIEW_STUDENT_VIDEO_REPORT}/${userId}/${courseId}`, 'GET');
+}
+
+export const getStudentNotesListingApi = async (userId: number | string, courseId: number | string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_STUDENT_NOTES_LISTING}/${userId}/${courseId}`, 'GET');
+}
+
+export const getAttemptedQuizListApi = async (userId: number | string, courseId: number | string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_ATTEMPTED_QUIZ_LIST}/${userId}/${courseId}`, 'GET');
+}
+
 
 
 

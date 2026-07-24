@@ -51,8 +51,12 @@ const customStyles = {
         boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
         overflow: 'hidden',
         border: '1px solid #e5e7eb',
-        zIndex: 50
+        zIndex: 9999
     }),
+    menuPortal: (base: any) => ({
+        ...base,
+        zIndex: 99999,
+    })
 };
 
 interface AssignTeamMemberFormProps {
@@ -177,6 +181,8 @@ const AssignTeamMemberForm = ({ courseId }: AssignTeamMemberFormProps) => {
                     styles={customStyles}
                     placeholder="Search by name or email..."
                     noOptionsMessage={() => "No team members found"}
+                    menuPortalTarget={document.body}
+                    menuPosition="fixed"
                 />
                 {validationError && (
                     <p className="text-sm text-red-500 mt-1.5 flex items-center gap-1.5 font-medium animate-in fade-in slide-in-from-top-1 duration-200">

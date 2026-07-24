@@ -72,7 +72,7 @@ export default function QuickContactForm() {
                         <input
                             id="first_name"
                             type="text"
-                            placeholder="John"
+                            placeholder="Enter your first name"
                             {...register("first_name", {
                                 required: "First Name is required",
                                 minLength: { value: 2, message: "First name must be at least 2 characters" }
@@ -100,7 +100,7 @@ export default function QuickContactForm() {
                         <input
                             id="last_name"
                             type="text"
-                            placeholder="Doe"
+                            placeholder="Enter your last name"
                             {...register("last_name", {
                                 required: "Last Name is required",
                                 minLength: { value: 2, message: "Last name must be at least 2 characters" }
@@ -128,7 +128,7 @@ export default function QuickContactForm() {
                         <input
                             id="email"
                             type="email"
-                            placeholder="john@example.com"
+                            placeholder="Enter your email address"
                             {...register("email", {
                                 required: "Email Address is required",
                                 validate: {
@@ -168,7 +168,7 @@ export default function QuickContactForm() {
                         <input
                             id="phone"
                             type="tel"
-                            placeholder="9876543210"
+                            placeholder="Enter your phone number"
                             maxLength={10}
                             {...register("phone", {
                                 required: "Phone number is required",
@@ -203,7 +203,7 @@ export default function QuickContactForm() {
                         <textarea
                             id="message"
                             rows={3}
-                            placeholder="Tell us what you are looking for..."
+                            placeholder="Enter your message"
                             {...register("message", {
                                 required: "Please enter your message",
                                 minLength: { value: 10, message: "Message must be at least 10 characters" }

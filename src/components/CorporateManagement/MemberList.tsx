@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { UserPlus, Trash2, BookOpen, ShieldAlert, Lock, Key } from 'lucide-react'
+import { UserPlus, Trash2, BookOpen, ShieldAlert, Lock, Key, Eye, FileText } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux'
 import { fetchCorporateUsers } from '../../store/slices/corporateUserSlice'
 import { useModal } from '../Modals/ModalContext'
@@ -8,6 +8,7 @@ import DeleteModal from '../Modals/DeleteModal'
 import AssignCourseModal from '../Modals/AssignCourseModal'
 import toast from 'react-hot-toast'
 import ReshareLoginDetail from '../Modals/ReshareLoginDetail'
+import VeiwTeamMemberDetail from '../Modals/VeiwTeamMemberDetail'
 
 interface Member {
     id: number;
@@ -16,6 +17,10 @@ interface Member {
     activeCourses: number;
     completion: number;
     status: 'Active' | 'Pending';
+    last_login?: string;
+    date_joined?: string;
+    image?: string;
+    phone1?: string;
 }
 
 const MemberList = () => {
@@ -37,8 +42,12 @@ const MemberList = () => {
                 name: `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'No Name',
                 email: user.email || '',
                 activeCourses: user.courses?.length || 0,
-                completion: 0,
-                status: (user.is_active ? 'Active' : 'Pending') as 'Active' | 'Pending'
+                completion: user?.courses_progress || 0,
+                status: (user.is_active ? 'Active' : 'Pending') as 'Active' | 'Pending',
+                last_login: user?.last_login || '',
+                date_joined: user?.date_joined || '',
+                image: user?.image || '',
+                phone1: user?.phone1 || '',
             }));
             setMembers(mappedMembers);
         }
@@ -99,6 +108,17 @@ const MemberList = () => {
 
     }
 
+    const handleViewMemberDetail = (member: Member) => {
+        showModal({
+            content: (
+                <VeiwTeamMemberDetail
+                    member={member}
+                />
+            ),
+            size: "xxl"
+        });
+    }
+
 
 
 
@@ -126,10 +146,13 @@ const MemberList = () => {
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-[#F8F7FA] border-b border-gray-100 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                            <tr className="bg-[#F8F7FA] border-b border-gray-100 text-[10px] font-bold text-gray-500 uppercase tracking-wider">
                                 <th className="py-3.5 px-4 md:px-6">Name / Email</th>
-                                <th className="py-3.5 px-4 text-center">Active Courses</th>
-                                <th className="py-3.5 px-4">Completion Progress</th>
+                                <th className="py-3.5 px-4">Phone</th>
+                                <th className="py-3.5 px-4">Joined Date</th>
+                                <th className="py-3.5 px-4">Last Login</th>
+                                <th className="py-3.5 px-4 text-center">Courses</th>
+                                <th className="py-3.5 px-4">Progress</th>
                                 <th className="py-3.5 px-4">Status</th>
                                 <th className="py-3.5 px-4 text-right">Actions</th>
                             </tr>
@@ -137,7 +160,7 @@ const MemberList = () => {
                         <tbody className="divide-y divide-gray-100">
                             {loading ? (
                                 <tr>
-                                    <td colSpan={5} className="py-12 text-center text-gray-400 text-xs">
+                                    <td colSpan={8} className="py-12 text-center text-gray-500 text-xs">
                                         <div className="flex justify-center items-center gap-2">
                                             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-perple"></div>
                                             <span>Loading team members...</span>
@@ -146,7 +169,7 @@ const MemberList = () => {
                                 </tr>
                             ) : error ? (
                                 <tr>
-                                    <td colSpan={5} className="py-12 text-center text-rose-500 text-xs">
+                                    <td colSpan={8} className="py-12 text-center text-rose-500 text-xs">
                                         <div className="flex justify-center items-center gap-1.5">
                                             <ShieldAlert className="w-4 h-4" />
                                             <span>{error}</span>
@@ -158,10 +181,32 @@ const MemberList = () => {
                                     <tr key={member.id} className="hover:bg-gray-50/50 transition-colors text-xs">
                                         {/* Name / Email */}
                                         <td className="py-4 px-4 md:px-6">
-                                            <div className="flex flex-col">
-                                                <span className="font-semibold text-[#2F2B3D]">{member.name}</span>
-                                                <span className="text-[10px] text-gray-400 mt-0.5">{member.email}</span>
+                                            <div className="flex items-center gap-3">
+                                                {member.image ? (
+                                                    <img src={member.image} alt={member.name} className="w-8 h-8 rounded-full object-cover" />
+                                                ) : (
+                                                    <div className="w-8 h-8 rounded-full bg-perple/10 flex items-center justify-center text-perple font-bold text-xs">
+                                                        {member.name.charAt(0)}
+                                                    </div>
+                                                )}
+                                                <div className="flex flex-col">
+                                                    <span className="font-semibold text-[#2F2B3D]">{member.name}</span>
+                                                    <span className="text-[10px] text-gray-500 mt-0.5">{member.email}</span>
+                                                </div>
                                             </div>
+                                        </td>
+
+                                        {/* Phone */}
+                                        <td className="py-4 px-4 text-gray-500 whitespace-nowrap">{member.phone1 || '-'}</td>
+
+                                        {/* Joined Date */}
+                                        <td className="py-4 px-4 text-gray-500 whitespace-nowrap">
+                                            {member.date_joined ? new Date(member.date_joined).toLocaleDateString() : '-'}
+                                        </td>
+
+                                        {/* Last Login */}
+                                        <td className="py-4 px-4 text-gray-500 whitespace-nowrap">
+                                            {member.last_login ? new Date(member.last_login).toLocaleDateString() : '-'}
                                         </td>
 
                                         {/* Active Courses */}
@@ -194,6 +239,14 @@ const MemberList = () => {
                                         <td className="py-4 px-4 text-right">
                                             <div className="flex items-center justify-end gap-2.5">
                                                 <button
+                                                    onClick={() => handleViewMemberDetail(member)}
+                                                    className="p-1 text-gray-400 hover:text-perple hover:bg-perple/5 rounded transition-colors cursor-pointer"
+                                                    title="View Details"
+                                                >
+                                                    <Eye className="w-4 h-4" />
+                                                </button>
+
+                                                <button
                                                     className="p-1 text-gray-400 hover:text-perple hover:bg-perple/5 rounded transition-colors cursor-pointer"
                                                     title="Reshare Login Detail"
                                                     onClick={() => handleReshareLoginDetail(member)}
@@ -220,7 +273,7 @@ const MemberList = () => {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan={5} className="py-8 text-center text-gray-400 text-xs">
+                                    <td colSpan={8} className="py-8 text-center text-gray-500 text-xs">
                                         No team members found.
                                     </td>
                                 </tr>
