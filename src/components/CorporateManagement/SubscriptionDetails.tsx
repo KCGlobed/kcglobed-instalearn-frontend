@@ -4,9 +4,13 @@ import { getMyActiveSubscriptionApi } from '../../utils/service';
 import { useModal } from '../Modals/ModalContext';
 import CancelSubscription from '../Modals/CancelSubscription';
 import { useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
+import { fetchCorporateDashboardCounters } from '../../store/slices/corporateDashboardSlice';
 
 const SubscriptionDetails = () => {
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+    const { counters } = useAppSelector((state) => state.corporateDashboard);
     const [myActivesubscriptionDetails, setMyActiveSubscriptionDetails] = useState<any>({});
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const { showModal } = useModal();
@@ -27,8 +31,15 @@ const SubscriptionDetails = () => {
 
     useEffect(() => {
         handleGetMyActiveSubscriptionApi();
-    }, [])
+        if (!counters) {
+            dispatch(fetchCorporateDashboardCounters());
+        }
+    }, [dispatch]);
 
+    const totalLicenses = counters?.no_of_licences || myActivesubscriptionDetails?.no_of_licence || myActivesubscriptionDetails?.no_of_licences || 0;
+    const usedLicenses = counters?.license_used ?? 0;
+    const vacantLicenses = counters ? counters.remaning_licence : Math.max(0, totalLicenses - usedLicenses);
+    const usagePercent = totalLicenses > 0 ? Math.min(100, Math.round((usedLicenses / totalLicenses) * 100)) : 0;
 
 
     const handleCancelSubscription = () => {
@@ -163,21 +174,21 @@ const SubscriptionDetails = () => {
 
                             <div className="mt-6 flex flex-col gap-2">
                                 <div className="flex justify-between items-end text-xs">
-                                    <span className="text-gray-500 font-semibold">5 Seats Used</span>
+                                    <span className="text-gray-500 font-semibold">{usedLicenses} Seats Used</span>
                                     <span className="text-gray-400 font-medium">
-                                        Out of {myActivesubscriptionDetails?.no_of_licence || 10} Total
+                                        Out of {totalLicenses} Total
                                     </span>
                                 </div>
 
                                 <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
                                     <div
-                                        className="h-full bg-perple rounded-full"
-                                        style={{ width: `${(5 / (myActivesubscriptionDetails?.no_of_licence || 10)) * 100}%` }}
+                                        className="h-full bg-perple rounded-full transition-all duration-500"
+                                        style={{ width: `${usagePercent}%` }}
                                     />
                                 </div>
 
                                 <span className="text-[10px] font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded w-fit mt-1">
-                                    {Math.max(0, (myActivesubscriptionDetails?.no_of_licence || 10) - 5)} vacant seats available
+                                    {vacantLicenses} vacant seats available
                                 </span>
                             </div>
 

@@ -26,8 +26,7 @@ const DashboardOverview = () => {
         const minutes = Math.round(totalSeconds / 60);
         return `${minutes} mins`;
     };
-
-    // Statistics from API & fallback to defaults
+    // Statistics from API & fallback to defaults 
     const stats = [
         {
             id: 1,
@@ -169,7 +168,7 @@ const DashboardOverview = () => {
                                         <span className="text-[8px] font-medium text-gray-300 leading-none">{videoWatched} videos</span>
                                         <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#2F2B3D] rotate-45"></div>
                                     </div>
-                                    
+
                                     <div className="w-6 bg-perple/10 rounded-t-md relative h-28 overflow-hidden flex items-end mb-2 mt-auto">
                                         <div
                                             className="w-full bg-perple hover:bg-[#5e50eb] rounded-t-md transition-all duration-500 ease-out"

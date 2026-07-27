@@ -420,6 +420,26 @@ export const getAttemptedQuizListApi = async (userId: number | string, courseId:
   return await apiRequest(`${API_ENDPOINTS.GET_ATTEMPTED_QUIZ_LIST}/${userId}/${courseId}`, 'GET');
 }
 
+export const downloadStudentVideoReportApi = async (userId: number | string, courseId: number | string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.DOWNLOAD_STUDENT_VIDEO_REPORT}/${userId}/${courseId}`, 'GET');
+}
+
+export const downloadStudentVideoReportExcelApi = async (userId: number | string, courseId: number | string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.DOWNLOAD_STUDENT_VIDEO_REPORT_EXCEL}/${userId}/${courseId}`, 'GET');
+}
+
+export const downloadStudentNotesReportPdfApi = async (userId: number | string, courseId: number | string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.DOWNLOAD_STUDENT_NOTES_REPORT_PDF}/${userId}/${courseId}`, 'GET');
+}
+
+export const downloadStudentNotesReportExcelApi = async (userId: number | string, courseId: number | string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.DOWNLOAD_STUDENT_NOTES_REPORT_EXCEL}/${userId}/${courseId}`, 'GET');
+}
+
+export const getStudentLoginActivityApi = async (userId: number | string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_STUDENT_LOGIN_ACTIVITY}/${userId}`, 'GET');
+}
+
 
 
 

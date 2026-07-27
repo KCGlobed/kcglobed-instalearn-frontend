@@ -101,4 +101,10 @@ export const API_ENDPOINTS = {
     VIEW_STUDENT_VIDEO_REPORT: "user_study/view-student-video-report",
     GET_STUDENT_NOTES_LISTING: "user_study/get-student-notes-listing",
     GET_ATTEMPTED_QUIZ_LIST: "user_study/get-attempted-quiz-list",
+    DOWNLOAD_STUDENT_VIDEO_REPORT: "user_study/download-student-video-report-pdf",
+    DOWNLOAD_STUDENT_VIDEO_REPORT_EXCEL: "user_study/download-student-video-report-csv",
+    DOWNLOAD_STUDENT_NOTES_REPORT_PDF: "user_study/get-notes-listing-report-pdf",
+    DOWNLOAD_STUDENT_NOTES_REPORT_EXCEL: "user_study/get-notes-listing-report-excel",
+    GET_STUDENT_LOGIN_ACTIVITY: "user_study/get-student-login-activity",
 }
+

@@ -39,8 +39,8 @@ const CorporateManagement = () => {
             <TopHeader />
             <MainHeader />
             
-            <main className="flex-grow max-w-[1200px] w-full mx-auto px-4 md:px-8 py-10">
-                <div className="flex flex-col lg:flex-row gap-8 items-start">
+            <main className="flex-grow max-w-[1200px] w-full mx-auto px-4 md:px-8 py-10 min-w-0">
+                <div className="flex flex-col lg:flex-row gap-8 items-start w-full min-w-0">
                     
                     {/* Left Navigation Sidebar */}
                     <div className="w-full lg:w-64 shrink-0 bg-white border border-gray-150 rounded-xl p-4 shadow-sm">
@@ -77,7 +77,7 @@ const CorporateManagement = () => {
                     </div>
 
                     {/* Right Panel Content */}
-                    <div className="flex-1 w-full bg-transparent min-h-[400px]">
+                    <div className="flex-1 w-full min-w-0 bg-transparent min-h-[400px]">
                         <Suspense fallback={<DashboardLoader />}>
                             <ActiveComponent />
                         </Suspense>
