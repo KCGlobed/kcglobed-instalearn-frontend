@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { storeToken, storeRefreshToken, getToken, clearToken, storeUserID, storeUserRole, storeUserProfile } from "../../utils/tokenStorage";
+import { storeToken, storeRefreshToken, getToken, clearToken, storeUserID, storeUserRole, storeUserProfile, storeSubscriptionStatus } from "../../utils/tokenStorage";
 import { apiRequest } from "../../utils/apiRequest";
 import { socialLoginApi } from "../../utils/service";
 import type { AuthState, LoginCred } from "../../utils/types";
@@ -39,6 +39,7 @@ export const loginUser = createAsyncThunk(
       storeUserID(response.data.user_id);
       storeUserRole(JSON.stringify(response?.data?.user_role));
       storeUserProfile(JSON.stringify(response.data));
+      storeSubscriptionStatus(response?.data?.subscription_status);
       return access;
     } catch (error: any) {
       return rejectWithValue(error.message || "Login failed");
@@ -77,7 +78,7 @@ export const googleLogin = createAsyncThunk(
       storeUserID(response?.data?.user_id ?? response?.user_id ?? "");
       storeUserRole(JSON.stringify(response?.data?.user_role ?? response?.user_role));
       storeUserProfile(JSON.stringify(response?.data ?? response));
-
+      storeSubscriptionStatus(response?.data?.subscription_status);
       return access;
     } catch (error: any) {
       return rejectWithValue(error.message || "Google login failed");

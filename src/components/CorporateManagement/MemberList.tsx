@@ -10,6 +10,8 @@ import toast from 'react-hot-toast'
 import ReshareLoginDetail from '../Modals/ReshareLoginDetail'
 import VeiwTeamMemberDetail from '../Modals/VeiwTeamMemberDetail'
 import ViewStudentLoginActivity from '../Modals/ViewStudentLoginActivity'
+import ViewStudentActivityLog from '../Modals/ViewStudentActivityLog'
+import { ClipboardList } from 'lucide-react'
 
 interface Member {
     id: number;
@@ -135,6 +137,18 @@ const MemberList = () => {
         });
     }
 
+    const handleViewActivityLog = (member: Member) => {
+        showModal({
+            content: (
+                <ViewStudentActivityLog
+                    userId={member.id}
+                    userName={member.name}
+                    member={member}
+                />
+            ),
+            size: "xl"
+        });
+    }
 
     return (
         <div className="flex flex-col gap-6 animate-in fade-in duration-300 w-full min-w-0">
@@ -166,6 +180,10 @@ const MemberList = () => {
                                 <th className="py-3.5 px-4 text-center">Courses</th>
                                 <th className="py-3.5 px-4">Progress</th>
                                 <th className="py-3.5 px-4">Country</th>
+                                <th className="py-3.5 px-4 text-center whitespace-nowrap">Login Activity</th>
+                                <th className="py-3.5 px-4 text-center whitespace-nowrap">Activity Log</th>
+                                <th className="py-3.5 px-4 text-center whitespace-nowrap">Reshare Login Detail</th>
+                                <th className="py-3.5 px-4 text-center whitespace-nowrap">Assign Course</th>
                                 <th className="py-3.5 px-4 text-right">Actions</th>
                             </tr>
                         </thead>
@@ -249,6 +267,42 @@ const MemberList = () => {
                                             )}
                                         </td>
 
+                                        <td className="py-4 px-4 text-center whitespace-nowrap">
+                                            <button
+                                                onClick={() => handleViewLoginActivity(member)}
+                                                className="p-1 text-gray-400 hover:text-perple hover:bg-perple/5 rounded transition-colors cursor-pointer inline-flex justify-center"
+                                                title="View Login Activity"
+                                            >
+                                                <Activity className="w-4 h-4" />
+                                            </button>
+                                        </td>
+                                        <td className="py-4 px-4 text-center whitespace-nowrap">
+                                            <button
+                                                onClick={() => handleViewActivityLog(member)}
+                                                className="p-1 text-gray-400 hover:text-perple hover:bg-perple/5 rounded transition-colors cursor-pointer inline-flex justify-center"
+                                                title="View Activity Log"
+                                            >
+                                                <ClipboardList className="w-4 h-4" />
+                                            </button>
+                                        </td>
+                                        <td className="py-4 px-4 text-center whitespace-nowrap">
+                                            <button
+                                                className="p-1 text-gray-400 hover:text-perple hover:bg-perple/5 rounded transition-colors cursor-pointer inline-flex justify-center"
+                                                title="Reshare Login Detail"
+                                                onClick={() => handleReshareLoginDetail(member)}
+                                            >
+                                                <Key className="w-4 h-4" />
+                                            </button>
+                                        </td>
+                                        <td className="py-4 px-4 text-center whitespace-nowrap">
+                                            <button
+                                                className="p-1 text-gray-400 hover:text-perple hover:bg-perple/5 rounded transition-colors cursor-pointer inline-flex justify-center"
+                                                title="Assign Course"
+                                                onClick={() => handleAssignCourse(member)}
+                                            >
+                                                <BookOpen className="w-4 h-4" />
+                                            </button>
+                                        </td>
                                         {/* Actions */}
                                         <td className="py-4 px-4 text-right whitespace-nowrap">
                                             <div className="flex items-center justify-end gap-2.5">
@@ -258,28 +312,6 @@ const MemberList = () => {
                                                     title="View Details"
                                                 >
                                                     <Eye className="w-4 h-4" />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleViewLoginActivity(member)}
-                                                    className="p-1 text-gray-400 hover:text-perple hover:bg-perple/5 rounded transition-colors cursor-pointer"
-                                                    title="View Login Activity"
-                                                >
-                                                    <Activity className="w-4 h-4" />
-                                                </button>
-
-                                                <button
-                                                    className="p-1 text-gray-400 hover:text-perple hover:bg-perple/5 rounded transition-colors cursor-pointer"
-                                                    title="Reshare Login Detail"
-                                                    onClick={() => handleReshareLoginDetail(member)}
-                                                >
-                                                    <Key className="w-4 h-4" />
-                                                </button>
-                                                <button
-                                                    className="p-1 text-gray-400 hover:text-perple hover:bg-perple/5 rounded transition-colors cursor-pointer"
-                                                    title="Assign Course"
-                                                    onClick={() => handleAssignCourse(member)}
-                                                >
-                                                    <BookOpen className="w-4 h-4" />
                                                 </button>
                                                 <button
                                                     className="p-1 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors cursor-pointer"

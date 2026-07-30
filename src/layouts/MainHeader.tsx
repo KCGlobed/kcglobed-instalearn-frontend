@@ -579,7 +579,7 @@ const ProfileDropdown = () => {
     const userProfile = localStorage.getItem("userProfile");
     const isCorporate = useIsCorporate();
     let userRole: any = [];
-    try { userRole = JSON.parse(localStorage.getItem("userRole") || "[]"); } catch(e) {}
+    try { userRole = JSON.parse(localStorage.getItem("userRole") || "[]"); } catch (e) { }
     console.log(userRole, "User Role")
 
     let profile: any = null;
@@ -712,6 +712,7 @@ const MainHeader = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const navigate = useNavigate();
     const { isAuthenticated } = useAppSelector((s: RootState) => s.auth);
+    const isSubscriber = localStorage.getItem("isSubscribe");
     // Toggle this to test logged in vs logged out UI
     const isLoggedIn = isAuthenticated;
     const isCorporate = useIsCorporate();
@@ -775,7 +776,7 @@ const MainHeader = () => {
                     {/* Icons */}
                     <div className="flex items-center gap-2 shrink-0">
                         <NotificationDropdown />
-                        {!isCorporate && <WishlistDropdown />}
+                        {!isCorporate && isLoggedIn && <WishlistDropdown />}
                         {!isCorporate && <CartDropdown />}
 
                         <div className="w-px h-5 bg-[#E9EAF0] mx-1" />
@@ -823,7 +824,7 @@ const MainHeader = () => {
                     {/* Right actions */}
                     <div className="flex items-center gap-1 shrink-0 ml-auto">
                         <NotificationDropdown />
-                        {!isCorporate && <WishlistDropdown />}
+                        {!isCorporate && isLoggedIn && <WishlistDropdown />}
                         {!isCorporate && <CartDropdown />}
 
                         <div className="w-px h-6 bg-[#E9EAF0] mx-2" />

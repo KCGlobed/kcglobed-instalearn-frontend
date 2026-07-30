@@ -404,7 +404,7 @@ const RecentlyAddedCourses = () => {
                                                                         </>
                                                                     )}
                                                                 </div>
-                                                                {!isCorporate && (
+                                                                {!isCorporate && isAuthenticated && (
                                                                     <button
                                                                         onClick={(e) => handleWishList(e, course.id)}
                                                                         disabled={wishlistTogglingIds[course.id]}

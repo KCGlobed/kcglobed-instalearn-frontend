@@ -8,7 +8,7 @@ export const storeUserRole = (userRole: any) => {
   window.dispatchEvent(new Event('userRoleChanged'));
 };
 export const storeUserProfile = (userProfile: string) => localStorage.setItem("userProfile", userProfile);
-
+export const storeSubscriptionStatus = (isSubscribe: boolean) => localStorage.setItem("isSubscribe", String(isSubscribe));
 
 export const clearToken = () => {
   const deviceId = localStorage.getItem("device_id");

@@ -24,7 +24,7 @@ const HomeBanner = () => {
                             <Button
                                 variant="perple"
                                 title="Enroll now"
-                                onClick={() => console.log("Enroll now")}
+                                onClick={() => navigate('/courses')}
                                 className="h-[48px] px-6 rounded bg-perple text-white flex items-center justify-center gap-2 w-full sm:w-auto"
                                 icon={<ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
                             />

@@ -440,6 +440,23 @@ export const getStudentLoginActivityApi = async (userId: number | string): Promi
   return await apiRequest(`${API_ENDPOINTS.GET_STUDENT_LOGIN_ACTIVITY}/${userId}`, 'GET');
 }
 
+export const getCorporateStudentsActivityLogLatestApi = async (): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_CORPORATE_STUDENTS_ACTIVITY_LOG_LATEST}`, 'GET');
+}
+
+export const getCorporateStudentsActivityLogApi = async (userId: number | string, page: number = 1): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_CORPORATE_STUDENTS_ACTIVITY_LOG}/${userId}?page=${page}`, 'GET');
+}
+
+export const getCoursesWiseUserProgressApi = async (): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_COURSES_WISE_USER_PROGRESS}`, 'GET');
+}
+
+
+
+
+
+
 
 
 
