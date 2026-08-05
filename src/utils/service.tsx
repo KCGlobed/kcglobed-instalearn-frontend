@@ -452,6 +452,30 @@ export const getCoursesWiseUserProgressApi = async (): Promise<any> => {
   return await apiRequest(`${API_ENDPOINTS.GET_COURSES_WISE_USER_PROGRESS}`, 'GET');
 }
 
+export const getStudentReminderListingApi = async (userId: number | string, courseId: number | string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_STUDENT_REMINDER_LISTING}/${userId}/${courseId}`, 'GET');
+}
+
+export const downloadStudentReminderReportPdfApi = async (userId: number | string, courseId: number | string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_STUDENT_REMINDER_LISTING_REPORT_PDF}/${userId}/${courseId}`, 'GET');
+}
+
+export const downloadStudentReminderReportExcelApi = async (userId: number | string, courseId: number | string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_STUDENT_REMINDER_LISTING_REPORT_EXCEL}/${userId}/${courseId}`, 'GET');
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

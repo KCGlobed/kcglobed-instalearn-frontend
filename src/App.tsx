@@ -19,6 +19,8 @@ import MyCommitment from "./pages/MyCommitment"
 import Support from "./pages/Support"
 import Career from "./pages/Career"
 import EnrollTeam from "./pages/EnrollTeam"
+import PrivacyPolicy from "./pages/PrivacyPolicy"
+import TermsCondition from "./pages/TermsCondition"
 
 
 const SubscripitonCheckoutPage = lazy(() => import("./pages/EnrollTeam/SubscripitonCheckoutPage"))
@@ -62,6 +64,11 @@ function App() {
         <Route path="/career" element={<Career />} />
         <Route path="/enroll-team" element={<EnrollTeam />} />
         <Route path="/enroll-team/checkout" element={<SubscripitonCheckoutPage />} />
+        <Route path="/campus" element={<ComingSoon />} />
+        <Route path="/government" element={<ComingSoon />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-condition" element={<TermsCondition />} />
+
 
         <Route element={<PrivateRoute />}>
           <Route path="/my-learning" element={<MyLearning />} />

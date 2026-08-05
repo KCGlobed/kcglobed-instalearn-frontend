@@ -109,5 +109,9 @@ export const API_ENDPOINTS = {
     GET_CORPORATE_STUDENTS_ACTIVITY_LOG_LATEST: "user_study/get-corporate-students-activity-log-latest/",
     GET_CORPORATE_STUDENTS_ACTIVITY_LOG: "user_study/get-corporate-students-activity-log",
     GET_COURSES_WISE_USER_PROGRESS: "user_study/get-courses-wise-user-progress",
+    GET_STUDENT_REMINDER_LISTING: "user_study/get-student-reminder-listing",
+    GET_STUDENT_REMINDER_LISTING_REPORT_PDF: "user_study/get-student-reminder-listing-report-pdf",
+    GET_STUDENT_REMINDER_LISTING_REPORT_EXCEL: "user_study/get-student-reminder-listing-report-excel",
+
 }
 

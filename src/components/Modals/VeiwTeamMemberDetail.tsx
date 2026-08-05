@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { viewCorporateUserDetailApi, viewStudentVideoReportApi, getStudentNotesListingApi, getAttemptedQuizListApi, downloadStudentVideoReportApi, downloadStudentVideoReportExcelApi, downloadStudentNotesReportPdfApi, downloadStudentNotesReportExcelApi } from "../../utils/service";
-import { Mail, Phone, Calendar, Clock, BookOpen, Award, CheckCircle, AlertCircle, BarChart2, ArrowLeft, PlayCircle, FileText, HelpCircle, Download } from "lucide-react";
+import { viewCorporateUserDetailApi, viewStudentVideoReportApi, getStudentNotesListingApi, getAttemptedQuizListApi, downloadStudentVideoReportApi, downloadStudentVideoReportExcelApi, downloadStudentNotesReportPdfApi, downloadStudentNotesReportExcelApi, getStudentReminderListingApi, downloadStudentReminderReportPdfApi, downloadStudentReminderReportExcelApi } from "../../utils/service";
+import { Mail, Phone, Calendar, Clock, BookOpen, Award, AlertCircle, BarChart2, ArrowLeft, FileText, HelpCircle, Download, Bell } from "lucide-react";
 import toast from "react-hot-toast";
 
 interface CourseDetail {
@@ -41,7 +41,30 @@ const VeiwTeamMemberDetail = ({ member }: { member: any }) => {
     const [downloadLoading, setDownloadLoading] = useState(false);
     const [downloadingCourseId, setDownloadingCourseId] = useState<number | null>(null);
     const [downloadFormat, setDownloadFormat] = useState<'pdf' | 'excel' | null>(null);
-    const [downloadReportType, setDownloadReportType] = useState<'video' | 'notes' | null>(null);
+    const [downloadReportType, setDownloadReportType] = useState<'video' | 'notes' | 'reminder' | null>(null);
+
+    const [selectedCourseReminder, setSelectedCourseReminder] = useState<number | null>(null);
+    const [reminderData, setReminderData] = useState<any[]>([]);
+    const [reminderLoading, setReminderLoading] = useState(false);
+    const [reminderError, setReminderError] = useState<string | null>(null);
+
+    const handleViewReminder = async (courseId: number) => {
+        setSelectedCourseReminder(courseId);
+        setReminderLoading(true);
+        setReminderError(null);
+        try {
+            const res = await getStudentReminderListingApi(member.id, courseId);
+            if (res?.success) {
+                setReminderData(res.data || []);
+            } else {
+                setReminderError(res?.message || 'Failed to fetch reminders');
+            }
+        } catch (err) {
+            setReminderError('An error occurred while fetching reminders');
+        } finally {
+            setReminderLoading(false);
+        }
+    };
 
     const [selectedCourseNotes, setSelectedCourseNotes] = useState<number | null>(null);
     const [notesData, setNotesData] = useState<any[]>([]);
@@ -133,12 +156,12 @@ const VeiwTeamMemberDetail = ({ member }: { member: any }) => {
         return url;
     };
 
-    const handleDownloadReport = async (courseId: number, format: 'pdf' | 'excel' = 'pdf', reportType: 'video' | 'notes' = 'video') => {
+    const handleDownloadReport = async (courseId: number, format: 'pdf' | 'excel' = 'pdf', reportType: 'video' | 'notes' | 'reminder' = 'video') => {
         setDownloadLoading(true);
         setDownloadingCourseId(courseId);
         setDownloadFormat(format);
         setDownloadReportType(reportType);
-        const loadToast = toast.loading(`Downloading ${reportType === 'notes' ? 'Notes' : 'Video'} ${format === 'excel' ? 'Excel' : 'PDF'} report...`);
+        const loadToast = toast.loading(`Downloading ${reportType === 'notes' ? 'Notes' : reportType === 'reminder' ? 'Reminder' : 'Video'} ${format === 'excel' ? 'Excel' : 'PDF'} report...`);
         let fallbackUrl: string | null = null;
         try {
             let res: any;
@@ -146,12 +169,16 @@ const VeiwTeamMemberDetail = ({ member }: { member: any }) => {
                 res = format === 'excel'
                     ? await downloadStudentNotesReportExcelApi(member.id, courseId)
                     : await downloadStudentNotesReportPdfApi(member.id, courseId);
+            } else if (reportType === 'reminder') {
+                res = format === 'excel'
+                    ? await downloadStudentReminderReportExcelApi(member.id, courseId)
+                    : await downloadStudentReminderReportPdfApi(member.id, courseId);
             } else {
                 res = format === 'excel'
                     ? await downloadStudentVideoReportExcelApi(member.id, courseId)
                     : await downloadStudentVideoReportApi(member.id, courseId);
             }
-            
+
             let blob: Blob;
             if (res instanceof Response) {
                 if (!res.ok) {
@@ -164,10 +191,10 @@ const VeiwTeamMemberDetail = ({ member }: { member: any }) => {
                 if (res.success === false) {
                     throw new Error(res.message || "Failed to download report");
                 }
-                const fileUrl = res.report_url || res.data?.report_url || res.data?.url || res.data?.file || 
-                                (typeof res.data === 'string' ? res.data : null) || 
-                                (typeof res.url === 'string' ? res.url : null) || 
-                                (typeof res.file === 'string' ? res.file : null);
+                const fileUrl = res.report_url || res.data?.report_url || res.data?.url || res.data?.file ||
+                    (typeof res.data === 'string' ? res.data : null) ||
+                    (typeof res.url === 'string' ? res.url : null) ||
+                    (typeof res.file === 'string' ? res.file : null);
 
                 if (typeof fileUrl === 'string') {
                     fallbackUrl = fileUrl;
@@ -213,13 +240,13 @@ const VeiwTeamMemberDetail = ({ member }: { member: any }) => {
                 else if (cleanUrl.endsWith(".csv")) ext = "csv";
                 else if (cleanUrl.endsWith(".pdf")) ext = "pdf";
             }
-            const prefix = reportType === 'notes' ? 'Student_Notes_Report' : 'Student_Video_Report';
+            const prefix = reportType === 'notes' ? 'Student_Notes_Report' : reportType === 'reminder' ? 'Student_Reminder_Report' : 'Student_Video_Report';
             link.download = `${prefix}_${member.first_name || 'User'}_${courseName.replace(/\s+/g, "_")}.${ext}`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             window.URL.revokeObjectURL(downloadUrl);
-            
+
             toast.success("Report downloaded successfully!", { id: loadToast });
         } catch (err: any) {
             console.error("Download Error:", err);
@@ -289,7 +316,7 @@ const VeiwTeamMemberDetail = ({ member }: { member: any }) => {
                         </div>
                     )}
                 </div>
-                
+
                 {/* Main Info */}
                 <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
@@ -300,7 +327,7 @@ const VeiwTeamMemberDetail = ({ member }: { member: any }) => {
                             {data.is_active ? 'Active' : 'Inactive'}
                         </span>
                     </div>
-                    
+
                     <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-500">
                         <div className="flex items-center gap-1.5">
                             <Mail className="w-4 h-4 text-gray-400" />
@@ -319,12 +346,12 @@ const VeiwTeamMemberDetail = ({ member }: { member: any }) => {
                 <div className="flex flex-col gap-2 sm:text-right text-sm text-gray-500 sm:ml-auto w-full sm:w-auto">
                     <div className="flex items-center sm:justify-end gap-1.5">
                         <Calendar className="w-4 h-4 text-gray-400 sm:hidden" />
-                        <span className="font-semibold text-gray-700">Joined:</span> 
+                        <span className="font-semibold text-gray-700">Joined:</span>
                         {data.date_joined ? new Date(data.date_joined).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : '-'}
                     </div>
                     <div className="flex items-center sm:justify-end gap-1.5">
                         <Clock className="w-4 h-4 text-gray-400 sm:hidden" />
-                        <span className="font-semibold text-gray-700">Last Login:</span> 
+                        <span className="font-semibold text-gray-700">Last Login:</span>
                         {data.last_login ? new Date(data.last_login).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : 'Never'}
                     </div>
                 </div>
@@ -332,7 +359,102 @@ const VeiwTeamMemberDetail = ({ member }: { member: any }) => {
 
             {/* Simple Courses Section */}
             <div className="mt-6 border border-gray-150 rounded-xl overflow-hidden bg-white shadow-sm">
-                {selectedCourseQuiz ? (
+                {selectedCourseReminder ? (
+                    <>
+                        <div className="bg-white px-5 py-4 border-b border-gray-150 flex justify-between items-center">
+                            <div className="flex items-center gap-3">
+                                <button onClick={() => setSelectedCourseReminder(null)} className="p-1 hover:bg-gray-100 rounded-md transition-colors text-gray-500 hover:text-gray-900">
+                                    <ArrowLeft className="w-4 h-4" />
+                                </button>
+                                <div className="flex items-center gap-2">
+                                    <Bell className="w-4 h-4 text-perple" />
+                                    <h3 className="text-sm font-bold text-[#2F2B3D]">Reminder Report</h3>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => handleDownloadReport(selectedCourseReminder, 'pdf', 'reminder')}
+                                    disabled={downloadLoading && downloadingCourseId === selectedCourseReminder && downloadReportType === 'reminder'}
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-perple text-white rounded-lg text-xs font-semibold hover:bg-perple/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                                >
+                                    {downloadLoading && downloadingCourseId === selectedCourseReminder && downloadFormat === 'pdf' && downloadReportType === 'reminder' ? (
+                                        <div className="animate-spin rounded-full h-3.5 w-3.5 border-b-2 border-white"></div>
+                                    ) : (
+                                        <Download className="w-3.5 h-3.5" />
+                                    )}
+                                    <span>Download PDF</span>
+                                </button>
+                                <button
+                                    onClick={() => handleDownloadReport(selectedCourseReminder!, 'excel', 'reminder')}
+                                    disabled={downloadLoading && downloadingCourseId === selectedCourseReminder && downloadReportType === 'reminder'}
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                                >
+                                    {downloadLoading && downloadingCourseId === selectedCourseReminder && downloadFormat === 'excel' && downloadReportType === 'reminder' ? (
+                                        <div className="animate-spin rounded-full h-3.5 w-3.5 border-b-2 border-white"></div>
+                                    ) : (
+                                        <Download className="w-3.5 h-3.5" />
+                                    )}
+                                    <span>Download Excel</span>
+                                </button>
+
+                            </div>
+                        </div>
+                        {reminderLoading ? (
+                            <div className="py-20 flex flex-col items-center justify-center">
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-perple mb-4"></div>
+                                <p className="text-sm text-gray-500">Loading reminders...</p>
+                            </div>
+                        ) : reminderError ? (
+                            <div className="py-20 flex flex-col items-center justify-center text-rose-500">
+                                <AlertCircle className="w-8 h-8 mb-4" />
+                                <p className="text-sm font-semibold">{reminderError}</p>
+                            </div>
+                        ) : reminderData && reminderData.length > 0 ? (
+                            <div className="p-5 max-h-[400px] overflow-y-auto space-y-3">
+                                {reminderData.map((reminder: any) => (
+                                    <div key={reminder.id} className="p-4 border border-gray-150 rounded-xl bg-gray-50/50 hover:border-gray-200 transition-colors">
+                                        <div className="flex justify-between items-start gap-3">
+                                            <div className="flex-1">
+                                                <h4 className="text-xs font-bold text-[#2F2B3D] mb-0.5">
+                                                    {reminder.title || reminder.reminder_title || 'Reminder'}
+                                                </h4>
+                                                {(reminder.description || reminder.note) && (
+                                                    <p className="text-[11px] text-gray-500 mt-0.5">{reminder.description || reminder.note}</p>
+                                                )}
+                                                {reminder.course_detail?.name && (
+                                                    <span className="inline-block mt-1 text-[10px] bg-perple/10 text-perple font-semibold px-2 py-0.5 rounded">
+                                                        {reminder.course_detail.name}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <div className="flex flex-col items-end gap-1 shrink-0">
+                                                {reminder.remind_at || reminder.reminder_date || reminder.created_at ? (
+                                                    <span className="text-[10px] text-gray-400 font-medium">
+                                                        {new Date(reminder.remind_at || reminder.reminder_date || reminder.created_at).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}
+                                                    </span>
+                                                ) : null}
+                                                {reminder.is_completed !== undefined && (
+                                                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${reminder.is_completed ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
+                                                        }`}>
+                                                        {reminder.is_completed ? 'Completed' : 'Pending'}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="py-20 flex flex-col items-center justify-center">
+                                <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center text-gray-300 mb-2">
+                                    <Bell className="w-6 h-6" />
+                                </div>
+                                <p className="text-sm font-bold text-gray-500">No reminders found</p>
+                                <p className="text-[11px] text-gray-400">The student has not set any reminders.</p>
+                            </div>
+                        )}
+                    </>
+                ) : selectedCourseQuiz ? (
                     <>
                         <div className="bg-white px-5 py-4 border-b border-gray-150 flex justify-between items-center">
                             <div className="flex items-center gap-3">
@@ -407,13 +529,13 @@ const VeiwTeamMemberDetail = ({ member }: { member: any }) => {
                                                 <div className="flex h-2 rounded-full overflow-hidden bg-gray-200">
                                                     {quiz.total_question > 0 ? (
                                                         <>
-                                                            <div 
-                                                                className="bg-emerald-500 h-full" 
+                                                            <div
+                                                                className="bg-emerald-500 h-full"
                                                                 style={{ width: `${(quiz.total_right_answer_given / quiz.total_question) * 100}%` }}
                                                                 title={`Right: ${quiz.total_right_answer_given}`}
                                                             />
-                                                            <div 
-                                                                className="bg-rose-500 h-full" 
+                                                            <div
+                                                                className="bg-rose-500 h-full"
                                                                 style={{ width: `${(quiz.total_wrong_answer_given / quiz.total_question) * 100}%` }}
                                                                 title={`Wrong: ${quiz.total_wrong_answer_given}`}
                                                             />
@@ -453,7 +575,7 @@ const VeiwTeamMemberDetail = ({ member }: { member: any }) => {
                             </div>
                             <div className="flex items-center gap-2">
                                 <button
-                                    onClick={() => handleDownloadReport(selectedCourseNotes, 'pdf', 'notes')}
+                                    onClick={() => handleDownloadReport(selectedCourseNotes!, 'pdf', 'notes')}
                                     disabled={downloadLoading && downloadingCourseId === selectedCourseNotes}
                                     className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-perple text-white rounded-lg text-xs font-semibold hover:bg-perple/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                                 >
@@ -465,7 +587,7 @@ const VeiwTeamMemberDetail = ({ member }: { member: any }) => {
                                     <span>Download PDF</span>
                                 </button>
                                 <button
-                                    onClick={() => handleDownloadReport(selectedCourseNotes, 'excel', 'notes')}
+                                    onClick={() => handleDownloadReport(selectedCourseNotes!, 'excel', 'notes')}
                                     disabled={downloadLoading && downloadingCourseId === selectedCourseNotes}
                                     className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                                 >
@@ -505,7 +627,7 @@ const VeiwTeamMemberDetail = ({ member }: { member: any }) => {
                                                 </span>
                                             )}
                                         </div>
-                                        <div 
+                                        <div
                                             className="text-xs text-gray-700 prose prose-sm max-w-none"
                                             dangerouslySetInnerHTML={{ __html: note.note_content }}
                                         />
@@ -536,7 +658,7 @@ const VeiwTeamMemberDetail = ({ member }: { member: any }) => {
                             </div>
                             <div className="flex items-center gap-2">
                                 <button
-                                    onClick={() => handleDownloadReport(selectedCourseReport, 'pdf', 'video')}
+                                    onClick={() => handleDownloadReport(selectedCourseReport!, 'pdf', 'video')}
                                     disabled={downloadLoading && downloadingCourseId === selectedCourseReport}
                                     className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-perple text-white rounded-lg text-xs font-semibold hover:bg-perple/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                                 >
@@ -548,7 +670,7 @@ const VeiwTeamMemberDetail = ({ member }: { member: any }) => {
                                     <span>Download PDF</span>
                                 </button>
                                 <button
-                                    onClick={() => handleDownloadReport(selectedCourseReport, 'excel', 'video')}
+                                    onClick={() => handleDownloadReport(selectedCourseReport!, 'excel', 'video')}
                                     disabled={downloadLoading && downloadingCourseId === selectedCourseReport}
                                     className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                                 >
@@ -648,128 +770,111 @@ const VeiwTeamMemberDetail = ({ member }: { member: any }) => {
                         </div>
 
                         <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                        <thead className="bg-[#F8F7FA]">
-                            <tr className="border-b border-gray-150 text-[10px] font-bold text-gray-500 uppercase tracking-wider">
-                                <th className="py-3 px-5">Course Name</th>
-                                <th className="py-3 px-5 text-center">Status</th>
-                                <th className="py-3 px-5">Progress</th>
-                                <th className="py-3 px-5 text-center">Certificate</th>
-                                <th className="py-3 px-5 text-center">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100">
-                            {data.courses && data.courses.length > 0 ? (
-                                data.courses.map((course) => (
-                                    <tr key={course.id} className="hover:bg-gray-50/50 transition-colors text-xs">
-                                        <td className="py-3.5 px-5 font-semibold text-[#2F2B3D]">
-                                            {course.course_detail?.name || 'Unknown Course'}
-                                        </td>
-                                        <td className="py-3.5 px-5 text-center">
-                                            {course.courses_progress === 100 ? (
-                                                <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-600">
-                                                    Completed
-                                                </span>
-                                            ) : course.is_started ? (
-                                                <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-600">
-                                                    In Progress
-                                                </span>
-                                            ) : (
-                                                <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 text-gray-500">
-                                                    Not Started
-                                                </span>
-                                            )}
-                                        </td>
-                                        <td className="py-3.5 px-5 min-w-[140px]">
-                                            <div className="flex items-center gap-2">
-                                                <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                                                    <div
-                                                        className={`h-full rounded-full ${course.courses_progress === 100 ? 'bg-emerald-500' : 'bg-perple'}`}
-                                                        style={{ width: `${course.courses_progress}%` }}
-                                                    />
-                                                </div>
-                                                <span className="text-[10px] font-semibold text-gray-500 w-8 text-right">
-                                                    {course.courses_progress}%
-                                                </span>
-                                            </div>
-                                        </td>
-                                        <td className="py-3.5 px-5 text-center">
-                                            {course.certificate ? (
-                                                <a 
-                                                    href={course.certificate} 
-                                                    target="_blank" 
-                                                    rel="noopener noreferrer"
-                                                    className="inline-flex items-center justify-center gap-1 text-[10px] font-bold text-perple hover:text-[#5e50eb] hover:underline"
-                                                >
-                                                    <Award className="w-3.5 h-3.5" /> View
-                                                </a>
-                                            ) : (
-                                                <span className="text-[10px] text-gray-400 font-medium">-</span>
-                                            )}
-                                        </td>
-                                        <td className="py-3.5 px-5">
-                                            <div className="flex items-center justify-center gap-1">
-                                                <button 
-                                                    onClick={() => handleViewReport(course.course_detail.id)}
-                                                    className="inline-flex items-center justify-center p-1.5 text-gray-400 hover:text-perple hover:bg-perple/5 rounded-md transition-colors"
-                                                    title="View Report"
-                                                >
-                                                    <BarChart2 className="w-4 h-4" />
-                                                </button>
-                                                <button 
-                                                    onClick={() => handleDownloadReport(course.course_detail.id, 'pdf', 'video')}
-                                                    disabled={downloadLoading && downloadingCourseId === course.course_detail.id && downloadFormat === 'pdf' && (!downloadReportType || downloadReportType === 'video')}
-                                                    className="inline-flex items-center justify-center gap-0.5 px-1.5 py-1 text-gray-400 hover:text-perple hover:bg-perple/10 rounded-md transition-colors disabled:opacity-50 text-[10px] font-bold"
-                                                    title="Download Video Report (PDF)"
-                                                >
-                                                    {downloadLoading && downloadingCourseId === course.course_detail.id && downloadFormat === 'pdf' && (!downloadReportType || downloadReportType === 'video') ? (
-                                                        <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-perple"></div>
-                                                    ) : (
-                                                        <Download className="w-3.5 h-3.5 text-perple" />
-                                                    )}
-                                                    <span>PDF</span>
-                                                </button>
-                                                <button 
-                                                    onClick={() => handleDownloadReport(course.course_detail.id, 'excel', 'video')}
-                                                    disabled={downloadLoading && downloadingCourseId === course.course_detail.id && downloadFormat === 'excel' && (!downloadReportType || downloadReportType === 'video')}
-                                                    className="inline-flex items-center justify-center gap-0.5 px-1.5 py-1 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors disabled:opacity-50 text-[10px] font-bold"
-                                                    title="Download Video Report (Excel/CSV)"
-                                                >
-                                                    {downloadLoading && downloadingCourseId === course.course_detail.id && downloadFormat === 'excel' && (!downloadReportType || downloadReportType === 'video') ? (
-                                                        <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-emerald-600"></div>
-                                                    ) : (
-                                                        <Download className="w-3.5 h-3.5 text-emerald-600" />
-                                                    )}
-                                                    <span>EXCEL</span>
-                                                </button>
-                                                <button 
-                                                    onClick={() => handleViewNotes(course.course_detail.id)}
-                                                    className="inline-flex items-center justify-center p-1.5 text-gray-400 hover:text-perple hover:bg-perple/5 rounded-md transition-colors"
-                                                    title="View Notes"
-                                                >
-                                                    <FileText className="w-4 h-4" />
-                                                </button>
-                                                <button 
-                                                    onClick={() => handleViewQuiz(course.course_detail.id)}
-                                                    className="inline-flex items-center justify-center p-1.5 text-gray-400 hover:text-perple hover:bg-perple/5 rounded-md transition-colors"
-                                                    title="View Quiz Report"
-                                                >
-                                                    <HelpCircle className="w-4 h-4" />
-                                                </button>
-                                            </div>
-                                        </td>
+                            <table className="w-full text-left border-collapse">
+                                <thead className="bg-[#F8F7FA]">
+                                    <tr className="border-b border-gray-150 text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+                                        <th className="py-3 px-5">Course Name</th>
+                                        <th className="py-3 px-5 text-center">Status</th>
+                                        <th className="py-3 px-5">Progress</th>
+                                        <th className="py-3 px-5 text-center">Certificate</th>
+                                        <th className="py-3 px-5 text-center">Actions</th>
                                     </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan={5} className="py-12 text-center">
-                                        <p className="text-sm text-gray-500">No courses assigned to this member.</p>
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                                </thead>
+                                <tbody className="divide-y divide-gray-100">
+                                    {data.courses && data.courses.length > 0 ? (
+                                        data.courses.map((course) => (
+                                            <tr key={course.id} className="hover:bg-gray-50/50 transition-colors text-xs">
+                                                <td className="py-3.5 px-5 font-semibold text-[#2F2B3D]">
+                                                    {course.course_detail?.name || 'Unknown Course'}
+                                                </td>
+                                                <td className="py-3.5 px-5 text-center">
+                                                    {course.courses_progress === 100 ? (
+                                                        <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-600">
+                                                            Completed
+                                                        </span>
+                                                    ) : course.is_started ? (
+                                                        <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-600">
+                                                            In Progress
+                                                        </span>
+                                                    ) : (
+                                                        <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 text-gray-500">
+                                                            Not Started
+                                                        </span>
+                                                    )}
+                                                </td>
+                                                <td className="py-3.5 px-5 min-w-[140px]">
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                                            <div
+                                                                className={`h-full rounded-full ${course.courses_progress === 100 ? 'bg-emerald-500' : 'bg-perple'}`}
+                                                                style={{ width: `${course.courses_progress}%` }}
+                                                            />
+                                                        </div>
+                                                        <span className="text-[10px] font-semibold text-gray-500 w-8 text-right">
+                                                            {course.courses_progress}%
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td className="py-3.5 px-5 text-center">
+                                                    {course.certificate ? (
+                                                        <a
+                                                            href={course.certificate}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="inline-flex items-center justify-center gap-1 text-[10px] font-bold text-perple hover:text-[#5e50eb] hover:underline"
+                                                        >
+                                                            <Award className="w-3.5 h-3.5" /> View
+                                                        </a>
+                                                    ) : (
+                                                        <span className="text-[10px] text-gray-400 font-medium">-</span>
+                                                    )}
+                                                </td>
+                                                <td className="py-3.5 px-5">
+                                                    <div className="flex items-center justify-center gap-1">
+                                                        <button
+                                                            onClick={() => handleViewReport(course.course_detail.id)}
+                                                            className="inline-flex items-center justify-center p-1.5 text-gray-400 hover:text-perple hover:bg-perple/5 rounded-md transition-colors"
+                                                            title="View Report"
+                                                        >
+                                                            <BarChart2 className="w-4 h-4" />
+                                                        </button>
+
+
+                                                        <button
+                                                            onClick={() => handleViewNotes(course.course_detail.id)}
+                                                            className="inline-flex items-center justify-center p-1.5 text-gray-400 hover:text-perple hover:bg-perple/5 rounded-md transition-colors"
+                                                            title="View Notes"
+                                                        >
+                                                            <FileText className="w-4 h-4" />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleViewQuiz(course.course_detail.id)}
+                                                            className="inline-flex items-center justify-center p-1.5 text-gray-400 hover:text-perple hover:bg-perple/5 rounded-md transition-colors"
+                                                            title="View Quiz Report"
+                                                        >
+                                                            <HelpCircle className="w-4 h-4" />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleViewReminder(course.course_detail.id)}
+                                                            className="inline-flex items-center justify-center p-1.5 text-gray-400 hover:text-amber-500 hover:bg-amber-50 rounded-md transition-colors"
+                                                            title="View Reminders"
+                                                        >
+                                                            <Bell className="w-4 h-4" />
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan={5} className="py-12 text-center">
+                                                <p className="text-sm text-gray-500">No courses assigned to this member.</p>
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
                     </>
                 )}
             </div>

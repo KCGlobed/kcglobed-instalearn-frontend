@@ -106,9 +106,9 @@ const Footer = () => {
         // { name: "About Us", path: "/coming-soon" },
         { name: "KC GlobEd", path: "https://www.kcglobed.com/" },
         { name: "GCC School", path: "https://www.gccschool.com/" },
-        { name: "Terms & Condition", path: "/coming-soon" },
+        { name: "Terms & Condition", path: "/terms-condition" },
         { name: "Careers", path: "/career" },
-        { name: "Privacy Policy", path: "/coming-soon" },
+        { name: "Privacy Policy", path: "/privacy-policy" },
     ];
 
     const socialLinks = [

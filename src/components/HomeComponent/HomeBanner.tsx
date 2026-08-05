@@ -4,10 +4,11 @@ import public_speaker from "../../assets/public_speaker.svg"
 import career from "../../assets/career.svg"
 import thinking from "../../assets/thinking.svg"
 import { useNavigate } from "react-router-dom"
-
+import { useAppSelector } from "../../hooks/useRedux"
 
 const HomeBanner = () => {
     const navigate = useNavigate()
+    const { isAuthenticated } = useAppSelector((state) => state.auth);
 
     return (
         <div className="banner px-4 md:px-8 xl:px-0">
@@ -23,8 +24,8 @@ const HomeBanner = () => {
                         <div className="flex flex-col sm:flex-row gap-4 mt-6 md:mt-8">
                             <Button
                                 variant="perple"
-                                title="Enroll now"
-                                onClick={() => navigate('/courses')}
+                                title={isAuthenticated ? "Explore now" : "Enroll now"}
+                                onClick={() => navigate(isAuthenticated ? '/courses' : '/signup')}
                                 className="h-[48px] px-6 rounded bg-perple text-white flex items-center justify-center gap-2 w-full sm:w-auto"
                                 icon={<ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
                             />
