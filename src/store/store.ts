@@ -22,6 +22,11 @@ import notesReducer from "./slices/noteSlice";
 import reviewReducer from "./slices/reviewSlice";
 import announcementReducer from "./slices/announcementSlice";
 import reminderReducer from "./slices/reminderSlice";
+import quizReducer from "./slices/quizSlice";
+import corporateUserReducer from "./slices/corporateUserSlice";
+import corporateDashboardReducer from "./slices/corporateDashboardSlice";
+import userStudyProgressReducer from "./slices/userStudyProgressSlice";
+import corporateAssignedCoursesReducer from "./slices/corporateAssignedCoursesSlice";
 
 
 
@@ -52,6 +57,12 @@ export const store = configureStore({
     review: reviewReducer,
     announcement: announcementReducer,
     reminders: reminderReducer,
+    quiz: quizReducer,
+    corporateUser: corporateUserReducer,
+    corporateDashboard: corporateDashboardReducer,
+    userStudyProgress: userStudyProgressReducer,
+    corporateAssignedCourses: corporateAssignedCoursesReducer,
+
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(videoApi.middleware),

@@ -3,7 +3,7 @@ import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useRedux';
 import type { RootState } from '../../store/store';
 import { viewWishlistAction, toggleWishlistAction } from '../../store/slices/courseWishList';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart, Star, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { addToCartAction } from '../../store/slices/courseCartSlice';
@@ -15,6 +15,7 @@ import CourseCard from './CourseCard';
 const WishlistTab = () => {
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const { wishListItems, loading, error } = useAppSelector((state: RootState) => state.wishList);
     const { cartItems } = useAppSelector((state: RootState) => state.cart);
 
@@ -36,9 +37,17 @@ const WishlistTab = () => {
     const handleAddToCart = async (e: React.MouseEvent, courseId: number) => {
         e.preventDefault();
         e.stopPropagation();
+
+        const isInCart = cartItems.some((c: any) => c.course_info?.id === courseId);
+        if (isInCart) {
+            navigate('/cart');
+            return;
+        }
+
         try {
             await dispatch(addToCartAction({ course_id: courseId })).unwrap();
-            toast.success(t('myLearning.addedToCart', 'Added to cart'));
+            await dispatch(toggleWishlistAction({ course_id: courseId })).unwrap();
+            toast.success(t('myLearning.addedToCartRemovedWishlist', 'Added to cart and removed from wishlist'));
         } catch (err: any) {
             toast.error(err || t('myLearning.failedToAddToCart', 'Failed to add to cart'));
         }

@@ -39,7 +39,7 @@ const LoginPage = () => {
         defaultValues: {
             email: '',
             password: '',
-            role: 'Student', // Default values for the API
+            // role: 'Student', // Default values for the API
             device_id: getDeviceId(),
             device_type: getDeviceType()
         }

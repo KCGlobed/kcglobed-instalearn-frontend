@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronLeft, Share2, Star, Trophy, ChevronDown, MoreVertical, Award, Search, HelpCircle, Settings } from 'lucide-react';
+import { ChevronLeft, Share2, Star, Trophy, ChevronDown, MoreVertical, Award, Search, HelpCircle, Settings, SidebarOpen, SidebarClose } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useModal } from '../Modals/ModalContext';
 import StarRatingReview from '../Modals/StarReview';
@@ -9,12 +9,16 @@ interface HeaderProps {
     courseTitle?: string;
     progress?: number;
     courseName?: string;
+    sidebarOpen?: boolean;
+    toggleSidebar?: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
     courseTitle = "Advanced React Patterns & Architecture",
     progress = 68,
-    courseName
+    courseName,
+    sidebarOpen = true,
+    toggleSidebar
 }) => {
     const [showProgress, setShowProgress] = useState(false);
     const navigate = useNavigate();
@@ -117,6 +121,22 @@ const Header: React.FC<HeaderProps> = ({
                     <Share2 size={16} />
                     <span>Share</span>
                 </button>
+
+                {/* Sidebar Toggle Button */}
+                {toggleSidebar && (
+                    <button
+                        onClick={toggleSidebar}
+                        className={`flex items-center gap-2 px-3 py-1.5 rounded border text-sm font-bold transition-all ${
+                            sidebarOpen
+                                ? "bg-[#f7f9fa] border-[#a435f0] text-[#a435f0] hover:bg-[#f7f9fa]/80"
+                                : "bg-white border-[#2d2f31] text-[#2d2f31] hover:bg-[#f7f9fa]"
+                        }`}
+                        title={sidebarOpen ? "Close Sidebar" : "Open Sidebar"}
+                    >
+                        {sidebarOpen ? <SidebarClose size={16} /> : <SidebarOpen size={16} />}
+                        <span className="hidden md:inline">Course content</span>
+                    </button>
+                )}
 
                 {/* Overflow Button */}
                 {/* <button className="p-2 rounded border border-[#2d2f31] text-[#2d2f31] hover:bg-[#f7f9fa] transition-colors">

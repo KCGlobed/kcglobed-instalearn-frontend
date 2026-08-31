@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import {
@@ -14,9 +14,12 @@ import {
   Upload,
   Trash2,
   Send,
-  AlertCircle
+  AlertCircle,
+  Globe
 } from "lucide-react";
 import { submitApplicationFormApi } from "../../utils/service";
+import { Country, State, City } from "country-state-city";
+import { SearchableSelect } from "../../components/UI/SearchableSelect";
 
 // Define dropdown choices
 export const EMPLOYMENT_STATUS_CHOICES = [
@@ -53,6 +56,7 @@ interface CareerFormData {
   full_name: string;
   email: string;
   mobile: string;
+  country: string;
   state: string;
   city: string;
   highest_qualification: string;
@@ -71,6 +75,25 @@ interface CareerFormProps {
 }
 
 export default function CareerForm({ selectedRole }: CareerFormProps) {
+  const [selectedCountry, setSelectedCountry] = useState<string>("");
+  const [selectedState, setSelectedState] = useState<string>("");
+  const [selectedCity, setSelectedCity] = useState<string>("");
+
+  const countries = useMemo(() => Country.getAllCountries(), []);
+
+  const states = useMemo(() => {
+    if (!selectedCountry) return [];
+    const countryIso = countries.find(c => c.name.toLowerCase() === selectedCountry.toLowerCase())?.isoCode;
+    return countryIso ? State.getStatesOfCountry(countryIso) : [];
+  }, [selectedCountry, countries]);
+
+  const cities = useMemo(() => {
+    if (!selectedCountry || !selectedState) return [];
+    const countryIso = countries.find(c => c.name.toLowerCase() === selectedCountry.toLowerCase())?.isoCode;
+    const stateIso = countryIso ? states.find(s => s.name.toLowerCase() === selectedState.toLowerCase())?.isoCode : null;
+    return (countryIso && stateIso) ? City.getCitiesOfState(countryIso, stateIso) : [];
+  }, [selectedCountry, selectedState, countries, states]);
+
   const {
     register,
     handleSubmit,
@@ -83,6 +106,7 @@ export default function CareerForm({ selectedRole }: CareerFormProps) {
       full_name: "",
       email: "",
       mobile: "",
+      country: "",
       state: "",
       city: "",
       highest_qualification: "",
@@ -96,6 +120,27 @@ export default function CareerForm({ selectedRole }: CareerFormProps) {
       resume: null,
     },
   });
+
+  const handleCountryChange = (val: string) => {
+    setSelectedCountry(val);
+    setSelectedState("");
+    setSelectedCity("");
+    setValue("country", val, { shouldValidate: true, shouldDirty: true });
+    setValue("state", "", { shouldValidate: true, shouldDirty: true });
+    setValue("city", "", { shouldValidate: true, shouldDirty: true });
+  };
+
+  const handleStateChange = (val: string) => {
+    setSelectedState(val);
+    setSelectedCity("");
+    setValue("state", val, { shouldValidate: true, shouldDirty: true });
+    setValue("city", "", { shouldValidate: true, shouldDirty: true });
+  };
+
+  const handleCityChange = (val: string) => {
+    setSelectedCity(val);
+    setValue("city", val, { shouldValidate: true, shouldDirty: true });
+  };
 
   const [submitting, setSubmitting] = useState(false);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
@@ -179,6 +224,7 @@ export default function CareerForm({ selectedRole }: CareerFormProps) {
     formData.append("full_name", data.full_name);
     formData.append("email", data.email);
     formData.append("mobile", data.mobile);
+    formData.append("country", data.country || "");
     formData.append("state", data.state);
     formData.append("city", data.city);
     formData.append("highest_qualification", data.highest_qualification);
@@ -208,6 +254,9 @@ export default function CareerForm({ selectedRole }: CareerFormProps) {
         toast.success(response.message || "Application submitted successfully!");
         // Reset form
         reset();
+        setSelectedCountry("");
+        setSelectedState("");
+        setSelectedCity("");
         setResumeFile(null);
         if (fileInputRef.current) fileInputRef.current.value = "";
       } else {
@@ -238,7 +287,8 @@ export default function CareerForm({ selectedRole }: CareerFormProps) {
               placeholder="Enter your full name"
               {...register("full_name", {
                 required: "Full Name is required",
-                minLength: { value: 2, message: "Full Name must be at least 2 characters" }
+                minLength: { value: 2, message: "Full Name must be at least 2 characters" },
+                pattern: { value: /^[A-Za-z\s]+$/, message: "Only alphabets and spaces are allowed" }
               })}
               className={`w-full h-12 pl-10 pr-4 border ${
                 errors.full_name ? "border-rose-500 bg-rose-50/10 focus:ring-rose-500/20" : "border-[#E9EAF0] focus:border-[#5624D0] focus:ring-[#5624D0]/10"
@@ -296,12 +346,18 @@ export default function CareerForm({ selectedRole }: CareerFormProps) {
             <input
               id="mobile"
               type="tel"
-              placeholder="10-digit number without country code"
+              placeholder="10-digit mobile number"
               {...register("mobile", {
-                required: "Mobile number is required",
-                pattern: {
-                  value: /^[0-9]{10}$/,
-                  message: "Please enter a valid 10-digit mobile number"
+                required: "Please enter a valid mobile number.",
+                onChange: (e) => {
+                  const cleaned = e.target.value.replace(/\D/g, "").slice(0, 10);
+                  setValue("mobile", cleaned, { shouldValidate: true });
+                },
+                validate: (val) => {
+                  const cleaned = val ? val.replace(/\D/g, "") : "";
+                  const isValidPattern = /^[6-9]\d{9}$/.test(cleaned);
+                  const isNotAllSame = !/^(\d)\1{9}$/.test(cleaned);
+                  return (isValidPattern && isNotAllSame) || "Please enter a valid mobile number.";
                 }
               })}
               className={`w-full h-12 pl-10 pr-4 border ${
@@ -345,25 +401,44 @@ export default function CareerForm({ selectedRole }: CareerFormProps) {
           )}
         </div>
 
+        {/* Country */}
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="country" className="text-[13px] font-bold text-[#1D2026] uppercase tracking-wider">
+            Country <span className="text-red-500">*</span>
+          </label>
+          <input type="hidden" value={selectedCountry} {...register("country", { required: "Country is required" })} />
+          <SearchableSelect
+            options={countries.map((c) => ({ value: c.name, label: c.name }))}
+            value={selectedCountry}
+            onChange={handleCountryChange}
+            placeholder="Select Country"
+            error={!!errors.country}
+            icon={<Globe className="w-4 h-4 text-gray-400" />}
+            className="w-full h-12 rounded-lg"
+          />
+          {errors.country && (
+            <span className="text-xs text-rose-500 font-semibold mt-0.5 flex items-center gap-1">
+              <AlertCircle className="w-3 h-3" /> {errors.country.message}
+            </span>
+          )}
+        </div>
+
         {/* State */}
         <div className="flex flex-col gap-1.5">
           <label htmlFor="state" className="text-[13px] font-bold text-[#1D2026] uppercase tracking-wider">
             State <span className="text-red-500">*</span>
           </label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
-              <MapPin className="w-4 h-4" />
-            </div>
-            <input
-              id="state"
-              type="text"
-              placeholder="e.g., Karnataka"
-              {...register("state", { required: "State is required" })}
-              className={`w-full h-12 pl-10 pr-4 border ${
-                errors.state ? "border-rose-500 bg-rose-50/10 focus:ring-rose-500/20" : "border-[#E9EAF0] focus:border-[#5624D0] focus:ring-[#5624D0]/10"
-              } rounded-lg text-[14px] text-[#1D2026] placeholder:text-[#9499A3] focus:outline-none focus:ring-4 transition-all`}
-            />
-          </div>
+          <input type="hidden" value={selectedState} {...register("state", { required: "State is required" })} />
+          <SearchableSelect
+            options={states.map((s) => ({ value: s.name, label: s.name }))}
+            value={selectedState}
+            onChange={handleStateChange}
+            placeholder="Select State"
+            disabled={!selectedCountry}
+            error={!!errors.state}
+            icon={<MapPin className="w-4 h-4 text-gray-400" />}
+            className="w-full h-12 rounded-lg"
+          />
           {errors.state && (
             <span className="text-xs text-rose-500 font-semibold mt-0.5 flex items-center gap-1">
               <AlertCircle className="w-3 h-3" /> {errors.state.message}
@@ -376,20 +451,17 @@ export default function CareerForm({ selectedRole }: CareerFormProps) {
           <label htmlFor="city" className="text-[13px] font-bold text-[#1D2026] uppercase tracking-wider">
             City <span className="text-red-500">*</span>
           </label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
-              <MapPin className="w-4 h-4" />
-            </div>
-            <input
-              id="city"
-              type="text"
-              placeholder="e.g., Bengaluru"
-              {...register("city", { required: "City is required" })}
-              className={`w-full h-12 pl-10 pr-4 border ${
-                errors.city ? "border-rose-500 bg-rose-50/10 focus:ring-rose-500/20" : "border-[#E9EAF0] focus:border-[#5624D0] focus:ring-[#5624D0]/10"
-              } rounded-lg text-[14px] text-[#1D2026] placeholder:text-[#9499A3] focus:outline-none focus:ring-4 transition-all`}
-            />
-          </div>
+          <input type="hidden" value={selectedCity} {...register("city", { required: "City is required" })} />
+          <SearchableSelect
+            options={cities.map((c) => ({ value: c.name, label: c.name }))}
+            value={selectedCity}
+            onChange={handleCityChange}
+            placeholder="Select City"
+            disabled={!selectedState}
+            error={!!errors.city}
+            icon={<MapPin className="w-4 h-4 text-gray-400" />}
+            className="w-full h-12 rounded-lg"
+          />
           {errors.city && (
             <span className="text-xs text-rose-500 font-semibold mt-0.5 flex items-center gap-1">
               <AlertCircle className="w-3 h-3" /> {errors.city.message}

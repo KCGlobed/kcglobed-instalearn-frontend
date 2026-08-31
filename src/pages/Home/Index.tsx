@@ -10,6 +10,7 @@ import HomeBanner from "../../components/HomeComponent/HomeBanner"
 import LearningFocus from "../../components/HomeComponent/LearningFocus"
 import GoogleOneTap from "../../components/Auth/GoogleOneTap"
 import PromoStrip from "../../layouts/PromoStrip"
+import Testimonials from "../../components/HomeComponent/Testimonials"
 
 
 const HomePage = () => {
@@ -26,6 +27,7 @@ const HomePage = () => {
             <TopCollege />
             <EarnCertificate />
             <LearningFocus />
+            <Testimonials />
             <HeroStatsSection />
             <Footer />
         </>

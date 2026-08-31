@@ -86,6 +86,7 @@ export interface CourseDetail {
     created_by: CreatedBy;
     level: number;
     chapters?: any[];
+    course_chapters?: any[];
     original_price?: number;
     language: string;
     subtitle_language: string;

@@ -1,17 +1,31 @@
 import React from "react";
 import { useModal } from "../Modals/ModalContext";
 import QuickContactForm from "../Forms/QuickContactForm";
+import { useLocation } from "react-router-dom";
 
 export default function QuickContactButton() {
     const { showModal } = useModal();
+    const location = useLocation();
 
     const handleOpenContact = () => {
         showModal({
             content: <QuickContactForm />,
             type: "custom",
             size: "lg",
+            hideCloseButton: true,
         });
     };
+
+    // Button should only show on home, courses, career, and profile routes
+    const showOnRoutes = ["/", "/courses", "/career", "/profile"];
+    const shouldShow =
+        showOnRoutes.includes(location.pathname) ||
+        location.pathname.startsWith("/courses/") ||
+        location.pathname.startsWith("/course-details/");
+
+    if (!shouldShow) {
+        return null;
+    }
 
     return (
         <button
@@ -31,3 +45,4 @@ export default function QuickContactButton() {
         </button>
     );
 }
+

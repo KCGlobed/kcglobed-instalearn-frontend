@@ -155,17 +155,24 @@ const CourseCard: React.FC<CourseCardProps> = ({
                     </div>
 
                     <button
-                        onClick={onAddToCart}
-                        disabled={isInCart}
+                        onClick={(e) => {
+                            if (isInCart) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                navigate('/cart');
+                            } else if (onAddToCart) {
+                                onAddToCart(e);
+                            }
+                        }}
                         className={`h-9 px-4 flex items-center gap-2 font-bold text-[11px] uppercase tracking-wider transition-all rounded-[4px] whitespace-nowrap ${isInCart
-                            ? 'bg-green-50 text-green-600 border border-green-100'
+                            ? 'bg-green-600 text-white hover:bg-green-700'
                             : 'bg-[#1D2026] text-white hover:bg-[#5624D0] shadow-sm'
                             }`}
                     >
-                        {isInCart ? t('myLearning.inCart', 'In Cart') : (
+                        {isInCart ? t('myLearning.goToCart', 'Go to Cart') : (
                             <>
                                 <ShoppingCart className="w-3.5 h-3.5" />
-                                {t('myLearning.add', 'Add')}
+                                {t('myLearning.addToCart', 'Add to Cart')}
                             </>
                         )}
                     </button>

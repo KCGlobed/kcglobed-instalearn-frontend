@@ -231,10 +231,13 @@ const CheckoutPage = () => {
                                     maxLength={10}
                                     onInput={handlePhoneInput}
                                     registration={register('phone', {
-                                        required: 'Phone number is required',
-                                        validate: (val) =>
-                                            sanitizePhone(val).length === 10 ||
-                                            'Enter a valid 10-digit mobile number',
+                                        required: 'Please enter a valid mobile number.',
+                                        validate: (val) => {
+                                            const cleaned = val ? val.replace(/\D/g, '') : '';
+                                            const isValidPattern = /^[6-9]\d{9}$/.test(cleaned);
+                                            const isNotAllSame = !/^(\d)\1{9}$/.test(cleaned);
+                                            return (isValidPattern && isNotAllSame) || 'Please enter a valid mobile number.';
+                                        }
                                     })}
                                     error={errors.phone?.message}
                                 />

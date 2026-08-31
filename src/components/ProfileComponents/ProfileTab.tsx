@@ -1,8 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { updateUserProfileApi } from '../../utils/service';
 import toast from 'react-hot-toast';
 import { Loader2 } from 'lucide-react';
+import { Country, State, City } from 'country-state-city';
+import { SearchableSelect } from '../UI/SearchableSelect';
 
 interface ProfileTabProps {
     profileData: any;
@@ -11,6 +13,24 @@ interface ProfileTabProps {
 
 const ProfileTab: React.FC<ProfileTabProps> = ({ profileData, refreshProfile }) => {
     const [isSubmitting, setIsSubmitting] = React.useState(false);
+    const [selectedCountry, setSelectedCountry] = useState<string>('');
+    const [selectedState, setSelectedState] = useState<string>('');
+    const [selectedCity, setSelectedCity] = useState<string>('');
+
+    const countries = useMemo(() => Country.getAllCountries(), []);
+
+    const states = useMemo(() => {
+        if (!selectedCountry) return [];
+        const countryIso = countries.find(c => c.name.toLowerCase() === selectedCountry.toLowerCase())?.isoCode;
+        return countryIso ? State.getStatesOfCountry(countryIso) : [];
+    }, [selectedCountry, countries]);
+
+    const cities = useMemo(() => {
+        if (!selectedCountry || !selectedState) return [];
+        const countryIso = countries.find(c => c.name.toLowerCase() === selectedCountry.toLowerCase())?.isoCode;
+        const stateIso = countryIso ? states.find(s => s.name.toLowerCase() === selectedState.toLowerCase())?.isoCode : null;
+        return (countryIso && stateIso) ? City.getCitiesOfState(countryIso, stateIso) : [];
+    }, [selectedCountry, selectedState, countries, states]);
 
     const { register, handleSubmit, setValue, reset, formState: { errors, isValid } } = useForm({
         mode: 'onChange',
@@ -27,6 +47,27 @@ const ProfileTab: React.FC<ProfileTabProps> = ({ profileData, refreshProfile }) 
             pincode: '',
         }
     });
+
+    const handleCountryChange = (val: string) => {
+        setSelectedCountry(val);
+        setSelectedState('');
+        setSelectedCity('');
+        setValue('country', val, { shouldValidate: true, shouldDirty: true });
+        setValue('state', '', { shouldValidate: true, shouldDirty: true });
+        setValue('city', '', { shouldValidate: true, shouldDirty: true });
+    };
+
+    const handleStateChange = (val: string) => {
+        setSelectedState(val);
+        setSelectedCity('');
+        setValue('state', val, { shouldValidate: true, shouldDirty: true });
+        setValue('city', '', { shouldValidate: true, shouldDirty: true });
+    };
+
+    const handleCityChange = (val: string) => {
+        setSelectedCity(val);
+        setValue('city', val, { shouldValidate: true, shouldDirty: true });
+    };
 
     // Pre-fill data using reset and format phone number
     useEffect(() => {
@@ -46,6 +87,11 @@ const ProfileTab: React.FC<ProfileTabProps> = ({ profileData, refreshProfile }) 
                 country: profileData.country || '',
                 pincode: profileData.pincode || '',
             });
+
+            // Initialize select states
+            setSelectedCountry(profileData.country || '');
+            setSelectedState(profileData.state || '');
+            setSelectedCity(profileData.city || '');
         }
     }, [profileData, reset]);
 
@@ -153,38 +199,48 @@ const ProfileTab: React.FC<ProfileTabProps> = ({ profileData, refreshProfile }) 
                         {errors.address && <span className="text-red-500 text-xs font-medium">{errors.address.message as string}</span>}
                     </div>
 
-                    {/* City */}
+                    {/* Country */}
                     <div className="grid gap-2">
-                        <label className="text-[14px] font-bold text-[#1D2026]">City</label>
-                        <input
-                            {...register('city', { required: 'City is required' })}
-                            type="text"
-                            className={`w-full px-4 py-2.5 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#5624D0]/20 transition-all ${errors.city ? 'border-red-500' : 'border-[#E9EAF0] focus:border-[#5624D0]'}`}
-                            placeholder="Enter city"
+                        <label className="text-[14px] font-bold text-[#1D2026]">Country</label>
+                        <input type="hidden" value={selectedCountry} {...register('country', { required: 'Country is required' })} />
+                        <SearchableSelect
+                            options={countries.map((c) => ({ value: c.name, label: c.name }))}
+                            value={selectedCountry}
+                            onChange={handleCountryChange}
+                            placeholder="Select Country"
+                            error={!!errors.country}
                         />
-                        {errors.city && <span className="text-red-500 text-xs font-medium">{errors.city.message as string}</span>}
+                        {errors.country && <span className="text-red-500 text-xs font-medium">{errors.country.message as string}</span>}
                     </div>
 
                     {/* State */}
                     <div className="grid gap-2">
                         <label className="text-[14px] font-bold text-[#1D2026]">State</label>
-                        <input
-                            {...register('state')}
-                            type="text"
-                            className="w-full px-4 py-2.5 border border-[#E9EAF0] rounded-md focus:outline-none focus:ring-2 focus:ring-[#5624D0]/20 focus:border-[#5624D0] transition-all"
-                            placeholder="Enter state"
+                        <input type="hidden" value={selectedState} {...register('state', { required: 'State is required' })} />
+                        <SearchableSelect
+                            options={states.map((s) => ({ value: s.name, label: s.name }))}
+                            value={selectedState}
+                            onChange={handleStateChange}
+                            placeholder="Select State"
+                            disabled={!selectedCountry}
+                            error={!!errors.state}
                         />
+                        {errors.state && <span className="text-red-500 text-xs font-medium">{errors.state.message as string}</span>}
                     </div>
 
-                    {/* Country */}
+                    {/* City */}
                     <div className="grid gap-2">
-                        <label className="text-[14px] font-bold text-[#1D2026]">Country</label>
-                        <input
-                            {...register('country')}
-                            type="text"
-                            className="w-full px-4 py-2.5 border border-[#E9EAF0] rounded-md focus:outline-none focus:ring-2 focus:ring-[#5624D0]/20 focus:border-[#5624D0] transition-all"
-                            placeholder="Enter country"
+                        <label className="text-[14px] font-bold text-[#1D2026]">City</label>
+                        <input type="hidden" value={selectedCity} {...register('city', { required: 'City is required' })} />
+                        <SearchableSelect
+                            options={cities.map((c) => ({ value: c.name, label: c.name }))}
+                            value={selectedCity}
+                            onChange={handleCityChange}
+                            placeholder="Select City"
+                            disabled={!selectedState}
+                            error={!!errors.city}
                         />
+                        {errors.city && <span className="text-red-500 text-xs font-medium">{errors.city.message as string}</span>}
                     </div>
 
                     {/* Pincode */}

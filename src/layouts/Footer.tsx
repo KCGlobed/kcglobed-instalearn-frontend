@@ -108,9 +108,9 @@ const Footer = () => {
     const companyLinks = [
         { name: "KC GlobEd", path: "https://www.kcglobed.com/" },
         { name: "GCC School", path: "https://www.gccschool.com/" },
-        { name: t('footer.termsCondition', 'Terms & Condition'), path: "/coming-soon" },
+        { name: t('footer.termsCondition', 'Terms & Condition'), path: "/terms-condition" },
         { name: t('footer.careers', 'Careers'), path: "/career" },
-        { name: t('footer.privacyPolicy', 'Privacy Policy'), path: "/coming-soon" },
+        { name: t('footer.privacyPolicy', 'Privacy Policy'), path: "/privacy-policy" },
     ];
 
     const socialLinks = [

@@ -40,7 +40,10 @@ const CourseTabs: React.FC = () => {
 
     const tabsWithCounts: Tab[] = localizedTabs.map((tItem) => {
         if (tItem.label === t('courseDetail.reviews', 'Reviews'))    return { ...tItem, count: courseDetail?.total_reviews ?? 0 };
-        if (tItem.label === t('courseDetail.curriculum', 'Curriculum')) return { ...tItem, count: courseDetail?.sample_videos?.length ?? 0 };
+        if (tItem.label === t('courseDetail.curriculum', 'Curriculum')) {
+            const chapters = courseDetail?.course_chapters ?? courseDetail?.chapters ?? [];
+            return { ...tItem, count: chapters.length };
+        }
         if (tItem.label === t('courseDetail.featured', 'Featured'))   return { ...tItem, count: courseDetail?.feature_json?.length ?? 0 };
         return tItem;
     });

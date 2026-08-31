@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from '../components/UI/LanguageSelector';
+import { NavLink } from "react-router-dom";
 
 const TopHeader = () => {
     const { t } = useTranslation();
@@ -8,17 +9,17 @@ const TopHeader = () => {
         <div>
             <nav className="bg-dark px-6 h-12 flex items-center justify-between">
                 {/* Left: Logo + Nav Links */}
-                <div className="flex items-center gap-8">
+                <div className="flex items-center gap-8 h-full">
                     {/* Logo */}
                     {/* <div className="w-7 h-7 bg-blue-500 rounded-md" /> */}
 
                     {/* Nav Links */}
-                    <div className="flex items-center gap-6">
-                        <a href="/" className="text-white text-sm font-medium">{t('nav.home', 'Home')}</a>
-                        <a href="/courses" className="text-gray-400 text-sm hover:text-white transition-colors">{t('nav.courses', 'Courses')}</a>
-                        <a href="https://www.kcglobed.com/" target="_blank" className="text-gray-400 text-sm hover:text-white transition-colors">KC GlobEd</a>
-                        <a href="https://www.gccschool.com/" target="_blank" className="text-gray-400 text-sm hover:text-white transition-colors">GCC School</a>
-                        <a href="/blogs" className="text-gray-400 text-sm hover:text-white transition-colors">{t('nav.blog', 'Blog')}</a>
+                    <div className="flex items-center gap-6 h-full">
+                        <NavLink to="/" className={({ isActive }) => `h-full flex items-center text-[13px] transition-colors border-b-[3px] ${isActive ? 'text-white border-white font-semibold' : 'text-gray-400 border-transparent font-medium hover:text-white hover:border-white'}`}>{t('nav.home', 'Home')}</NavLink>
+
+                        <NavLink to="/courses" className={({ isActive }) => `h-full flex items-center text-[13px] transition-colors border-b-[3px] ${isActive ? 'text-white border-white font-semibold' : 'text-gray-400 border-transparent font-medium hover:text-white hover:border-white'}`}>{t('nav.courses', 'Courses')}</NavLink>
+
+                        <NavLink to="/campus" className={({ isActive }) => `h-full flex items-center text-[13px] transition-colors border-b-[3px] ${isActive ? 'text-white border-white font-semibold' : 'text-gray-400 border-transparent font-medium hover:text-white hover:border-white'}`}>{t('nav.forInstitution', 'For Institution')}</NavLink>
 
 
                         {/* <a href="/my-learning" className="text-gray-400 text-sm hover:text-white transition-colors">My Learning</a> */}

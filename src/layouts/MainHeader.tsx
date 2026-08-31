@@ -20,6 +20,7 @@ import { useAppDispatch } from "../hooks/useAppDispatch";
 import { viewCartDetails } from "../store/slices/courseCartSlice";
 import { viewWishlistAction } from "../store/slices/courseWishList";
 import { fetchUnreadNotifications, markNotificationAsRead } from "../store/slices/notificationSlice";
+import { useIsCorporate } from "../hooks/useIsCorporate";
 
 const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
@@ -35,6 +36,9 @@ const formatTimeAgo = (dateString: string) => {
     if (days < 7) return `${days}d ago`;
     return date.toLocaleDateString();
 };
+
+
+
 // ─── Browse Dropdown ──────────────────────────────────────────────────────────
 
 const BrowseDropdown = () => {
@@ -578,8 +582,37 @@ const ProfileDropdown = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const { unreadCount } = useAppSelector((state: RootState) => state.notification);
-    const userProfile = localStorage.getItem("userProfile") as any;
-    const userName = JSON.parse(userProfile).first_name?.charAt(0).toUpperCase() + JSON.parse(userProfile).last_name?.charAt(0).toUpperCase();
+    const [imageError, setImageError] = useState(false);
+    const userProfile = localStorage.getItem("userProfile");
+    const isCorporate = useIsCorporate();
+    let userRole: any = [];
+    try { userRole = JSON.parse(localStorage.getItem("userRole") || "[]"); } catch (e) { }
+    console.log(userRole, "User Role")
+
+    let profile: any = null;
+    try {
+        if (userProfile) {
+            const parsed = JSON.parse(userProfile);
+            profile = parsed.user || parsed.data?.user || parsed.data || parsed;
+        }
+    } catch (e) {
+        console.error("Failed to parse userProfile", e);
+    }
+
+    const firstChar = profile?.first_name?.charAt(0) || "";
+    const lastChar = profile?.last_name?.charAt(0) || "";
+    let initials = (firstChar + lastChar).toUpperCase();
+    if (!initials && profile?.name) {
+        initials = profile.name.split(/\s+/).map((n: string) => n[0]).join("").slice(0, 2).toUpperCase();
+    }
+    if (!initials) {
+        initials = profile?.email?.charAt(0).toUpperCase() || "?";
+    }
+
+    // Reset image error state when profile image changes
+    useEffect(() => {
+        setImageError(false);
+    }, [profile?.image]);
 
     const onLogoutClick = () => {
         dispatch(logout());
@@ -603,11 +636,20 @@ const ProfileDropdown = () => {
         <div className="relative" ref={dropdownRef} style={{ overflow: "visible" }}>
             <button
                 onClick={() => setOpen(!open)}
-                className="w-10 h-10 rounded-full bg-[#5624D0] text-white flex items-center justify-center font-bold text-[15px] hover:shadow-lg transition-all focus:outline-none focus:ring-2 focus:ring-[#5624D0]/40 shrink-0"
+                className="w-10 h-10 rounded-full bg-[#5624D0] overflow-hidden text-white flex items-center justify-center font-bold text-[15px] hover:shadow-lg transition-all focus:outline-none focus:ring-2 focus:ring-[#5624D0]/40 shrink-0"
                 aria-expanded={open}
                 aria-haspopup="menu"
             >
-                {userName}
+                {profile?.image && !imageError ? (
+                    <img
+                        src={profile.image}
+                        alt="Profile"
+                        className="w-full h-full object-cover rounded-full"
+                        onError={() => setImageError(true)}
+                    />
+                ) : (
+                    initials
+                )}
             </button>
 
             {/* Dropdown Menu */}
@@ -621,15 +663,19 @@ const ProfileDropdown = () => {
                 >
                     {/* Header: User Info */}
                     <div className="px-5 py-4 bg-[#fcfcfd] border-b border-[#E9EAF0] mt-[-4px] rounded-t-[10px] mb-2">
-                        <p className="text-[15px] font-bold text-[#1D2026] leading-tight mb-0.5">{JSON.parse(userProfile).first_name} {JSON.parse(userProfile).last_name}</p>
-                        <p className="text-[13px] text-[#6E7485] font-medium truncate">{JSON.parse(userProfile).email}</p>
+                        <p className="text-[15px] font-bold text-[#1D2026] leading-tight mb-0.5">{profile?.first_name} {profile?.last_name}</p>
+                        <p className="text-[13px] text-[#6E7485] font-medium truncate">{profile?.email}</p>
                     </div>
 
                     {/* Group 1 */}
                     <div className="py-1">
+                        {
+                            userRole.includes("CorporateAdmin") &&
+                            <a href="#" onClick={(e) => { e.preventDefault(); navigate('/corporate-management'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">{t('header.corporateAdmin', 'Corporate Admin')}</a>
+                        }
                         <a href="#" onClick={(e) => { e.preventDefault(); navigate('/my-learning'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">{t('header.myLearning', 'My Learning')}</a>
-                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/cart'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">{t('header.cart', 'My Cart')}</a>
-                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/my-learning?tab=wishlist'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">{t('header.wishlist', 'Wishlist')}</a>
+                        {!isCorporate && <a href="#" onClick={(e) => { e.preventDefault(); navigate('/cart'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">{t('header.cart', 'My Cart')}</a>}
+                        {!isCorporate && <a href="#" onClick={(e) => { e.preventDefault(); navigate('/my-learning?tab=wishlist'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">{t('header.wishlist', 'Wishlist')}</a>}
                         <a href="#" onClick={(e) => { e.preventDefault(); navigate('/purchase-history'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">{t('header.purchaseHistory', 'Purchase History')}</a>
                     </div>
 
@@ -674,8 +720,10 @@ const MainHeader = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const navigate = useNavigate();
     const { isAuthenticated } = useAppSelector((s: RootState) => s.auth);
+    const isSubscriber = localStorage.getItem("isSubscribe");
     // Toggle this to test logged in vs logged out UI
     const isLoggedIn = isAuthenticated;
+    const isCorporate = useIsCorporate();
 
     const handleSignIn = () => {
         setDrawerOpen(false); // Close drawer if it's open
@@ -710,7 +758,7 @@ const MainHeader = () => {
                     </div>
 
                     {/* Cart */}
-                    <CartDropdown />
+                    {!isCorporate && <CartDropdown />}
                 </div>
 
                 {/* ── Tablet bar (md → lg) ── */}
@@ -736,8 +784,8 @@ const MainHeader = () => {
                     {/* Icons */}
                     <div className="flex items-center gap-2 shrink-0">
                         <NotificationDropdown />
-                        <WishlistDropdown />
-                        <CartDropdown />
+                        {!isCorporate && isLoggedIn && <WishlistDropdown />}
+                        {!isCorporate && <CartDropdown />}
 
                         <div className="w-px h-5 bg-[#E9EAF0] mx-1" />
 
@@ -784,8 +832,8 @@ const MainHeader = () => {
                     {/* Right actions */}
                     <div className="flex items-center gap-1 shrink-0 ml-auto">
                         <NotificationDropdown />
-                        <WishlistDropdown />
-                        <CartDropdown />
+                        {!isCorporate && isLoggedIn && <WishlistDropdown />}
+                        {!isCorporate && <CartDropdown />}
 
                         <div className="w-px h-6 bg-[#E9EAF0] mx-2" />
 

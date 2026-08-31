@@ -148,21 +148,21 @@ const CurriculumPanel: React.FC<{ courseDetail: any }> = ({ courseDetail }) => {
                                                         key={lecture.id}
                                                         onClick={() => handleLectureClick(chapter, lecture)}
                                                         className={`flex items-start gap-3 px-6 py-4 text-gray-700 rounded-lg mx-2 transition-colors group ${isUnlockAll
-                                                                ? 'cursor-pointer hover:bg-indigo-50/70 hover:text-indigo-900'
-                                                                : 'cursor-default hover:bg-gray-50'
+                                                            ? 'cursor-pointer hover:bg-indigo-50/70 hover:text-indigo-900'
+                                                            : 'cursor-default hover:bg-gray-50'
                                                             }`}
                                                     >
                                                         {/* Type Icon */}
                                                         <div className="mt-0.5 shrink-0">
                                                             {isVideo ? (
                                                                 <PlayCircle className={`w-4 h-4 transition-colors ${isUnlockAll
-                                                                        ? 'text-indigo-500 group-hover:text-indigo-700'
-                                                                        : 'text-indigo-300 group-hover:text-indigo-500'
+                                                                    ? 'text-indigo-500 group-hover:text-indigo-700'
+                                                                    : 'text-indigo-300 group-hover:text-indigo-500'
                                                                     }`} />
                                                             ) : isEbook ? (
                                                                 <FileText className={`w-4 h-4 transition-colors ${isUnlockAll
-                                                                        ? 'text-orange-500 group-hover:text-orange-700'
-                                                                        : 'text-orange-300 group-hover:text-orange-500'
+                                                                    ? 'text-orange-500 group-hover:text-orange-700'
+                                                                    : 'text-orange-300 group-hover:text-orange-500'
                                                                     }`} />
                                                             ) : (
                                                                 <Lock className="w-4 h-4 text-gray-300 group-hover:text-gray-500 transition-colors" />

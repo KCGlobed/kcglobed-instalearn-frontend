@@ -326,16 +326,60 @@ const NotesContainer = () => {
         }
     }, [dispatch, courseId]);
 
-    // Periodically sync the video player's time
+    // Reset editor state when switching lectures
     useEffect(() => {
-        const interval = setInterval(() => {
-            const video = document.querySelector('video');
-            if (video) {
-                setVideoTime(Math.floor(video.currentTime));
+        setIsEditing(false);
+        setCapturedTime(0);
+        setVideoTime(0);
+    }, [lectureId]);
+
+    // Periodically sync the video player's time and handle event listeners
+    useEffect(() => {
+        let videoEl: HTMLVideoElement | null = null;
+
+        const updateTimes = () => {
+            if (videoEl) {
+                const currentTime = Math.floor(videoEl.currentTime);
+                setVideoTime(currentTime);
+                if (isEditing) {
+                    setCapturedTime(currentTime);
+                }
+            } else {
+                setVideoTime(0);
+                if (isEditing) {
+                    setCapturedTime(0);
+                }
             }
-        }, 1000);
-        return () => clearInterval(interval);
-    }, []);
+        };
+
+        const interval = setInterval(() => {
+            const currentVideo = document.querySelector('video');
+            if (currentVideo !== videoEl) {
+                if (videoEl) {
+                    videoEl.removeEventListener('timeupdate', updateTimes);
+                    videoEl.removeEventListener('seeking', updateTimes);
+                    videoEl.removeEventListener('seeked', updateTimes);
+                }
+                videoEl = currentVideo;
+                if (videoEl) {
+                    videoEl.addEventListener('timeupdate', updateTimes);
+                    videoEl.addEventListener('seeking', updateTimes);
+                    videoEl.addEventListener('seeked', updateTimes);
+                    updateTimes();
+                }
+            }
+            updateTimes();
+        }, 500);
+
+        return () => {
+            clearInterval(interval);
+            if (videoEl) {
+                videoEl.removeEventListener('timeupdate', updateTimes);
+                videoEl.removeEventListener('seeking', updateTimes);
+                videoEl.removeEventListener('seeked', updateTimes);
+            }
+        };
+    }, [isEditing, lectureId]);
 
     // Seek the video to the note's timestamp
     const handleTimestampClick = (note: ApiNote) => {

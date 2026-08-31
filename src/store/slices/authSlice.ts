@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { storeToken, storeRefreshToken, getToken, clearToken, storeUserID, storeUserRole, storeUserProfile } from "../../utils/tokenStorage";
+import { storeToken, storeRefreshToken, getToken, clearToken, storeUserID, storeUserRole, storeUserProfile, storeSubscriptionStatus } from "../../utils/tokenStorage";
 import { apiRequest } from "../../utils/apiRequest";
 import { socialLoginApi } from "../../utils/service";
 import type { AuthState, LoginCred } from "../../utils/types";
@@ -37,8 +37,9 @@ export const loginUser = createAsyncThunk(
       storeToken(access);
       storeRefreshToken(refresh);
       storeUserID(response.data.user_id);
-      storeUserRole(response.data.user_role);
+      storeUserRole(JSON.stringify(response?.data?.user_role));
       storeUserProfile(JSON.stringify(response.data));
+      storeSubscriptionStatus(response?.data?.subscription_status);
       return access;
     } catch (error: any) {
       return rejectWithValue(error.message || "Login failed");
@@ -72,13 +73,12 @@ export const googleLogin = createAsyncThunk(
       const refresh = tokenData?.refresh ?? null;
 
       if (!access) throw new Error("No access token received from server");
-
       storeToken(access);
       if (refresh) storeRefreshToken(refresh);
       storeUserID(response?.data?.user_id ?? response?.user_id ?? "");
-      storeUserRole(response?.data?.user_role ?? response?.user_role ?? "Student");
+      storeUserRole(JSON.stringify(response?.data?.user_role ?? response?.user_role));
       storeUserProfile(JSON.stringify(response?.data ?? response));
-
+      storeSubscriptionStatus(response?.data?.subscription_status);
       return access;
     } catch (error: any) {
       return rejectWithValue(error.message || "Google login failed");
