@@ -27,8 +27,10 @@ import SocialShare from '../UI/SocialShare';
 import { toggleWishlistAction } from '../../store/slices/courseWishList';
 import { toggleCourseWishlistStatus } from '../../store/slices/courseDetailSlice';
 import { getCourseCertificate } from '../../utils/service';
+import { useTranslation } from 'react-i18next';
 
 const CourseSidebar = () => {
+    const { t } = useTranslation();
     const { courseDetail, loading, error } = useAppSelector((state: RootState) => state.courseDetail);
     const { cartItems, loading: cartLoading, error: cartError } = useAppSelector((state: RootState) => state.cart);
     const { wishListItems, loading: wishlistLoading } = useAppSelector((state: RootState) => state.wishList);
@@ -233,8 +235,8 @@ const CourseSidebar = () => {
                             <CheckCircle2 className="w-5 h-5" />
                         </div>
                         <div>
-                            <p className="text-[10px] text-green-600 font-bold uppercase tracking-wider">Status</p>
-                            <p className="text-sm font-extrabold text-green-900">Purchased & Enrolled</p>
+                            <p className="text-[10px] text-green-600 font-bold uppercase tracking-wider">{t('courseDetail.status', 'Status')}</p>
+                            <p className="text-sm font-extrabold text-green-900">{t('courseDetail.purchasedAndEnrolled', 'Purchased & Enrolled')}</p>
                         </div>
                     </div>
                 ) : (
@@ -255,7 +257,7 @@ const CourseSidebar = () => {
 
                         <div className="flex items-center gap-2 text-rose-500 text-sm font-semibold mb-6">
                             <Clock className="w-4 h-4" />
-                            <span>2 days left at this price!</span>
+                            <span>{t('courseDetail.daysLeftAtThisPrice', '2 days left at this price!')}</span>
                         </div>
                     </>
                 )}
@@ -265,41 +267,41 @@ const CourseSidebar = () => {
                     <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center gap-3 text-gray-500">
                             <Clock className="w-5 h-5" />
-                            <span>Course Duration</span>
+                            <span>{t('courseDetail.courseDuration', 'Course Duration')}</span>
                         </div>
                         <span className="font-semibold text-gray-800">{formatDuration(courseDetail?.total_video_duration)} </span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center gap-3 text-gray-500">
                             <BarChart className="w-5 h-5" />
-                            <span>Course Level</span>
+                            <span>{t('courseDetail.courseLevel', 'Course Level')}</span>
                         </div>
                         <span className="font-semibold text-gray-800">
-                            {courseDetail?.level === 1 ? 'Beginner' :
-                                courseDetail?.level === 2 ? 'Intermediate' :
-                                    courseDetail?.level === 3 ? 'Advanced' : 'All Levels'}
+                            {courseDetail?.level === 1 ? t('courseDetail.beginner', 'Beginner') :
+                                courseDetail?.level === 2 ? t('courseDetail.intermediate', 'Intermediate') :
+                                    courseDetail?.level === 3 ? t('courseDetail.advanced', 'Advanced') : t('courseDetail.allLevels', 'All Levels')}
                         </span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center gap-3 text-gray-500">
                             <Users className="w-5 h-5" />
-                            <span>Students Enrolled</span>
+                            <span>{t('courseDetail.studentsEnrolled', 'Students Enrolled')}</span>
                         </div>
-                        <span className="font-semibold text-gray-800">{courseDetail?.enrolled_students || "Not Available"}</span>
+                        <span className="font-semibold text-gray-800">{courseDetail?.enrolled_students || t('courseDetail.notAvailable', 'Not Available')}</span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center gap-3 text-gray-500">
                             <Globe className="w-5 h-5" />
-                            <span>Language</span>
+                            <span>{t('courseDetail.language', 'Language')}</span>
                         </div>
                         <span className="font-semibold text-gray-800">{courseDetail?.language || 'English'}</span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center gap-3 text-gray-500">
                             <Subtitles className="w-5 h-5" />
-                            <span>Subtitle Language</span>
+                            <span>{t('courseDetail.subtitleLanguage', 'Subtitle Language')}</span>
                         </div>
-                        <span className="font-semibold text-gray-800">{courseDetail?.subtitle_language || 'Not Available'}</span>
+                        <span className="font-semibold text-gray-800">{courseDetail?.subtitle_language || t('courseDetail.notAvailable', 'Not Available')}</span>
                     </div>
                 </div>
 
@@ -309,7 +311,7 @@ const CourseSidebar = () => {
                         {/* Progress */}
                         <div className="bg-gray-50 border border-gray-100 p-4 rounded-xl">
                             <div className="flex justify-between items-center mb-2">
-                                <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Your Progress</span>
+                                <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('courseDetail.yourProgress', 'Your Progress')}</span>
                                 <span className="text-sm font-extrabold text-indigo-600">{purchasedCourse.progress || 0}%</span>
                             </div>
                             <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -323,7 +325,7 @@ const CourseSidebar = () => {
                         {/* Last Watched */}
                         {lastWatched && (
                             <div className="bg-gray-50 border border-gray-100 p-4 rounded-xl">
-                                <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Last Watched Lesson</p>
+                                <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">{t('courseDetail.lastWatchedLesson', 'Last Watched Lesson')}</p>
                                 <div className="flex items-start gap-2.5">
                                     <div className="mt-0.5 text-indigo-600 shrink-0">
                                         <PlayCircle className="w-4 h-4" />
@@ -347,7 +349,7 @@ const CourseSidebar = () => {
                                 className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98] flex items-center justify-center gap-2"
                             >
                                 <PlayCircle className="w-5 h-5" />
-                                {purchasedCourse.progress > 0 ? "Continue Learning" : "Start Learning"}
+                                {purchasedCourse.progress > 0 ? t('courseDetail.continueLearning', 'Continue Learning') : t('courseDetail.startLearning', 'Start Learning')}
                             </button>
                             
                             {purchasedCourse.progress >= 50 && (
@@ -357,7 +359,7 @@ const CourseSidebar = () => {
                                     className="w-full border-2 border-indigo-600 text-indigo-600 font-bold py-4 rounded-xl hover:bg-indigo-50 transition-all active:scale-[0.98] flex items-center justify-center gap-2 disabled:bg-gray-100"
                                 >
                                     <Award className="w-5 h-5" />
-                                    {downloadingCert ? "Downloading Certificate..." : "Download Certificate"}
+                                    {downloadingCert ? t('courseDetail.downloadingCertificate', 'Downloading Certificate...') : t('courseDetail.downloadCertificate', 'Download Certificate')}
                                 </button>
                             )}
                         </>
@@ -370,14 +372,14 @@ const CourseSidebar = () => {
                                         {cartLoading ?
                                             <div className="flex items-center gap-2 justify-center">
                                                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                                                <span>Adding to cart...</span>
+                                                <span>{t('courseDetail.addingToCart', 'Adding to cart...')}</span>
                                             </div>
 
-                                            : "Add To Cart"}
+                                            : t('courseDetail.addToCart', 'Add To Cart')}
                                     </button>
                                     :
                                     <button onClick={() => gotoCart()} className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98]">
-                                        Go To Cart
+                                        {t('courseDetail.goToCart', 'Go To Cart')}
                                     </button>
                             }
                             {isAuthenticated && (
@@ -388,10 +390,10 @@ const CourseSidebar = () => {
                                         ) : (
                                             <Heart className={`w-4 h-4 ${isWishlist ? 'fill-current' : ''}`} />
                                         )}
-                                        {isWishlist ? 'Wishlisted' : 'Add To Wishlist'}
+                                        {isWishlist ? t('courseDetail.wishlisted', 'Wishlisted') : t('courseDetail.addToWishlist', 'Add To Wishlist')}
                                     </button>
-                                    <button disabled={true} className="flex-1 flex items-center justify-center gap-2 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-all text-sm font-semibold">
-                                        <Gift className="w-4 h-4" /> Gift Course
+                                    <button disabled={true} className="flex-1 flex items-center justify-center gap-2 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-all text-sm font-semibold text-gray-300 border-gray-100">
+                                        <Gift className="w-4 h-4" /> {t('courseDetail.giftCourse', 'Gift Course')}
                                     </button>
                                 </div>
                             )}
@@ -400,14 +402,14 @@ const CourseSidebar = () => {
                 </div>
 
                 <p className="text-[10px] text-gray-400 text-center mb-8 uppercase tracking-wider font-bold">
-                    Note: all course have 30-days money-back guarantee
+                    {t('courseDetail.moneyBackGuarantee', 'Note: all course have 30-days money-back guarantee')}
                 </p>
 
                 {/* Course Includes Section */}
                 {
                     courseDetail?.course_includes && courseDetail?.course_includes.length > 0 &&
                     <div className="mb-8">
-                        <h3 className="font-bold text-gray-900 mb-4 px-1">This course includes:</h3>
+                        <h3 className="font-bold text-gray-900 mb-4 px-1">{t('courseDetail.thisCourseIncludes', 'This course includes:')}</h3>
                         <div className="space-y-4">
                             {/* {[
                             { icon: Infinity, text: "Lifetime access", color: "text-orange-500" },
@@ -438,7 +440,7 @@ const CourseSidebar = () => {
 
                 {/* Share Section */}
                 <div className="border-t pt-6">
-                    <h3 className="font-bold text-gray-900 mb-4 px-1">Share this course:</h3>
+                    <h3 className="font-bold text-gray-900 mb-4 px-1">{t('courseDetail.shareThisCourse', 'Share this course:')}</h3>
                     <SocialShare
                         title={courseDetail?.name}
                         description={courseDetail?.short_description}

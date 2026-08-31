@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Play, MoreVertical, Star, ShoppingCart, Trash2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface CourseCardProps {
     course: any;
@@ -19,6 +20,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
     isInCart,
     menuContent
 }) => {
+    const { t } = useTranslation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navigate = useNavigate();
 
@@ -84,13 +86,13 @@ const CourseCard: React.FC<CourseCardProps> = ({
                         </h3>
                     </div>
                     <p className="text-[12px] text-[#6E7485] line-clamp-2 mb-4 flex-1">
-                        {course.short_description?.replace(/<[^>]*>?/gm, '') || "No description available"}
+                        {course.short_description?.replace(/<[^>]*>?/gm, '') || t('myLearning.noDescription', 'No description available')}
                     </p>
 
                     {/* Progress Section */}
                     <div className="space-y-2 mt-auto pt-4 border-t border-[#F1F2F4]">
                         <div className="flex justify-between items-center text-[11px] font-bold text-[#1D2026] uppercase tracking-wider">
-                            <span>Progress</span>
+                            <span>{t('myLearning.progress', 'Progress')}</span>
                             <span>{course.progress}%</span>
                         </div>
                         <div className="w-full h-1.5 bg-[#F1F2F4] rounded-full overflow-hidden">
@@ -143,7 +145,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
                             <Star className="w-3.5 h-3.5 fill-[#FD8E1F] text-[#FD8E1F]" />
                             <span className="text-[13px] font-bold text-[#1D2026]">4.5</span>
                         </div>
-                        <span className="text-[11px] text-[#6E7485] font-medium italic">Expert Instructor</span>
+                        <span className="text-[11px] text-[#6E7485] font-medium italic">{t('myLearning.expertInstructor', 'Expert Instructor')}</span>
                     </div>
                 </div>
 
@@ -160,10 +162,10 @@ const CourseCard: React.FC<CourseCardProps> = ({
                             : 'bg-[#1D2026] text-white hover:bg-[#5624D0] shadow-sm'
                             }`}
                     >
-                        {isInCart ? 'In Cart' : (
+                        {isInCart ? t('myLearning.inCart', 'In Cart') : (
                             <>
                                 <ShoppingCart className="w-3.5 h-3.5" />
-                                Add
+                                {t('myLearning.add', 'Add')}
                             </>
                         )}
                     </button>

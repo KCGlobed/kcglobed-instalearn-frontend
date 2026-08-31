@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 import { useAppSelector } from '../../hooks/useRedux';
 import type { RootState } from '../../store/store';
+import { useTranslation } from 'react-i18next';
 import TopHeader from '../../layouts/TopHeader';
 import MainHeader from '../../layouts/MainHeader';
 import Footer from '../../layouts/Footer';
@@ -89,6 +90,7 @@ const FloatingField: React.FC<FloatingFieldProps> = ({
 // ─── CheckoutPage ─────────────────────────────────────────────────────────────
 
 const CheckoutPage = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { cartItems: cart, appliedCoupon } = useAppSelector((state: RootState) => state.cart);
     const userID = localStorage.getItem('userID') || '';
@@ -153,7 +155,7 @@ const CheckoutPage = () => {
             <MainHeader />
 
             <div className="max-w-[1200px] mx-auto px-4 py-12">
-                <h1 className="text-4xl font-bold text-[#1c1d1f] mb-10">Checkout</h1>
+                <h1 className="text-4xl font-bold text-[#1c1d1f] mb-10">{t('checkout.checkout', 'Checkout')}</h1>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
                     {/* ── Main Content ── */}
@@ -164,31 +166,31 @@ const CheckoutPage = () => {
                             <div className="flex items-center gap-3 mb-6">
                                 <span className="bg-[#1c1d1f] text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">1</span>
                                 <h2 className="text-xl font-bold text-[#1c1d1f]">
-                                    {isLogin ? 'Contact Details' : 'Log in or create an account'}
+                                    {isLogin ? t('checkout.contactDetails', 'Contact Details') : t('checkout.logInOrCreateAccount', 'Log in or create an account')}
                                 </h2>
                             </div>
 
                             <div className="pl-9 space-y-6">
                                 {isLogin && (
                                     <p className="text-[13px] text-gray-500 -mt-2">
-                                        Signed in as{' '}
+                                        {t('checkout.signedInAs', 'Signed in as')}{' '}
                                         <span className="font-bold text-[#1c1d1f]">{user?.email}</span>.
-                                        {' '}Update your details below if needed.
+                                        {' '}{t('checkout.updateDetailsIfNeeded', 'Update your details below if needed.')}
                                     </p>
                                 )}
 
                                 {!isLogin && (
                                     <p className="text-[14px] text-[#2d2f31] leading-relaxed">
-                                        An account is required to access your purchased courses. By signing up, you agree to our{' '}
-                                        <span className="text-indigo-600 underline cursor-pointer">Terms of Use</span>{' '}and{' '}
-                                        <span className="text-indigo-600 underline cursor-pointer">Privacy Policy</span>.
+                                        {t('checkout.accountRequired', 'An account is required to access your purchased courses. By signing up, you agree to our')}{' '}
+                                        <span className="text-indigo-600 underline cursor-pointer">{t('checkout.termsOfUse', 'Terms of Use')}</span>{' '}{t('checkout.and', 'and')}{' '}
+                                        <span className="text-indigo-600 underline cursor-pointer">{t('checkout.privacyPolicy', 'Privacy Policy')}</span>.
                                     </p>
                                 )}
 
                                 {/* Email */}
                                 <FloatingField
                                     id="email"
-                                    label="Email"
+                                    label={t('checkout.email', 'Email')}
                                     type="email"
                                     registration={register('email', {
                                         required: 'Email is required',
@@ -204,7 +206,7 @@ const CheckoutPage = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <FloatingField
                                         id="first_name"
-                                        label="First Name"
+                                        label={t('checkout.firstName', 'First Name')}
                                         registration={register('first_name', {
                                             required: 'First name is required',
                                         })}
@@ -212,7 +214,7 @@ const CheckoutPage = () => {
                                     />
                                     <FloatingField
                                         id="last_name"
-                                        label="Last Name"
+                                        label={t('checkout.lastName', 'Last Name')}
                                         registration={register('last_name', {
                                             required: 'Last name is required',
                                         })}
@@ -223,7 +225,7 @@ const CheckoutPage = () => {
                                 {/* Phone */}
                                 <FloatingField
                                     id="phone"
-                                    label="Phone Number (10 digits)"
+                                    label={t('checkout.phoneNumber', 'Phone Number (10 digits)')}
                                     type="tel"
                                     inputMode="numeric"
                                     maxLength={10}
@@ -238,7 +240,7 @@ const CheckoutPage = () => {
                                 />
 
                                 {!isLogin && (
-                                    <p className="text-sm font-bold text-[#2d2f31]">No password required</p>
+                                    <p className="text-sm font-bold text-[#2d2f31]">{t('checkout.noPasswordRequired', 'No password required')}</p>
                                 )}
                             </div>
                         </section>
@@ -248,10 +250,10 @@ const CheckoutPage = () => {
                             <div className="flex items-center justify-between mb-8">
                                 <div className="flex items-center gap-3">
                                     <span className="bg-[#1c1d1f] text-white w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-bold">2</span>
-                                    <h2 className="text-[24px] font-bold text-[#1c1d1f]">Order details</h2>
+                                    <h2 className="text-[24px] font-bold text-[#1c1d1f]">{t('checkout.orderDetails', 'Order details')}</h2>
                                 </div>
                                 <span className="text-gray-500 text-sm font-medium">
-                                    {cart.length} course{cart.length > 1 ? 's' : ''}
+                                    {cart.length} {cart.length > 1 ? t('checkout.courses', 'courses') : t('checkout.course', 'course')}
                                 </span>
                             </div>
 
@@ -273,7 +275,7 @@ const CheckoutPage = () => {
                                                 {item.course_info?.name}
                                             </h4>
                                             <p className="text-[12px] text-gray-500">
-                                                By {item.course_info?.instructor || 'Expert Instructor'}
+                                                {t('checkout.by', 'By')} {item.course_info?.instructor || t('checkout.expertInstructor', 'Expert Instructor')}
                                             </p>
                                         </div>
                                         <div className="text-right flex-shrink-0">
@@ -292,49 +294,49 @@ const CheckoutPage = () => {
                     <div className="lg:col-span-4">
                         <div className="sticky top-8 space-y-4">
                             <div className="bg-white border border-gray-200 p-8 rounded-none shadow-sm">
-                                <h2 className="text-[20px] font-bold text-[#1c1d1f] mb-6">Order summary</h2>
+                                <h2 className="text-[20px] font-bold text-[#1c1d1f] mb-6">{t('checkout.orderSummary', 'Order summary')}</h2>
 
                                 <div className="space-y-4 mb-8">
                                     <div className="flex justify-between text-[14px]">
-                                        <span className="text-[#6a6f73]">Original Price:</span>
+                                        <span className="text-[#6a6f73]">{t('checkout.originalPrice', 'Original Price:')}</span>
                                         <span className="text-[#2d2f31]">₹{originalPrice.toFixed(2)}</span>
                                     </div>
                                     <div className="flex justify-between text-[14px]">
-                                        <span className="text-[#6a6f73]">Discounts:</span>
+                                        <span className="text-[#6a6f73]">{t('checkout.discounts', 'Discounts:')}</span>
                                         <span className="text-green-600 font-medium">-₹{discountCount.toFixed(2)}</span>
                                     </div>
                                     {appliedCoupon && (
                                         <div className="flex justify-between text-[14px]">
-                                            <span className="text-[#6a6f73]">Coupon ({appliedCoupon.coupon_code}):</span>
+                                            <span className="text-[#6a6f73]">{t('checkout.coupon', 'Coupon')} ({appliedCoupon.coupon_code}):</span>
                                             <span className="text-green-600 font-medium">-₹{appliedCoupon.summary.discount_applied.toFixed(2)}</span>
                                         </div>
                                     )}
                                     <div className="flex justify-between text-[14px]">
-                                        <span className="text-[#6a6f73]">Subtotal:</span>
+                                        <span className="text-[#6a6f73]">{t('checkout.subtotal', 'Subtotal:')}</span>
                                         <span className="text-[#2d2f31] font-medium">₹{finalSubtotal.toFixed(2)}</span>
                                     </div>
                                     <div className="flex justify-between text-[14px]">
-                                        <span className="text-[#6a6f73]">GST (18%):</span>
+                                        <span className="text-[#6a6f73]">{t('checkout.gst', 'GST (18%):')}</span>
                                         <span className="text-[#2d2f31] font-medium">+₹{gstAmount.toFixed(2)}</span>
                                     </div>
                                     <div className="pt-4 border-t border-gray-200 flex justify-between items-baseline">
-                                        <span className="text-[18px] font-bold text-[#1c1d1f]">Total Payable:</span>
+                                        <span className="text-[18px] font-bold text-[#1c1d1f]">{t('checkout.totalPayable', 'Total Payable:')}</span>
                                         <span className="text-[24px] font-bold text-[#1c1d1f]">₹{totalPayable.toFixed(2)}</span>
                                     </div>
                                 </div>
 
                                 <p className="text-[11px] text-[#6a6f73] mb-6 leading-relaxed">
-                                    InstaLearn is required by law to collect applicable transaction taxes for purchases made in certain tax jurisdictions.
+                                    {t('checkout.taxJurisdictionNotice', 'InstaLearn is required by law to collect applicable transaction taxes for purchases made in certain tax jurisdictions.')}
                                 </p>
 
                                 <p className="text-[11px] text-[#6a6f73] mb-6">
-                                    By completing your purchase, you agree to these{' '}
-                                    <span className="text-indigo-600 font-bold hover:underline cursor-pointer">Terms of Service</span>.
+                                    {t('checkout.termsOfServiceNotice', 'By completing your purchase, you agree to these')}{' '}
+                                    <span className="text-indigo-600 font-bold hover:underline cursor-pointer">{t('checkout.termsOfService', 'Terms of Service')}</span>.
                                 </p>
 
                                 <RazorpayButton
                                     userData={userDataForPayment}
-                                    label="Complete Payment"
+                                    label={t('checkout.completePayment', 'Complete Payment')}
                                     disabled={!isValid}
                                     className="w-full !rounded-none !py-4 !text-[16px] !font-bold !bg-[#a435f0] hover:!bg-[#8710d8] transition-all"
                                 />
@@ -342,7 +344,7 @@ const CheckoutPage = () => {
                                 <div className="mt-8 flex flex-col items-center gap-4">
                                     <div className="flex items-center gap-2 text-[12px] text-[#6a6f73] font-bold">
                                         <Lock className="w-3 h-3" />
-                                        Secure Connection
+                                        {t('checkout.secureConnection', 'Secure Connection')}
                                     </div>
                                     <div className="flex gap-4 opacity-50 grayscale">
                                         <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" className="h-4" />

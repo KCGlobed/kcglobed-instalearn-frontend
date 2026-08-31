@@ -7,6 +7,7 @@ import { removeFromCartApi } from '../../utils/service';
 import { toggleWishlistAction } from '../../store/slices/courseWishList';
 import toast from 'react-hot-toast';
 import { useAppSelector } from '../../hooks/useRedux';
+import { useTranslation } from 'react-i18next';
 import type { RootState } from '../../store/store';
 
 interface CartItemProps {
@@ -14,6 +15,7 @@ interface CartItemProps {
 }
 
 const CartItem: React.FC<CartItemProps> = ({ item }) => {
+    const { t } = useTranslation();
     const { isAuthenticated } = useAppSelector((state: RootState) => state.auth);
     const { wishListItems } = useAppSelector((state: RootState) => state.wishList);
     const [isMoving, setIsMoving] = useState(false);
@@ -28,9 +30,9 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
         try {
             await removeFromCartApi(item.id);
             dispatch(removeFromCart(item.id));
-            toast.success("Removed from cart");
+            toast.success(t('cart.removedFromCart', 'Removed from cart'));
         } catch (error) {
-            toast.error("Failed to remove from cart");
+            toast.error(t('cart.failedToRemoveFromCart', 'Failed to remove from cart'));
         }
     };
 
@@ -43,9 +45,9 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
             }
             await removeFromCartApi(item.id);
             dispatch(removeFromCart(item.id));
-            toast.success("Moved to wishlist");
+            toast.success(t('cart.movedToWishlist', 'Moved to wishlist'));
         } catch (error: any) {
-            toast.error(error || "Failed to move to wishlist");
+            toast.error(error || t('cart.failedToMoveToWishlist', 'Failed to move to wishlist'));
         } finally {
             setIsMoving(false);
         }
@@ -82,7 +84,7 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
                             {item.course_info?.name}
                         </h3>
                     </Link>
-                    <p className="text-[11px] text-[#6a6f73] mb-1">By {item.course_info?.instructor || "Expert Instructor"}</p>
+                    <p className="text-[11px] text-[#6a6f73] mb-1">{t('cart.by', 'By')} {item.course_info?.instructor || "Expert Instructor"}</p>
 
                     <div className="flex items-center gap-1 mb-1">
                         <span className="text-[11px] font-bold text-[#b4690e]">{item.course_info?.avg_rating}</span>
@@ -91,9 +93,9 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
                     </div>
 
                     <div className="flex items-center gap-2 text-[10px] text-[#6a6f73]">
-                        <span>{formatDuration(item.course_info?.total_video_duration)} total hours</span>
+                        <span>{formatDuration(item.course_info?.total_video_duration)} {t('cart.totalHours', 'total hours')}</span>
                         <span>•</span>
-                        <span>All Levels</span>
+                        <span>{t('cart.allLevels', 'All Levels')}</span>
                     </div>
                 </div>
 
@@ -109,7 +111,7 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
                             onClick={handleRemove}
                         >
                             <Trash2 className="w-3 h-3" />
-                            <span>Remove</span>
+                            <span>{t('cart.remove', 'Remove')}</span>
                         </button>
                         {isAuthenticated && (
                             <button
@@ -121,7 +123,7 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
                                 disabled={isMoving}
                             >
                                 <Heart className={`w-3 h-3 ${isWishlist ? 'fill-current' : ''}`} />
-                                <span>{isMoving ? 'Moving...' : 'Move to Wishlist'}</span>
+                                <span>{isMoving ? t('cart.moving', 'Moving...') : t('cart.moveToWishlist', 'Move to Wishlist')}</span>
                             </button>
                         )}
                     </div>

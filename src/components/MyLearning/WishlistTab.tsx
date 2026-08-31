@@ -7,11 +7,13 @@ import { Link } from 'react-router-dom';
 import { Heart, ShoppingCart, Star, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { addToCartAction } from '../../store/slices/courseCartSlice';
+import { useTranslation } from 'react-i18next';
 
 
 import CourseCard from './CourseCard';
 
 const WishlistTab = () => {
+    const { t } = useTranslation();
     const dispatch = useAppDispatch();
     const { wishListItems, loading, error } = useAppSelector((state: RootState) => state.wishList);
     const { cartItems } = useAppSelector((state: RootState) => state.cart);
@@ -25,9 +27,9 @@ const WishlistTab = () => {
         e.stopPropagation();
         try {
             await dispatch(toggleWishlistAction({ course_id: courseId })).unwrap();
-            toast.success("Removed from wishlist");
+            toast.success(t('myLearning.removedFromWishlist', 'Removed from wishlist'));
         } catch (err: any) {
-            toast.error(err || "Failed to remove");
+            toast.error(err || t('myLearning.failedToRemove', 'Failed to remove'));
         }
     };
 
@@ -36,9 +38,9 @@ const WishlistTab = () => {
         e.stopPropagation();
         try {
             await dispatch(addToCartAction({ course_id: courseId })).unwrap();
-            toast.success("Added to cart");
+            toast.success(t('myLearning.addedToCart', 'Added to cart'));
         } catch (err: any) {
-            toast.error(err || "Failed to add to cart");
+            toast.error(err || t('myLearning.failedToAddToCart', 'Failed to add to cart'));
         }
     };
 
@@ -62,15 +64,15 @@ const WishlistTab = () => {
                 <div className="w-16 h-16 bg-indigo-50 rounded-[4px] flex items-center justify-center mx-auto mb-5">
                     <Heart className="w-7 h-7 text-indigo-200" />
                 </div>
-                <h3 className="text-xl font-bold text-[#1D2026] mb-2 tracking-tight">Empty Wishlist</h3>
+                <h3 className="text-xl font-bold text-[#1D2026] mb-2 tracking-tight">{t('myLearning.emptyWishlist', 'Empty Wishlist')}</h3>
                 <p className="text-[#6E7485] text-sm mb-8 px-6 leading-relaxed">
-                    Courses you add to your wishlist will appear here.
+                    {t('myLearning.emptyWishlistDesc', 'Courses you add to your wishlist will appear here.')}
                 </p>
                 <Link
                     to="/"
                     className="inline-flex items-center justify-center px-8 py-3 bg-[#1D2026] text-white text-sm font-bold rounded-[4px] hover:bg-[#5624D0] transition-all shadow-lg hover:shadow-[#5624D0]/20"
                 >
-                    Browse Now
+                    {t('myLearning.browseNow', 'Browse Now')}
                 </Link>
             </div>
         );

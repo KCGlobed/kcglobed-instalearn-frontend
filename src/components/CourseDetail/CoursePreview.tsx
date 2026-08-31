@@ -4,8 +4,10 @@ import { useAppSelector } from '../../hooks/useRedux';
 import type { RootState } from '../../store/store';
 import { useModal } from '../Modals/ModalContext';
 import SampleVideo from '../Modals/SampleVideo';
+import { useTranslation } from 'react-i18next';
 
 const CoursePreview = () => {
+    const { t } = useTranslation();
     const { courseDetail, loading, error } = useAppSelector((state: RootState) => state.courseDetail);
     const { showModal, hideModal } = useModal();
 
@@ -21,7 +23,7 @@ const CoursePreview = () => {
             {/* Main Preview Image */}
             <img
                 src={courseDetail?.image || "/instalogo.png"}
-                alt="Course Preview"
+                alt={t('courseDetail.coursePreview', 'Course Preview')}
                 className="w-full h-full object-cover"
             />
 

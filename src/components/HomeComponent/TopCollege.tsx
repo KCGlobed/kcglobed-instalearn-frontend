@@ -5,8 +5,10 @@ import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { useAppSelector } from "../../hooks/useRedux";
 import { fetchHomepageCategories } from "../../store/slices/homepageCategorySlice";
 import SkeltonLoader from "../Loader/SkeltonLoader";
+import { useTranslation } from "react-i18next";
 
 const TopCollege = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
 
@@ -24,7 +26,7 @@ const TopCollege = () => {
         <section className="w-full bg-[#B8B8B840] py-20 px-6">
             <div className="max-w-[1320px] mx-auto">
                 <h2 className="font-bold text-[#1D2026] mb-10 lg:text-center md:text-left">
-                    Browse Top Category
+                    {t('home.browseTopCategory', 'Browse Top Category')}
                 </h2>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -75,26 +77,26 @@ const TopCollege = () => {
 
                                     <p className="text-[#8C94A3] font-medium leading-none">
                                         {(cat.total_courses || 0).toLocaleString()}{" "}
-                                        Courses
+                                        {t('home.coursesCount', 'Courses')}
                                     </p>
                                 </div>
                             </div>
                         ))
                     ) : (
                         <div className="col-span-full text-center py-10 text-[#8C94A3] bg-white/50 rounded border border-gray-100">
-                            No categories found.
+                            {t('home.noCategoriesFound', 'No categories found.')}
                         </div>
                     )}
                 </div>
 
                 <div className="mt-14 flex flex-wrap items-center justify-center gap-2 text-[#4E5566] text-[16px]">
-                    <p>We have more category and subcategory.</p>
+                    <p>{t('home.moreCategories', 'We have more category and subcategory.')}</p>
 
                     <a
                         href="#"
                         className="text-[#5624D0] font-semibold flex items-center gap-1.5 hover:underline transition-all group"
                     >
-                        Browse All
+                        {t('home.browseAll', 'Browse All')}
 
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </a>

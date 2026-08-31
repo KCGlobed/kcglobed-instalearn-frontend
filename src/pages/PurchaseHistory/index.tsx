@@ -13,6 +13,7 @@ import Footer from '../../layouts/Footer';
 import MainHeader from '../../layouts/MainHeader';
 import TopHeader from '../../layouts/TopHeader';
 import { getPurchaseHistory } from '../../utils/service';
+import { useTranslation } from 'react-i18next';
 
 type OrderedCourse = {
     id: number;
@@ -96,18 +97,19 @@ const StatTile = ({
     </div>
 );
 
-const StatusBadge = ({ paid }: { paid: boolean }) => (
+const StatusBadge = ({ paid, t }: { paid: boolean, t: any }) => (
     <span
         className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-bold ${
             paid ? 'bg-[#EAF7EF] text-[#118A3C]' : 'bg-[#FFF1F1] text-[#C02B2B]'
         }`}
     >
         {paid ? <CheckCircle2 className="h-3.5 w-3.5" /> : <XCircle className="h-3.5 w-3.5" />}
-        {paid ? 'Paid' : 'Unpaid'}
+        {paid ? t('purchaseHistory.paid', 'Paid') : t('purchaseHistory.unpaid', 'Unpaid')}
     </span>
 );
 
 const PurchaseHistory = () => {
+    const { t } = useTranslation();
     const [purchaseHistory, setPurchaseHistory] = useState<PurchaseHistoryItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -179,17 +181,17 @@ const PurchaseHistory = () => {
                 <div className="mb-8 flex flex-col gap-4 border-b border-[#E9EAF0] pb-6 lg:flex-row lg:items-end lg:justify-between">
                     <div>
                         <h1 className="text-[32px] font-bold tracking-tight text-[#1D2026] sm:text-[40px]">
-                            Purchase History
+                            {t('purchaseHistory.purchaseHistory', 'Purchase History')}
                         </h1>
                         <p className="mt-2 max-w-2xl text-[15px] font-medium leading-6 text-[#6E7485]">
-                            Track your course payments, payment status, and order details in one place.
+                            {t('purchaseHistory.trackPayments', 'Track your course payments, payment status, and order details in one place.')}
                         </p>
                     </div>
 
                     <div className="flex w-full items-center justify-between rounded-lg border border-[#E9EAF0] bg-[#F8F9FB] px-4 py-3 sm:w-auto sm:min-w-[260px]">
                         <div>
                             <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#8C94A3]">
-                                Account
+                                {t('purchaseHistory.account', 'Account')}
                             </p>
                             <p className="mt-1 text-[14px] font-bold text-[#1D2026]">{getUserName()}</p>
                         </div>
@@ -200,35 +202,35 @@ const PurchaseHistory = () => {
                 <section className="mb-7 grid grid-cols-1 gap-4 md:grid-cols-3">
                     <StatTile
                         icon={<IndianRupee className="h-5 w-5" />}
-                        label="Paid amount"
+                        label={t('purchaseHistory.paidAmount', 'Paid amount')}
                         value={formatCurrency(totalSpent)}
-                        helper={`${paidOrders} successful payments`}
+                        helper={`${paidOrders} ${paidOrders === 1 ? t('purchaseHistory.successfulPayment', 'successful payment') : t('purchaseHistory.successfulPayments', 'successful payments')}`}
                     />
                     <StatTile
                         icon={<ReceiptText className="h-5 w-5" />}
-                        label="Total orders"
+                        label={t('purchaseHistory.totalOrders', 'Total orders')}
                         value={String(totalOrders)}
-                        helper="Across all purchases"
+                        helper={t('purchaseHistory.acrossAllPurchases', 'Across all purchases')}
                     />
                     <StatTile
                         icon={<Clock3 className="h-5 w-5" />}
-                        label="Pending amount"
+                        label={t('purchaseHistory.pendingAmount', 'Pending amount')}
                         value={formatCurrency(pendingAmount)}
-                        helper="Awaiting payment confirmation"
+                        helper={t('purchaseHistory.awaitingPaymentConfirmation', 'Awaiting payment confirmation')}
                     />
                 </section>
 
                 <section className="overflow-hidden rounded-lg border border-[#E9EAF0] bg-white">
                     <div className="flex flex-col gap-2 border-b border-[#E9EAF0] bg-[#FCFCFD] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
                         <div>
-                            <h2 className="text-[18px] font-bold text-[#1D2026]">Orders</h2>
+                            <h2 className="text-[18px] font-bold text-[#1D2026]">{t('purchaseHistory.orders', 'Orders')}</h2>
                             <p className="mt-1 text-[13px] font-medium text-[#6E7485]">
-                                {totalOrders} records found
+                                {totalOrders} {totalOrders === 1 ? t('purchaseHistory.recordFound', 'record found') : t('purchaseHistory.recordsFound', 'records found')}
                             </p>
                         </div>
                         <div className="inline-flex items-center gap-2 text-[13px] font-semibold text-[#6E7485]">
                             <CalendarDays className="h-4 w-4 text-[#8C94A3]" />
-                            Latest order: {latestOrderDate}
+                            {t('purchaseHistory.latestOrder', 'Latest order')}: {latestOrderDate}
                         </div>
                     </div>
 
@@ -236,7 +238,7 @@ const PurchaseHistory = () => {
                         /* Premium Loader state */
                         <div className="flex flex-col items-center justify-center py-24 text-center">
                             <Loader2 className="h-10 w-10 animate-spin text-[#5624D0]" />
-                            <p className="mt-4 text-sm font-semibold text-[#6E7485]">Fetching your purchase history...</p>
+                            <p className="mt-4 text-sm font-semibold text-[#6E7485]">{t('purchaseHistory.fetchingPurchaseHistory', 'Fetching your purchase history...')}</p>
                         </div>
                     ) : error ? (
                         /* Error state */
@@ -244,13 +246,13 @@ const PurchaseHistory = () => {
                             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-600 mb-4">
                                 <XCircle className="h-6 w-6" />
                             </div>
-                            <h3 className="text-lg font-bold text-[#1d2026]">Failed to load purchase history</h3>
+                            <h3 className="text-lg font-bold text-[#1d2026]">{t('purchaseHistory.failedToLoad', 'Failed to load purchase history')}</h3>
                             <p className="text-[#6e7485] mt-1 max-w-md mx-auto">{error}</p>
                             <button
                                 onClick={handleFetchPurchaseHistory}
                                 className="mt-6 px-4 py-2 bg-[#5624D0] text-white font-bold rounded-lg hover:bg-[#461da5] transition-colors"
                             >
-                                Try Again
+                                {t('purchaseHistory.tryAgain', 'Try Again')}
                             </button>
                         </div>
                     ) : purchaseHistory.length === 0 ? (
@@ -259,9 +261,9 @@ const PurchaseHistory = () => {
                             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#f5f4ff] text-[#5624D0] mb-4">
                                 <ReceiptText className="h-6 w-6" />
                             </div>
-                            <h3 className="text-lg font-bold text-[#1d2026]">No purchase history found</h3>
+                            <h3 className="text-lg font-bold text-[#1d2026]">{t('purchaseHistory.noPurchaseHistory', 'No purchase history found')}</h3>
                             <p className="text-[#6e7485] mt-1 max-w-sm mx-auto">
-                                You haven't made any purchases yet. Your enrolled course records will show up here.
+                                {t('purchaseHistory.noPurchasesYet', "You haven't made any purchases yet. Your enrolled course records will show up here.")}
                             </p>
                         </div>
                     ) : (
@@ -271,11 +273,11 @@ const PurchaseHistory = () => {
                                 <table className="w-full min-w-[1040px] border-collapse text-left">
                                     <thead>
                                         <tr className="border-b border-[#E9EAF0] bg-white text-[12px] font-bold uppercase tracking-[0.06em] text-[#8C94A3]">
-                                            <th className="px-5 py-3.5">Order Info</th>
-                                            <th className="px-5 py-3.5">Customer details</th>
-                                            <th className="px-5 py-3.5">Courses</th>
-                                            <th className="px-5 py-3.5">Payment Details</th>
-                                            <th className="px-5 py-3.5 text-right">Billing Details</th>
+                                            <th className="px-5 py-3.5">{t('purchaseHistory.orderInfo', 'Order Info')}</th>
+                                            <th className="px-5 py-3.5">{t('purchaseHistory.customerDetails', 'Customer details')}</th>
+                                            <th className="px-5 py-3.5">{t('purchaseHistory.courses', 'Courses')}</th>
+                                            <th className="px-5 py-3.5">{t('purchaseHistory.paymentDetails', 'Payment Details')}</th>
+                                            <th className="px-5 py-3.5 text-right">{t('purchaseHistory.billingDetails', 'Billing Details')}</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-[#F3F4F6]">
@@ -295,7 +297,7 @@ const PurchaseHistory = () => {
                                                             {order.razorpay_order_id || 'N/A'}
                                                         </div>
                                                         <div className="mt-3">
-                                                            <StatusBadge paid={isPaid} />
+                                                            <StatusBadge paid={isPaid} t={t} />
                                                         </div>
                                                     </td>
                                                     
@@ -322,7 +324,7 @@ const PurchaseHistory = () => {
                                                                     onClick={() => toggleOrderExpansion(order.id)}
                                                                     className="mt-2 text-[12px] font-bold text-[#5624D0] hover:text-[#461da5] underline flex items-center"
                                                                 >
-                                                                    {isExpanded ? "Show Less" : `+${order.ordered_courses.length - 2} more`}
+                                                                    {isExpanded ? t('purchaseHistory.showLess', "Show Less") : `+${order.ordered_courses.length - 2} ${t('purchaseHistory.more', 'more')}`}
                                                                 </button>
                                                             )}
                                                         </div>
@@ -345,10 +347,10 @@ const PurchaseHistory = () => {
                                                     {/* Billing Details */}
                                                     <td className="px-5 py-5 text-right text-[13px]">
                                                         <div className="text-gray-500">
-                                                            Base: {formatCurrency(order.amount || (order.total_amount - order.gst_amount))}
+                                                            {t('purchaseHistory.base', 'Base:')} {formatCurrency(order.amount || (order.total_amount - order.gst_amount))}
                                                         </div>
                                                         <div className="mt-0.5 text-gray-400">
-                                                            GST: {formatCurrency(order.gst_amount)}
+                                                            {t('purchaseHistory.gst', 'GST:')} {formatCurrency(order.gst_amount)}
                                                         </div>
                                                         <div className="mt-2 text-[16px] font-bold text-[#1D2026]">
                                                             {formatCurrency(order.total_amount)}
@@ -374,35 +376,35 @@ const PurchaseHistory = () => {
                                         <article key={order.id} className="p-4">
                                             <div className="flex items-start justify-between gap-4">
                                                 <div className="min-w-0">
-                                                    <p className="text-[15px] font-bold text-[#1D2026]">Order #{order.id}</p>
+                                                    <p className="text-[15px] font-bold text-[#1D2026]">{t('purchaseHistory.orderHash', 'Order #')}{order.id}</p>
                                                     <p className="mt-1 truncate text-[13px] font-medium text-[#6E7485]">
                                                         {order.razorpay_order_id}
                                                     </p>
                                                 </div>
-                                                <StatusBadge paid={isPaid} />
+                                                <StatusBadge paid={isPaid} t={t} />
                                             </div>
 
                                             <div className="mt-4 grid grid-cols-2 gap-3 rounded-lg bg-[#F8F9FB] p-3">
                                                 <div>
-                                                    <p className="text-[12px] font-bold text-[#8C94A3]">Amount</p>
+                                                    <p className="text-[12px] font-bold text-[#8C94A3]">{t('purchaseHistory.amount', 'Amount')}</p>
                                                     <p className="mt-1 text-[15px] font-bold text-[#1D2026]">
                                                         {formatCurrency(order.total_amount)}
                                                     </p>
                                                 </div>
                                                 <div>
-                                                    <p className="text-[12px] font-bold text-[#8C94A3]">Date</p>
+                                                    <p className="text-[12px] font-bold text-[#8C94A3]">{t('purchaseHistory.date', 'Date')}</p>
                                                     <p className="mt-1 text-[13px] font-semibold text-[#1D2026]">
                                                         {formatDate(order.order_date || order.created_at)}
                                                     </p>
                                                 </div>
                                                 <div>
-                                                    <p className="text-[12px] font-bold text-[#8C94A3]">Payment</p>
+                                                    <p className="text-[12px] font-bold text-[#8C94A3]">{t('purchaseHistory.payment', 'Payment')}</p>
                                                     <p className="mt-1 text-[13px] font-semibold text-[#1D2026]">
                                                         {getPaymentMethod(order.payment_method)}
                                                     </p>
                                                 </div>
                                                 <div>
-                                                    <p className="text-[12px] font-bold text-[#8C94A3]">Status</p>
+                                                    <p className="text-[12px] font-bold text-[#8C94A3]">{t('purchaseHistory.status', 'Status')}</p>
                                                     <p className="mt-1 text-[13px] font-semibold text-[#1D2026]">
                                                         {getSubscriptionStatus(order.subscription_status)}
                                                     </p>
@@ -411,7 +413,7 @@ const PurchaseHistory = () => {
 
                                             <div className="mt-4">
                                                 <p className="mb-2 text-[12px] font-bold uppercase tracking-[0.06em] text-[#8C94A3]">
-                                                    Courses
+                                                    {t('purchaseHistory.courses', 'Courses')}
                                                 </p>
                                                 <div className="space-y-2">
                                                     {coursesToShow?.map((course) => (
@@ -424,7 +426,7 @@ const PurchaseHistory = () => {
                                                             onClick={() => toggleOrderExpansion(order.id)}
                                                             className="text-[13px] font-bold text-[#5624D0] hover:underline block pt-1"
                                                         >
-                                                            {isExpanded ? "Show Less" : `+${order.ordered_courses.length - 2} more`}
+                                                            {isExpanded ? t('purchaseHistory.showLess', "Show Less") : `+${order.ordered_courses.length - 2} ${t('purchaseHistory.more', 'more')}`}
                                                         </button>
                                                     )}
                                                 </div>

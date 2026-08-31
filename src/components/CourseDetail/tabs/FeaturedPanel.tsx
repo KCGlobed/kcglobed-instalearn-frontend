@@ -1,16 +1,18 @@
 import React from 'react';
 import { CheckCircle2, Sparkles } from 'lucide-react';
 import SectionTitle from './SectionTitle';
+import { useTranslation } from 'react-i18next';
 
 const FeaturedPanel: React.FC<{ courseDetail: any }> = ({ courseDetail }) => {
+    const { t } = useTranslation();
     const features: string[] = courseDetail?.feature_json ?? [];
 
     return (
         <div id="tabpanel-Featured" role="tabpanel" aria-labelledby="tab-Featured" className="mb-12">
             <SectionTitle
                 icon={<Sparkles className="w-5 h-5 text-indigo-600" />}
-                title="Course Features"
-                subtitle="Everything included in this course"
+                title={t('courseDetail.courseFeatures', 'Course Features')}
+                subtitle={t('courseDetail.everythingIncluded', 'Everything included in this course')}
             />
 
             {features.length > 0 ? (
@@ -30,7 +32,7 @@ const FeaturedPanel: React.FC<{ courseDetail: any }> = ({ courseDetail }) => {
             ) : (
                 <div className="text-center py-12 text-gray-400 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
                     <Sparkles className="w-10 h-10 mx-auto mb-3 opacity-40" />
-                    <p className="text-sm font-medium">No features listed yet.</p>
+                    <p className="text-sm font-medium">{t('courseDetail.noFeaturesListed', 'No features listed yet.')}</p>
                 </div>
             )}
         </div>

@@ -6,8 +6,10 @@ import SampleVideo from '../../Modals/SampleVideo';
 import { useAppSelector } from '../../../hooks/useRedux';
 import type { RootState } from '../../../store/store';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const CurriculumPanel: React.FC<{ courseDetail: any }> = ({ courseDetail }) => {
+    const { t } = useTranslation();
     const videos = courseDetail?.sample_videos ?? [];
     const chapters = courseDetail?.course_chapters ?? courseDetail?.chapters ?? [];
     const { showModal } = useModal();
@@ -53,14 +55,14 @@ const CurriculumPanel: React.FC<{ courseDetail: any }> = ({ courseDetail }) => {
         <div id="tabpanel-Curriculum" role="tabpanel" aria-labelledby="tab-Curriculum" className="mb-12">
             <SectionTitle
                 icon={<BookOpen className="w-5 h-5 text-indigo-600" />}
-                title="Course Curriculum"
-                subtitle={`${chapters.length} sections • ${videos.length} free preview${videos.length === 1 ? '' : 's'}`}
+                title={t('courseDetail.courseCurriculum', 'Course Curriculum')}
+                subtitle={`${chapters.length} ${t('courseDetail.sections', 'sections')} • ${videos.length} ${t('courseDetail.freePreview', 'free preview')}${videos.length === 1 ? '' : 's'}`}
             />
 
             {/* Free Sample Videos */}
             {videos.length > 0 && (
                 <div className="mb-10">
-                    <h3 className="text-lg font-bold text-gray-900 mb-4">Free Previews</h3>
+                    <h3 className="text-lg font-bold text-gray-900 mb-4">{t('courseDetail.freePreviews', 'Free Previews')}</h3>
                     <ul className="space-y-2">
                         {videos.map((video: any, idx: number) => {
                             const durationSec = Number(video.duration);
@@ -90,7 +92,7 @@ const CurriculumPanel: React.FC<{ courseDetail: any }> = ({ courseDetail }) => {
                                             </span>
                                         )}
                                         <span className="text-xs font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-full">
-                                            Preview
+                                            {t('courseDetail.preview', 'Preview')}
                                         </span>
                                     </button>
                                 </li>
@@ -103,7 +105,7 @@ const CurriculumPanel: React.FC<{ courseDetail: any }> = ({ courseDetail }) => {
             {/* Chapters Accordion */}
             {chapters.length > 0 ? (
                 <div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-4">Course Content</h3>
+                    <h3 className="text-lg font-bold text-gray-900 mb-4">{t('courseDetail.courseContent', 'Course Content')}</h3>
                     <div className="space-y-3">
                         {chapters.map((chapter: any) => {
                             const isOpen = openChapterId === chapter.id;
@@ -122,11 +124,11 @@ const CurriculumPanel: React.FC<{ courseDetail: any }> = ({ courseDetail }) => {
                                                 <ChevronDown className="w-5 h-5 text-gray-500 shrink-0" />
                                             )}
                                             <span className="font-bold text-gray-900 text-[15px]">
-                                                {chapter.chapter_info?.name || "Section"}
+                                                {chapter.chapter_info?.name || t('courseDetail.section', "Section")}
                                             </span>
                                         </div>
                                         <span className="text-sm text-gray-500 font-medium bg-white border border-gray-200 px-3 py-1 rounded-full">
-                                            {lectures.length} {lectures.length === 1 ? 'lecture' : 'lectures'}
+                                            {lectures.length} {lectures.length === 1 ? t('courseDetail.lecture', 'lecture') : t('courseDetail.lectures', 'lectures')}
                                         </span>
                                     </button>
 
@@ -137,7 +139,7 @@ const CurriculumPanel: React.FC<{ courseDetail: any }> = ({ courseDetail }) => {
                                                 const isVideo = lecture.video_info && Object.keys(lecture.video_info).length > 0;
                                                 const isEbook = lecture.ebook_info && Object.keys(lecture.ebook_info).length > 0;
 
-                                                const name = isVideo ? lecture.video_info.name : (isEbook ? lecture.ebook_info.name : "Lecture");
+                                                const name = isVideo ? lecture.video_info.name : (isEbook ? lecture.ebook_info.name : t('courseDetail.lectureCaps', "Lecture"));
 
                                                 const durationSec = Number(lecture.video_info?.video_duration || 0);
                                                 const mins = Math.ceil(durationSec / 60);
@@ -178,12 +180,12 @@ const CurriculumPanel: React.FC<{ courseDetail: any }> = ({ courseDetail }) => {
                                                         {/* Meta */}
                                                         {isVideo && mins > 0 && (
                                                             <span className="text-xs text-gray-500 font-mono whitespace-nowrap bg-gray-100 px-2 py-1 rounded-md">
-                                                                {mins} min
+                                                                {mins} {t('courseDetail.min', 'min')}
                                                             </span>
                                                         )}
                                                         {isEbook && (
                                                             <span className="text-xs text-gray-500 font-mono whitespace-nowrap bg-gray-100 px-2 py-1 rounded-md">
-                                                                PDF
+                                                                {t('courseDetail.pdf', 'PDF')}
                                                             </span>
                                                         )}
                                                     </div>
@@ -200,7 +202,7 @@ const CurriculumPanel: React.FC<{ courseDetail: any }> = ({ courseDetail }) => {
                 !videos.length && (
                     <div className="text-center py-12 text-gray-400 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
                         <BookOpen className="w-10 h-10 mx-auto mb-3 opacity-40" />
-                        <p className="text-sm font-medium">Curriculum details are coming soon.</p>
+                        <p className="text-sm font-medium">{t('courseDetail.curriculumComingSoon', 'Curriculum details are coming soon.')}</p>
                     </div>
                 )
             )}

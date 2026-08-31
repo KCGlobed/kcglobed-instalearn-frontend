@@ -10,6 +10,7 @@ import SkeltonLoader from "../Loader/SkeltonLoader";
 import { getCourseCertificate } from "../../utils/service";
 import toast from "react-hot-toast";
 import { fetchMyCoursesAction } from "../../store/slices/myLearningSlice";
+import { useTranslation } from "react-i18next";
 
 const getPlainTextFromHtml = (html?: string) => {
     if (!html) return "";
@@ -23,6 +24,7 @@ const getPlainTextFromHtml = (html?: string) => {
 };
 
 const RecentlyAddedCourses = () => {
+    const { t } = useTranslation();
     const { cartItems, loading: cartLoading } = useAppSelector((state: RootState) => state.cart);
     const { enrolledCourses } = useAppSelector((state: RootState) => state.myLearning);
     const { isAuthenticated } = useAppSelector((state: RootState) => state.auth);
@@ -118,7 +120,7 @@ const RecentlyAddedCourses = () => {
             <div className="max-w-[1320px] mx-auto">
                 <div className="text-center mb-8">
                     <h2 className="text-[32px] md:text-[40px] font-bold text-[#1D2026] mb-2">
-                        Recently added courses
+                        {t('home.recentlyAddedCourses', 'Recently added courses')}
                     </h2>
                 </div>
 
@@ -208,7 +210,7 @@ const RecentlyAddedCourses = () => {
                                                         {purchasedCourse ? (
                                                             <span className="flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded-sm flex-shrink-0">
                                                                 <CheckCircle2 className="w-2.5 h-2.5 text-green-600" />
-                                                                <span className="text-[9px] font-bold text-green-700 uppercase tracking-wide">Purchased</span>
+                                                                <span className="text-[9px] font-bold text-green-700 uppercase tracking-wide">{t('home.purchased', 'Purchased')}</span>
                                                             </span>
                                                         ) : (
                                                             <span className="text-[#FF6636] font-bold text-[18px] flex-shrink-0">₹{course.price}</span>
@@ -233,7 +235,7 @@ const RecentlyAddedCourses = () => {
                                                         </div>
                                                         <div className="flex items-center gap-1 text-[13px] text-[#8C94A3]">
                                                             <span className="text-[#4E5566] font-semibold">1400</span>
-                                                            <span>students</span>
+                                                            <span>{t('home.students', 'students')}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -266,7 +268,7 @@ const RecentlyAddedCourses = () => {
                                                                 // ── Purchased: small badge top-right ──
                                                                 <span className="flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 border border-green-200 rounded-sm flex-shrink-0">
                                                                     <CheckCircle2 className="w-2.5 h-2.5 text-green-600" />
-                                                                    <span className="text-[9px] font-bold text-green-700 uppercase tracking-wide">Purchased</span>
+                                                                    <span className="text-[9px] font-bold text-green-700 uppercase tracking-wide">{t('home.purchased', 'Purchased')}</span>
                                                                 </span>
                                                             ) : (
                                                                 // ── Not purchased: show price top-right ──
@@ -359,7 +361,7 @@ const RecentlyAddedCourses = () => {
                                                                     className="w-full py-2.5 bg-indigo-600 text-white flex items-center justify-center gap-2 font-bold hover:bg-indigo-700 transition-all text-sm"
                                                                 >
                                                                     <PlayCircle className="w-4 h-4" />
-                                                                    {purchasedCourse.progress > 0 ? "Continue Learning" : "Start Learning"}
+                                                                    {purchasedCourse.progress > 0 ? t('home.continueLearning', 'Continue Learning') : t('home.startLearning', 'Start Learning')}
                                                                 </button>
 
                                                                 {/* Download Certificate — only when progress ≥ 50% */}
@@ -370,7 +372,7 @@ const RecentlyAddedCourses = () => {
                                                                         className="w-full py-2.5 border-2 border-indigo-600 text-indigo-600 flex items-center justify-center gap-2 font-bold hover:bg-indigo-50 transition-all text-sm disabled:opacity-60"
                                                                     >
                                                                         <Award className="w-4 h-4" />
-                                                                        {downloadingCertId === course.id ? "Downloading..." : "Download Certificate"}
+                                                                        {downloadingCertId === course.id ? t('home.downloading', 'Downloading...') : t('home.downloadCertificate', 'Download Certificate')}
                                                                     </button>
                                                                 )}
                                                             </>
@@ -391,7 +393,7 @@ const RecentlyAddedCourses = () => {
                                                                         ) : (
                                                                             <>
                                                                                 <ShoppingCart className="w-4 h-4" />
-                                                                                Add To Cart
+                                                                                {t('home.addToCart', 'Add To Cart')}
                                                                             </>
                                                                         )}
                                                                     </button>
@@ -401,7 +403,7 @@ const RecentlyAddedCourses = () => {
                                                                         className="w-full py-2.5 bg-green-600 text-white font-bold hover:bg-green-700 transition-all flex items-center justify-center gap-2 text-sm"
                                                                     >
                                                                         <ShoppingCart className="w-4 h-4" />
-                                                                        Go to Cart
+                                                                        {t('home.goToCart', 'Go to Cart')}
                                                                     </button>
                                                                 )}
                                                             </>
@@ -412,7 +414,7 @@ const RecentlyAddedCourses = () => {
                                                             onClick={(e) => { e.stopPropagation(); navigate(`/courses/detail/${course?.id}`); }}
                                                             className="w-full py-2.5 bg-[#EBEBFF] text-[#5624D0] font-bold hover:bg-white hover:border-[#5624D0] border border-transparent transition-all text-sm"
                                                         >
-                                                            Course Detail
+                                                            {t('home.courseDetail', 'Course Detail')}
                                                         </button>
                                                     </div>
                                                 </div>
@@ -422,7 +424,7 @@ const RecentlyAddedCourses = () => {
                                 );
                             })
                         ) : (
-                            <div className="col-span-full text-center py-20 text-[#8C94A3]">No courses found.</div>
+                            <div className="col-span-full text-center py-20 text-[#8C94A3]">{t('home.noCoursesFound', 'No courses found.')}</div>
                         )}
                     </div>
                 )}
@@ -433,7 +435,7 @@ const RecentlyAddedCourses = () => {
                         onClick={() => navigate("/courses")}
                         className="px-10 py-3.5 bg-[#FFEEE8] text-[#FF6636] font-bold inline-flex items-center gap-2 hover:bg-[#FF6636] hover:text-white transition-all transform active:scale-95"
                     >
-                        Browse All Course
+                        {t('home.browseAllCourse', 'Browse All Course')}
                         <ChevronRight className="w-5 h-5" />
                     </button>
                 </div>

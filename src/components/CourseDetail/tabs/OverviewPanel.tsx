@@ -1,17 +1,20 @@
 import React from 'react';
 import { BookOpen, CheckCircle2, ChevronRight } from 'lucide-react';
 import SectionTitle from './SectionTitle';
+import { useTranslation } from 'react-i18next';
 
-const OverviewPanel: React.FC<{ courseDetail: any }> = ({ courseDetail }) => (
-    <div id="tabpanel-Overview" role="tabpanel" aria-labelledby="tab-Overview" className="space-y-10 mb-12">
+const OverviewPanel: React.FC<{ courseDetail: any }> = ({ courseDetail }) => {
+    const { t } = useTranslation();
+    return (
+        <div id="tabpanel-Overview" role="tabpanel" aria-labelledby="tab-Overview" className="space-y-10 mb-12">
 
         {/* What you'll learn */}
         {courseDetail?.objectives_summary?.length > 0 && (
             <div className="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 rounded-2xl p-6">
                 <SectionTitle
                     icon={<CheckCircle2 className="w-5 h-5 text-indigo-600" />}
-                    title="What you'll learn"
-                    subtitle="Skills and knowledge you'll gain from this course"
+                    title={t('courseDetail.whatYouWillLearn', "What you'll learn")}
+                    subtitle={t('courseDetail.skillsAndKnowledge', "Skills and knowledge you'll gain from this course")}
                 />
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {courseDetail.objectives_summary.map((obj: string, i: number) => (
@@ -28,12 +31,12 @@ const OverviewPanel: React.FC<{ courseDetail: any }> = ({ courseDetail }) => (
         <div>
             <SectionTitle
                 icon={<BookOpen className="w-5 h-5 text-indigo-600" />}
-                title="Course Description"
+                title={t('courseDetail.courseDescription', 'Course Description')}
             />
             <div
                 className="text-gray-600 text-[15px] leading-relaxed space-y-4 [&_p]:mb-3"
                 dangerouslySetInnerHTML={{
-                    __html: courseDetail?.description || 'No description available.',
+                    __html: courseDetail?.description || t('courseDetail.noDescriptionAvailable', 'No description available.'),
                 }}
             />
         </div>
@@ -43,8 +46,8 @@ const OverviewPanel: React.FC<{ courseDetail: any }> = ({ courseDetail }) => (
             <div className="bg-amber-50 border border-amber-100 rounded-2xl p-6">
                 <SectionTitle
                     icon={<ChevronRight className="w-5 h-5 text-amber-600" />}
-                    title="Requirements"
-                    subtitle="What you need before starting"
+                    title={t('courseDetail.requirements', 'Requirements')}
+                    subtitle={t('courseDetail.whatYouNeedBeforeStarting', 'What you need before starting')}
                 />
                 <div
                     className="text-gray-700 text-sm leading-relaxed"
@@ -53,6 +56,7 @@ const OverviewPanel: React.FC<{ courseDetail: any }> = ({ courseDetail }) => (
             </div>
         )}
     </div>
-);
+    );
+};
 
 export default OverviewPanel;

@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { markCourseStartedApi } from '../../utils/service';
+import { useTranslation } from 'react-i18next';
 
 const MyCommitment = () => {
+    const { t } = useTranslation();
     const location = useLocation();
     const navigate = useNavigate();
     const course = location.state?.course;
 
-    const courseName = course?.name || "Introduction to Technical Writing";
+    const courseName = course?.name || t('myCommitment.defaultCourseName', "Introduction to Technical Writing");
     const courseId = course?.id || "";
 
     const [isCommitted, setIsCommitted] = useState(true);
@@ -35,13 +37,13 @@ const MyCommitment = () => {
             }, 400); // matches transition duration
         } catch (error: any) {
             setIsLoading(false);
-            const errorMessage = error?.message || "Failed to start the course. Please try again.";
+            const errorMessage = error?.message || t('myCommitment.failedToStart', "Failed to start the course. Please try again.");
             toast.error(errorMessage);
         }
     };
 
-    const leftStrategies = ["Take a breath", "Break it down", "Ask for help"];
-    const rightStrategies = ["Research", "Stay positive", "Talk through it"];
+    const leftStrategies = [t('myCommitment.takeABreath', "Take a breath"), t('myCommitment.breakItDown', "Break it down"), t('myCommitment.askForHelp', "Ask for help")];
+    const rightStrategies = [t('myCommitment.research', "Research"), t('myCommitment.stayPositive', "Stay positive"), t('myCommitment.talkThroughIt', "Talk through it")];
 
     return (
         <div className={`min-h-screen bg-[#f8f9fa] font-inter flex flex-col transition-all duration-400 ease-in-out ${isExiting ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}`}>
@@ -63,20 +65,20 @@ const MyCommitment = () => {
                 <div className="max-w-[680px] w-full bg-white border border-gray-200 rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.05)] p-8 md:p-14">
                     
                     <h1 className="text-[28px] md:text-[32px] font-semibold text-gray-900 leading-tight mb-8 tracking-tight font-sans">
-                        My commitment
+                        {t('myCommitment.myCommitment', 'My commitment')}
                     </h1>
 
                     <div className="space-y-6 text-[15px] md:text-[16px] text-gray-700 leading-relaxed">
                         <p className="text-gray-950 font-medium">
-                            I'm beginning my learning in <span className="text-gray-900 font-bold underline decoration-gray-300 decoration-2 underline-offset-4">{courseName}</span>
+                            {t('myCommitment.beginningLearningIn', "I'm beginning my learning in")} <span className="text-gray-900 font-bold underline decoration-gray-300 decoration-2 underline-offset-4">{courseName}</span>
                         </p>
 
                         <p className="text-gray-600">
-                            I know learning can be hard, but I have the patience, determination, and discipline to reach my goals.
+                            {t('myCommitment.learningCanBeHard', "I know learning can be hard, but I have the patience, determination, and discipline to reach my goals.")}
                         </p>
 
                         <p className="text-gray-950 font-medium pt-2">
-                            When I'm stuck, I'll find a solution, like...
+                            {t('myCommitment.whenImStuck', "When I'm stuck, I'll find a solution, like...")}
                         </p>
                     </div>
 
@@ -111,7 +113,7 @@ const MyCommitment = () => {
                                 className="w-5 h-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer mt-0.5 accent-indigo-600 disabled:opacity-50"
                             />
                             <span className="text-indigo-600 font-semibold text-[15px] hover:underline leading-normal">
-                                I commit to completing this course
+                                {t('myCommitment.iCommit', 'I commit to completing this course')}
                             </span>
                         </label>
                     </div>
@@ -133,10 +135,10 @@ const MyCommitment = () => {
                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                                     </svg>
-                                    <span>Starting...</span>
+                                    <span>{t('myCommitment.starting', 'Starting...')}</span>
                                 </div>
                             ) : (
-                                "Start the course"
+                                t('myCommitment.startTheCourse', "Start the course")
                             )}
                         </button>
                     </div>

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
     Bell,
     Heart,
@@ -37,6 +38,7 @@ const formatTimeAgo = (dateString: string) => {
 // ─── Browse Dropdown ──────────────────────────────────────────────────────────
 
 const BrowseDropdown = () => {
+    const { t } = useTranslation();
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const { categories } = useSelector((state: RootState) => state.homepageCategory);
@@ -70,7 +72,7 @@ const BrowseDropdown = () => {
                 aria-expanded={open}
                 aria-haspopup="listbox"
             >
-                Browse
+                {t('header.browse', 'Browse')}
                 <ChevronDown
                     className="w-4 h-4 transition-transform duration-200"
                     style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
@@ -96,7 +98,7 @@ const BrowseDropdown = () => {
                 >
                     <div className="px-3 pt-3 pb-1">
                         <span className="text-[10px] font-semibold text-[#8C94A3] uppercase tracking-widest">
-                            Categories
+                            {t('header.categories', 'Categories')}
                         </span>
                     </div>
                     <ul className="py-1">
@@ -140,6 +142,7 @@ const MobileDrawer = ({
     onClose: () => void;
     onSignIn: () => void;
 }) => {
+    const { t } = useTranslation();
     const { categories } = useSelector((state: RootState) => state.homepageCategory);
     const { unreadCount } = useAppSelector((state: RootState) => state.notification);
     const navigate = useNavigate();
@@ -195,7 +198,7 @@ const MobileDrawer = ({
                 <div className="flex-1 overflow-y-auto">
                     <div className="px-4 pt-4 pb-2">
                         <span className="text-[10px] font-semibold text-[#8C94A3] uppercase tracking-widest">
-                            Browse Categories
+                            {t('header.browse', 'Browse')} {t('header.categories', 'Categories')}
                         </span>
                     </div>
                     <ul>
@@ -227,7 +230,7 @@ const MobileDrawer = ({
                             <div className="flex items-center gap-3">
                                 <Bell className="w-4 h-4 text-[#8C94A3] group-hover:text-[#5624D0] transition-colors shrink-0" />
                                 <span className="text-[14px] font-medium text-[#1D2026] group-hover:text-[#5624D0] transition-colors">
-                                    Notifications
+                                    {t('header.notifications', 'Notifications')}
                                 </span>
                             </div>
                             {unreadCount > 0 && (
@@ -254,6 +257,7 @@ const MobileDrawer = ({
 
 // ─── Notification Dropdown ───────────────────────────────────────────────────
 const NotificationDropdown = () => {
+    const { t } = useTranslation();
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
@@ -306,7 +310,7 @@ const NotificationDropdown = () => {
                     }}
                 >
                     <div className="px-5 py-4 border-b border-[#E9EAF0] flex justify-between items-center bg-[#fcfcfd] rounded-t-[10px]">
-                        <span className="text-[15px] font-bold text-[#1D2026]">Notifications</span>
+                        <span className="text-[15px] font-bold text-[#1D2026]">{t('header.notifications', 'Notifications')}</span>
                         <button
                             className="text-[12px] font-semibold text-[#5624D0] hover:underline"
                             onClick={() => {
@@ -378,6 +382,7 @@ const NotificationDropdown = () => {
 
 // ─── Wishlist Dropdown ───────────────────────────────────────────────────────
 const WishlistDropdown = () => {
+    const { t } = useTranslation();
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const { wishListItems, loading } = useAppSelector((state: RootState) => state.wishList);
@@ -426,7 +431,7 @@ const WishlistDropdown = () => {
                     }}
                 >
                     <div className="px-5 py-4 border-b border-[#E9EAF0] bg-[#fcfcfd] rounded-t-[10px]">
-                        <span className="text-[15px] font-bold text-[#1D2026]">Wishlist</span>
+                        <span className="text-[15px] font-bold text-[#1D2026]">{t('header.wishlist', 'Wishlist')}</span>
                     </div>
 
                     <div className="max-h-[320px] overflow-y-auto">
@@ -468,6 +473,7 @@ const WishlistDropdown = () => {
 
 // ─── Cart Dropdown ───────────────────────────────────────────────────────────
 const CartDropdown = () => {
+    const { t } = useTranslation();
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const { cartItems: cart, loading: cartLoading, error: cartError } = useAppSelector((state: RootState) => state.cart);
@@ -524,7 +530,7 @@ const CartDropdown = () => {
                     }}
                 >
                     <div className="px-5 py-4 border-b border-[#E9EAF0] bg-[#fcfcfd] rounded-t-[10px]">
-                        <span className="text-[15px] font-bold text-[#1D2026]">Cart</span>
+                        <span className="text-[15px] font-bold text-[#1D2026]">{t('header.cart', 'Cart')}</span>
                     </div>
 
                     <div className="max-h-[320px] overflow-y-auto">
@@ -566,6 +572,7 @@ const CartDropdown = () => {
 
 // ─── Profile Dropdown ────────────────────────────────────────────────────────
 const ProfileDropdown = () => {
+    const { t } = useTranslation();
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const dispatch = useAppDispatch();
@@ -620,10 +627,10 @@ const ProfileDropdown = () => {
 
                     {/* Group 1 */}
                     <div className="py-1">
-                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/my-learning'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">My Learning</a>
-                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/cart'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">My Cart</a>
-                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/my-learning?tab=wishlist'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Wishlist</a>
-                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/purchase-history'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Purchase History</a>
+                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/my-learning'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">{t('header.myLearning', 'My Learning')}</a>
+                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/cart'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">{t('header.cart', 'My Cart')}</a>
+                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/my-learning?tab=wishlist'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">{t('header.wishlist', 'Wishlist')}</a>
+                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/purchase-history'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">{t('header.purchaseHistory', 'Purchase History')}</a>
                     </div>
 
                     {/* <div className="h-px bg-[#E9EAF0] my-1 mx-5" /> */}
@@ -639,7 +646,7 @@ const ProfileDropdown = () => {
                     {/* Group 3 */}
                     <div className="py-1">
                         <a href="#" onClick={(e) => { e.preventDefault(); navigate('/notifications'); setOpen(false); }} className="flex justify-between items-center px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">
-                            <span>Notifications</span>
+                            <span>{t('header.notifications', 'Notifications')}</span>
                             {unreadCount > 0 && <span className="px-1.5 py-0.5 bg-[#FF4B2B] text-white text-[10px] font-bold rounded-full">{unreadCount}</span>}
                         </a>
                         <a href="#" onClick={(e) => { e.preventDefault(); navigate('/profile?tab=notifications'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Notification Preferences</a>
@@ -650,9 +657,9 @@ const ProfileDropdown = () => {
 
                     {/* Group 4 */}
                     <div className="py-1 pb-2">
-                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/profile?tab=profile'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Account Settings</a>
+                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('/profile?tab=profile'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">{t('header.accountSettings', 'Account Settings')}</a>
                         {/* <a href="#" onClick={(e) => { e.preventDefault(); navigate('/profile?tab=payment'); setOpen(false); }} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Payment Methods</a> */}
-                        <a href="#" onClick={(e) => onLogoutClick()} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">Log out</a>
+                        <a href="#" onClick={(e) => onLogoutClick()} className="block px-5 py-2.5 text-[14px] font-medium text-[#1D2026] hover:bg-[#F5F4FF] hover:text-[#5624D0] transition-colors">{t('header.logout', 'Log out')}</a>
                     </div>
                 </div>
             )}
@@ -663,6 +670,7 @@ const ProfileDropdown = () => {
 // ─── MainHeader ───────────────────────────────────────────────────────────────
 
 const MainHeader = () => {
+    const { t } = useTranslation();
     const [drawerOpen, setDrawerOpen] = useState(false);
     const navigate = useNavigate();
     const { isAuthenticated } = useAppSelector((s: RootState) => s.auth);
@@ -737,8 +745,8 @@ const MainHeader = () => {
                             <ProfileDropdown />
                         ) : (
                             <>
-                                <Button onClick={() => useNavigate()} variant="secondary" title="Sign Up" className="h-[38px] px-4 !rounded-sm text-[13px]" />
-                                <Button variant="primary" title="Sign In" className="h-[38px] px-4 !rounded-sm text-[13px]"
+                                <Button onClick={() => navigate('/signup')} variant="secondary" title={t('header.signUp', 'Sign Up')} className="h-[38px] px-4 !rounded-sm text-[13px]" />
+                                <Button variant="primary" title={t('header.signIn', 'Sign In')} className="h-[38px] px-4 !rounded-sm text-[13px]"
                                     onClick={handleSignIn}
                                 />
                             </>
@@ -787,13 +795,13 @@ const MainHeader = () => {
                             <>
                                 <Button
                                     variant="secondary"
-                                    title="Sign Up"
+                                    title={t('header.signUp', 'Sign Up')}
                                     onClick={() => navigate('/signup')}
                                     className="h-[44px] px-5 !rounded-sm"
                                 />
                                 <Button
                                     variant="primary"
-                                    title="Sign In"
+                                    title={t('header.signIn', 'Sign In')}
                                     onClick={handleSignIn}
                                     className="h-[44px] px-5 !rounded-sm"
                                 />

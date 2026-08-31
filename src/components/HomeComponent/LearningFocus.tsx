@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { GraduationCap, Award, TrendingUp, Settings2, ArrowRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const learningFocuses = [
     {
@@ -35,7 +36,16 @@ const learningFocuses = [
 ];
 
 const LearningFocus = () => {
-    const [activeFocus, setActiveFocus] = useState(learningFocuses[0]);
+    const { t } = useTranslation();
+
+    const translatedFocuses = learningFocuses.map(focus => ({
+        ...focus,
+        title: t(`home.focusTitle${focus.id}`, focus.title),
+        description: t(`home.focusDesc${focus.id}`, focus.description),
+        link: focus.link ? t(`home.focusLink${focus.id}`, focus.link) : undefined
+    }));
+
+    const [activeFocus, setActiveFocus] = useState(translatedFocuses[0]);
 
     return (
         <section className="bg-[#FFFFFE] py-12 md:py-16 px-4 xl:px-0 overflow-hidden">
@@ -43,11 +53,10 @@ const LearningFocus = () => {
                 {/* Header */}
                 <div className="text-center mb-7 px-4">
                     <h2 className="text-[20px] md:text-[24px] lg:text-[26px] font-bold text-[#1D2026] mb-2.5 leading-tight">
-                        Focused Learning for Your Success.
+                        {t('home.focusedLearning', 'Focused Learning for Your Success.')}
                     </h2>
                     <p className="text-[#6E7485] text-[12px] md:text-[13px] max-w-[600px] mx-auto leading-relaxed">
-                        Our features are thoughtfully designed for more practical and productive
-                        learning, making it easier for you, your team, or your organization to achieve outcomes and thrive.
+                        {t('home.focusedLearningDesc', 'Our features are thoughtfully designed for more practical and productive learning, making it easier for you, your team, or your organization to achieve outcomes and thrive.')}
                     </p>
                 </div>
 
@@ -56,7 +65,7 @@ const LearningFocus = () => {
 
                     {/* Left: Cards */}
                     <div className="w-full lg:w-[42%] flex flex-col gap-2">
-                        {learningFocuses.map((focus) => {
+                        {translatedFocuses.map((focus) => {
                             const isActive = activeFocus.id === focus.id;
                             return (
                                 <div
@@ -111,7 +120,7 @@ const LearningFocus = () => {
                             <div className="absolute inset-0 border-[6px] md:border-[8px] border-[#1D2026]/5 rounded-xl pointer-events-none z-10" />
 
                             {/* Images */}
-                            {learningFocuses.map((focus) => (
+                            {translatedFocuses.map((focus) => (
                                 <img
                                     key={focus.id}
                                     src={focus.image}
@@ -131,7 +140,7 @@ const LearningFocus = () => {
                                 <TrendingUp className="w-4 h-4 text-green-600" />
                             </div>
                             <div>
-                                <p className="text-[10px] text-[#6E7485] font-medium leading-none mb-1">Monthly Increase</p>
+                                <p className="text-[10px] text-[#6E7485] font-medium leading-none mb-1">{t('home.monthlyIncrease', 'Monthly Increase')}</p>
                                 <p className="text-[13px] font-bold text-[#1D2026] leading-none">+24.5%</p>
                             </div>
                         </div>

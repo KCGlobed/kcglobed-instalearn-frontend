@@ -12,6 +12,7 @@ import { fetchCourseById } from '../../store/slices/courseDetailSlice';
 import { fetchMyCoursesAction } from '../../store/slices/myLearningSlice';
 import _Slider from 'react-slick';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import RecommendationCard from '../../components/Cart/RecommendationCard';
@@ -21,6 +22,7 @@ const Slider = (_Slider as any).default || _Slider;
 
 
 const CourseDetail = () => {
+    const { t } = useTranslation();
     const { id } = useParams();
     const { courseDetail, loading, error } = useAppSelector((state: RootState) => state.courseDetail);
     const dispatch = useAppDispatch();
@@ -100,7 +102,7 @@ const CourseDetail = () => {
                 {recommendedCourses.length > 0 && (
                     <section className="mt-16">
                         <div className="flex items-center justify-between mb-5">
-                            <h2 className="text-[18px] font-bold tracking-tight">You might also like</h2>
+                            <h2 className="text-[18px] font-bold tracking-tight">{t('cart.youMightAlsoLike', 'You might also like')}</h2>
                             <div className="flex items-center gap-1">
                                 <button
                                     onClick={() => (sliderRef.current as any)?.slickPrev()}

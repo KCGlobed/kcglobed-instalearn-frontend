@@ -12,6 +12,7 @@ import RecommendationCard from '../../components/Cart/RecommendationCard';
 import { getRelatedCourseApi } from '../../utils/service';
 import _Slider from 'react-slick';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
@@ -19,6 +20,7 @@ import 'slick-carousel/slick/slick-theme.css';
 const Slider = (_Slider as any).default || _Slider;
 
 const Cart = () => {
+    const { t } = useTranslation();
     const dispatch = useAppDispatch();
     const { cartItems: cart, loading } = useAppSelector((state: RootState) => state.cart);
     const { isAuthenticated } = useAppSelector((state: RootState) => state.auth);
@@ -97,8 +99,8 @@ const Cart = () => {
             <MainHeader />
             <div className="min-h-screen bg-white font-['Inter',_sans-serif] text-[#1c1d1f]">
                 <main className="max-w-[1200px] mx-auto px-4 py-8 lg:px-6">
-                    <h1 className="text-[24px] font-bold mb-1 tracking-tight">Shopping Cart</h1>
-                    <p className="text-[13px] font-semibold mb-6">{cart.length} Courses in Cart</p>
+                    <h1 className="text-[24px] font-bold mb-1 tracking-tight">{t('cart.shoppingCart', 'Shopping Cart')}</h1>
+                    <p className="text-[13px] font-semibold mb-6">{t('cart.coursesInCart', '{{count}} Courses in Cart', { count: cart.length })}</p>
 
                     <div className="flex flex-col lg:flex-row gap-8">
                         {/* Left Side: Course List */}
@@ -130,7 +132,7 @@ const Cart = () => {
                     {recommendedCourses.length > 0 && (
                         <section className="mt-16">
                             <div className="flex items-center justify-between mb-5">
-                                <h2 className="text-[18px] font-bold tracking-tight">You might also like</h2>
+                                <h2 className="text-[18px] font-bold tracking-tight">{t('cart.youMightAlsoLike', 'You might also like')}</h2>
                                 <div className="flex items-center gap-1">
                                     <button
                                         onClick={() => (sliderRef.current as any)?.slickPrev()}

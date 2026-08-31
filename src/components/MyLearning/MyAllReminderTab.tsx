@@ -23,6 +23,7 @@ import { LearningRemiderForm } from '../Forms/LearningRemiderForm';
 import toast from 'react-hot-toast';
 import DeleteModal from '../Modals/DeleteModal';
 import SkeltonLoader from '../Loader/SkeltonLoader';
+import { useTranslation } from 'react-i18next';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type FrequencyType = 'Daily' | 'Weekly' | 'Once';
@@ -59,6 +60,7 @@ const formatDaysDisplay = (days: string): string => {
 };
 
 const MyAllReminderTab = () => {
+    const { t } = useTranslation();
     const dispatch = useAppDispatch();
     const { showModal } = useModal();
     const { reminders, loading, error } = useAppSelector((state: RootState) => state.reminders);
@@ -90,7 +92,7 @@ const MyAllReminderTab = () => {
 
         const courseName = typeof reminder.course === 'object' && reminder.course !== null
             ? reminder.course.name
-            : 'Unknown Course';
+            : t('myLearning.unknownCourse', 'Unknown Course');
 
         showModal({
             content: (
@@ -112,17 +114,17 @@ const MyAllReminderTab = () => {
         showModal({
             content: (
                 <DeleteModal
-                    title="Delete Study Reminder"
-                    description={`Are you sure you want to delete the study reminder "${reminder.title}"?`}
-                    confirmText="Delete"
+                    title={t('myLearning.deleteStudyReminder', 'Delete Study Reminder')}
+                    description={t('myLearning.deleteReminderConfirm', 'Are you sure you want to delete the study reminder "{{title}}"?', { title: reminder.title })}
+                    confirmText={t('myLearning.delete', 'Delete')}
                     onConfirm={async () => {
                         try {
                             await dispatch(deleteReminder(reminder.id)).unwrap();
-                            toast.success('Reminder deleted successfully!');
+                            toast.success(t('myLearning.reminderDeleted', 'Reminder deleted successfully!'));
                             dispatch(fetchReminders());
                         } catch (err: any) {
                             console.error('Failed to delete reminder', err);
-                            toast.error(err?.message || 'Failed to delete reminder');
+                            toast.error(err?.message || t('myLearning.failedToDeleteReminder', 'Failed to delete reminder'));
                             throw err;
                         }
                     }}
@@ -142,7 +144,7 @@ const MyAllReminderTab = () => {
     if (error && reminders.length === 0) {
         return (
             <div className="py-16 text-center border border-red-200 bg-red-50/20 rounded-[4px]">
-                <p className="text-sm font-semibold text-red-600">Failed to load reminders: {error}</p>
+                <p className="text-sm font-semibold text-red-600">{t('myLearning.failedToLoadReminders', 'Failed to load reminders: {{error}}', { error })}</p>
             </div>
         );
     }
@@ -153,15 +155,15 @@ const MyAllReminderTab = () => {
                 <div className="w-16 h-16 bg-indigo-50 rounded-[4px] flex items-center justify-center mx-auto mb-5">
                     <Bell className="w-7 h-7 text-indigo-200" />
                 </div>
-                <h3 className="text-xl font-bold text-[#1D2026] mb-2 tracking-tight">No reminders scheduled</h3>
+                <h3 className="text-xl font-bold text-[#1D2026] mb-2 tracking-tight">{t('myLearning.noReminders', 'No reminders scheduled')}</h3>
                 <p className="text-[#6E7485] text-sm mb-8 px-6 leading-relaxed">
-                    Set study reminders on your courses to build a learning habit.
+                    {t('myLearning.setStudyReminders', 'Set study reminders on your courses to build a learning habit.')}
                 </p>
                 <Link
                     to="/"
                     className="inline-flex items-center justify-center px-8 py-3 bg-[#1D2026] text-white text-sm font-bold rounded-[4px] hover:bg-[#5624D0] transition-all shadow-lg hover:shadow-[#5624D0]/20"
                 >
-                    Explore Courses
+                    {t('myLearning.exploreCourses', 'Explore Courses')}
                 </Link>
             </div>
         );
@@ -170,11 +172,12 @@ const MyAllReminderTab = () => {
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-in fade-in duration-700 font-inter">
             {reminders.map(reminder => {
-                const freq: FrequencyType = FREQUENCY_LABELS[reminder.frequency] ?? 'Daily';
+                const freqRaw: FrequencyType = FREQUENCY_LABELS[reminder.frequency] ?? 'Daily';
+                const freq = freqRaw === 'Daily' ? t('myLearning.daily', 'Daily') : (freqRaw === 'Weekly' ? t('myLearning.weekly', 'Weekly') : t('myLearning.once', 'Once'));
                 const formattedTime = formatTimeString(reminder.time);
                 const courseName = typeof reminder.course === 'object' && reminder.course !== null
                     ? reminder.course.name
-                    : 'Unknown Course';
+                    : t('myLearning.unknownCourse', 'Unknown Course');
 
                 return (
                     <div
@@ -196,14 +199,14 @@ const MyAllReminderTab = () => {
                                     <span>{freq}</span>
                                 </div>
                                 {/* Show days for Weekly */}
-                                {freq === 'Weekly' && reminder.days && (
+                                {freqRaw === 'Weekly' && reminder.days && (
                                     <div className="flex items-center gap-2 text-[#5624D0]">
                                         <CheckCircle2 size={13} />
                                         <span className="text-[11px]">{formatDaysDisplay(reminder.days)}</span>
                                     </div>
                                 )}
                                 {/* Show date for Once */}
-                                {freq === 'Once' && reminder.date && (
+                                {freqRaw === 'Once' && reminder.date && (
                                     <div className="flex items-center gap-2 text-[#5624D0]">
                                         <CalendarDays size={13} />
                                         <span className="text-[11px]">{reminder.date}</span>
@@ -213,7 +216,7 @@ const MyAllReminderTab = () => {
                         </div>
 
                         <div className="text-[12px] text-[#6E7485] font-medium leading-relaxed mt-auto pt-3 border-t border-[#F1F2F4]">
-                            <p className="mb-0.5 text-[11px]">Added to calendar</p>
+                            <p className="mb-0.5 text-[11px]">{t('myLearning.addedToCalendar', 'Added to calendar')}</p>
                             <p className="text-[#1D2026] font-semibold truncate" title={courseName}>{courseName}</p>
                         </div>
 
@@ -238,14 +241,14 @@ const MyAllReminderTab = () => {
                                         className="w-full text-left px-3.5 py-2 hover:bg-[#F1F2F4] transition-colors flex items-center gap-2 text-[#1D2026]"
                                     >
                                         <Pencil size={12} />
-                                        <span>Edit</span>
+                                        <span>{t('myLearning.edit', 'Edit')}</span>
                                     </button>
                                     <button
                                         onClick={() => handleDeleteReminder(reminder)}
                                         className="w-full text-left px-3.5 py-2 hover:bg-[#F1F2F4] transition-colors flex items-center gap-2 text-[#E23E3E]"
                                     >
                                         <Trash2 size={12} />
-                                        <span>Delete</span>
+                                        <span>{t('myLearning.delete', 'Delete')}</span>
                                     </button>
                                 </div>
                             )}

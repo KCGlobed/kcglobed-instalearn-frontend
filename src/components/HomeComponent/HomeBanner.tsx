@@ -1,4 +1,5 @@
 import { ArrowRight } from "lucide-react"
+import { useTranslation } from "react-i18next"
 import Button from "../Button"
 import public_speaker from "../../assets/public_speaker.svg"
 import career from "../../assets/career.svg"
@@ -6,28 +7,29 @@ import thinking from "../../assets/thinking.svg"
 
 
 const HomeBanner = () => {
+    const { t } = useTranslation();
     return (
         <div className="banner px-4 md:px-8 xl:px-0">
             <div className="max-w-[1200px] mx-auto overflow-hidden lg:overflow-visible">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-0 items-center">
                     <div className="banner-content flex flex-col">
                         <h1 className="text-[32px] md:text-[44px] lg:text-[52px] font-bold text-[#2F2B3DE5] leading-[1.2] md:leading-[1.15]">
-                            <span className="text-[#7367F0]">Power </span>Your Career with <br className="hidden lg:block" /> <span className="text-[#7367F0]"> In-Demand </span> Skills
+                            <span className="text-[#7367F0]">{t('home.power', 'Power')} </span>{t('home.yourCareerWith', 'Your Career with')} <br className="hidden lg:block" /> <span className="text-[#7367F0]"> {t('home.inDemand', 'In-Demand')} </span> {t('home.skills', 'Skills')}
                         </h1>
 
-                        <h3>Get expert guidance to master critical finance & accounting skills and unlock new opportunities for growth.</h3>
+                        <h3>{t('home.subtitle', 'Get expert guidance to master critical finance & accounting skills and unlock new opportunities for growth.')}</h3>
 
                         <div className="flex flex-col sm:flex-row gap-4 mt-6 md:mt-8">
                             <Button
                                 variant="perple"
-                                title="Enroll now"
+                                title={t('home.enrollNow', 'Enroll now')}
                                 onClick={() => console.log("Enroll now")}
                                 className="h-[48px] px-6 rounded bg-perple text-white flex items-center justify-center gap-2 w-full sm:w-auto"
                                 icon={<ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
                             />
                             <Button
                                 variant="light-gray"
-                                title="Enroll Team now"
+                                title={t('home.enrollTeamNow', 'Enroll Team now')}
                                 onClick={() => console.log("Enroll now")}
                                 className="h-[48px] px-6 rounded bg-light-gray text-white flex items-center justify-center gap-2 w-full sm:w-auto"
                             />
@@ -36,15 +38,15 @@ const HomeBanner = () => {
                         <div className="flex flex-wrap gap-6 md:gap-12 mt-8 md:mt-12">
                             <div className="flex flex-col items-center gap-2" >
                                 <img src={public_speaker} alt="public_speaker" className="w-10 h-10 md:w-auto md:h-auto" />
-                                <p className="text-[#1D2939B2] text-sm md:text-base">Public Speaking</p>
+                                <p className="text-[#1D2939B2] text-sm md:text-base">{t('home.publicSpeaking', 'Public Speaking')}</p>
                             </div>
                             <div className="flex flex-col items-center gap-2" >
                                 <img src={career} alt="career" className="w-10 h-10 md:w-auto md:h-auto" />
-                                <p className="text-[#1D2939B2] text-sm md:text-base">Career-Oriented</p>
+                                <p className="text-[#1D2939B2] text-sm md:text-base">{t('home.careerOriented', 'Career-Oriented')}</p>
                             </div>
                             <div className="flex flex-col items-center gap-2" >
                                 <img src={thinking} alt="thinking" className="w-10 h-10 md:w-auto md:h-auto" />
-                                <p className="text-[#1D2939B2] text-sm md:text-base">Creative Thinking</p>
+                                <p className="text-[#1D2939B2] text-sm md:text-base">{t('home.creativeThinking', 'Creative Thinking')}</p>
                             </div>
                         </div>
                     </div>

@@ -1,16 +1,18 @@
 import React from 'react';
 import { Award, Briefcase, Clock, Users } from 'lucide-react';
 import SectionTitle from './SectionTitle';
+import { useTranslation } from 'react-i18next';
 
 const InstructorPanel: React.FC<{ courseDetail: any }> = ({ courseDetail }) => {
+    const { t } = useTranslation();
     const instructors = courseDetail?.instrcutor_info ?? [];
 
     return (
         <div id="tabpanel-Instructor" role="tabpanel" aria-labelledby="tab-Instructor" className="mb-12">
             <SectionTitle
                 icon={<Users className="w-5 h-5 text-indigo-600" />}
-                title="Meet Your Instructors"
-                subtitle={`${instructors.length} expert${instructors.length !== 1 ? 's' : ''} teaching this course`}
+                title={t('courseDetail.meetYourInstructors', 'Meet Your Instructors')}
+                subtitle={`${instructors.length} ${instructors.length !== 1 ? t('courseDetail.expertsTeaching', 'experts teaching this course') : t('courseDetail.expertTeaching', 'expert teaching this course')}`}
             />
 
             {instructors.length > 0 ? (
@@ -54,7 +56,7 @@ const InstructorPanel: React.FC<{ courseDetail: any }> = ({ courseDetail }) => {
                                             {info?.experience && (
                                                 <span className="flex items-center gap-1.5 text-sm text-gray-500">
                                                     <Clock className="w-3.5 h-3.5 text-indigo-400" />
-                                                    {info.experience} experience
+                                                    {info.experience} {t('courseDetail.experience', 'experience')}
                                                 </span>
                                             )}
                                         </div>
@@ -67,7 +69,7 @@ const InstructorPanel: React.FC<{ courseDetail: any }> = ({ courseDetail }) => {
             ) : (
                 <div className="text-center py-12 text-gray-400 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
                     <Users className="w-10 h-10 mx-auto mb-3 opacity-40" />
-                    <p className="text-sm font-medium">Instructor information not available.</p>
+                    <p className="text-sm font-medium">{t('courseDetail.instructorNotAvailable', 'Instructor information not available.')}</p>
                 </div>
             )}
         </div>

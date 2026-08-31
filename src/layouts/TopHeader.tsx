@@ -1,6 +1,9 @@
-
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import LanguageSelector from '../components/UI/LanguageSelector';
 
 const TopHeader = () => {
+    const { t } = useTranslation();
     return (
         <div>
             <nav className="bg-dark px-6 h-12 flex items-center justify-between">
@@ -11,11 +14,11 @@ const TopHeader = () => {
 
                     {/* Nav Links */}
                     <div className="flex items-center gap-6">
-                        <a href="/" className="text-white text-sm font-medium">Home</a>
-                        <a href="/courses" className="text-gray-400 text-sm hover:text-white transition-colors">Courses</a>
+                        <a href="/" className="text-white text-sm font-medium">{t('nav.home', 'Home')}</a>
+                        <a href="/courses" className="text-gray-400 text-sm hover:text-white transition-colors">{t('nav.courses', 'Courses')}</a>
                         <a href="https://www.kcglobed.com/" target="_blank" className="text-gray-400 text-sm hover:text-white transition-colors">KC GlobEd</a>
                         <a href="https://www.gccschool.com/" target="_blank" className="text-gray-400 text-sm hover:text-white transition-colors">GCC School</a>
-                        <a href="/blogs" className="text-gray-400 text-sm hover:text-white transition-colors">Blog</a>
+                        <a href="/blogs" className="text-gray-400 text-sm hover:text-white transition-colors">{t('nav.blog', 'Blog')}</a>
 
 
                         {/* <a href="/my-learning" className="text-gray-400 text-sm hover:text-white transition-colors">My Learning</a> */}
@@ -37,6 +40,8 @@ const TopHeader = () => {
                             <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                     </button>
+
+                    <LanguageSelector />
                 </div>
             </nav>
         </div>

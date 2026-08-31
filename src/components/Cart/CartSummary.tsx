@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import type { RootState } from '../../store/store';
 import { getDeviceId, applyCouponSuccess, removeCoupon } from '../../store/slices/courseCartSlice';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
@@ -16,6 +17,7 @@ interface CartSummaryProps {
 const GST_RATE = 0.18;
 
 const CartSummary: React.FC<CartSummaryProps> = ({ totalPrice, originalPrice, discountCount }) => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const isLogin = useSelector((state: RootState) => state.auth.isAuthenticated);
@@ -39,18 +41,18 @@ const CartSummary: React.FC<CartSummaryProps> = ({ totalPrice, originalPrice, di
             });
             if (response && response.success) {
                 dispatch(applyCouponSuccess(response.data));
-                setCouponMessage({ text: 'Coupon applied successfully!', isError: false });
+                setCouponMessage({ text: t('cart.couponApplied', 'Coupon applied successfully!'), isError: false });
                 setCouponInput('');
-                toast.success(response?.message || 'Coupon applied successfully!');
+                toast.success(response?.message || t('cart.couponApplied', 'Coupon applied successfully!'));
             } else {
-                setCouponMessage({ text: response?.message || 'Invalid coupon code', isError: true });
+                setCouponMessage({ text: response?.message || t('cart.invalidCoupon', 'Invalid coupon code'), isError: true });
                 dispatch(removeCoupon());
-                toast.error(response?.message || 'Invalid coupon code');
+                toast.error(response?.message || t('cart.invalidCoupon', 'Invalid coupon code'));
             }
         } catch (error: any) {
-            setCouponMessage({ text: error.message || 'Failed to validate coupon', isError: true });
+            setCouponMessage({ text: error.message || t('cart.failedCoupon', 'Failed to validate coupon'), isError: true });
             dispatch(removeCoupon());
-            toast.error(error.message || 'Failed to validate coupon');
+            toast.error(error.message || t('cart.failedCoupon', 'Failed to validate coupon'));
         } finally {
             setCouponLoading(false);
         }
@@ -74,34 +76,34 @@ const CartSummary: React.FC<CartSummaryProps> = ({ totalPrice, originalPrice, di
 
     return (
         <div className="lg:sticky lg:top-8 bg-white border border-gray-100 rounded-md p-5 shadow-sm">
-            <h2 className="text-[14px] font-bold text-gray-500 mb-2 uppercase tracking-wide">Order Summary</h2>
+            <h2 className="text-[14px] font-bold text-gray-500 mb-2 uppercase tracking-wide">{t('cart.orderSummary', 'Order Summary')}</h2>
             <div className="mb-6">
                 {/* Original & Discount */}
                 {discountCount > 0 && (
                     <div className="flex flex-col gap-0.5 mb-3">
                         <p className="text-[14px] text-gray-400 line-through">₹{originalPrice}</p>
-                        <p className="text-[14px] text-[#1c1d1f] font-medium">{Math.round((discountCount / originalPrice) * 100)}% off</p>
+                        <p className="text-[14px] text-[#1c1d1f] font-medium">{Math.round((discountCount / originalPrice) * 100)}% {t('cart.off', 'off')}</p>
                     </div>
                 )}
 
                 {/* Price Breakdown */}
                 <div className="flex flex-col gap-2 border-t border-gray-100 pt-3">
                     <div className="flex justify-between items-center text-[13px] text-gray-600">
-                        <span>Subtotal</span>
+                        <span>{t('cart.subtotal', 'Subtotal')}</span>
                         <span className="font-medium">₹{totalPrice}</span>
                     </div>
                     {appliedCoupon && (
                         <div className="flex justify-between items-center text-[13px] text-green-700">
-                            <span>Coupon ({appliedCoupon.coupon_code})</span>
+                            <span>{t('cart.coupon', 'Coupon')} ({appliedCoupon.coupon_code})</span>
                             <span className="font-medium">- ₹{appliedCoupon.summary.discount_applied}</span>
                         </div>
                     )}
                     <div className="flex justify-between items-center text-[13px] text-gray-600">
-                        <span>GST (18%)</span>
+                        <span>{t('cart.gst', 'GST (18%)')}</span>
                         <span className="font-medium text-[#1c1d1f]">+ ₹{gstAmount}</span>
                     </div>
                     <div className="flex justify-between items-center border-t border-gray-200 pt-2 mt-1">
-                        <span className="text-[15px] font-bold text-[#1c1d1f]">Total Payable</span>
+                        <span className="text-[15px] font-bold text-[#1c1d1f]">{t('cart.totalPayable', 'Total Payable')}</span>
                         <span className="text-[22px] font-bold text-[#1c1d1f]">₹{totalPayable}</span>
                     </div>
                 </div>
@@ -111,30 +113,30 @@ const CartSummary: React.FC<CartSummaryProps> = ({ totalPrice, originalPrice, di
                 onClick={handleCheckOut}
                 className="w-full bg-[#a435f0] hover:bg-[#8710d8] text-white font-bold py-3.5 rounded transition-colors text-[16px] active:scale-[0.98] shadow-md mb-6 disabled:bg-gray-300 disabled:cursor-not-allowed"
             >
-                Checkout
+                {t('cart.checkout', 'Checkout')}
             </button>
 
             <div className="pt-5 border-t border-gray-100">
-                <h3 className="text-[13px] font-bold text-[#1c1d1f] mb-3 uppercase tracking-tight">Promotions</h3>
+                <h3 className="text-[13px] font-bold text-[#1c1d1f] mb-3 uppercase tracking-tight">{t('cart.promotions', 'Promotions')}</h3>
 
                 {appliedCoupon ? (
                     <div className="bg-green-50 border border-green-200 rounded p-3 flex items-center justify-between text-[13px] text-green-800 mb-3">
                         <div>
-                            <span className="font-bold">{appliedCoupon.coupon_code}</span> applied!
-                            <div className="text-[11px] text-green-600 font-medium">Saved ₹{appliedCoupon.summary.discount_applied}</div>
+                            <span className="font-bold">{appliedCoupon.coupon_code}</span> {t('cart.applied', 'applied!')}
+                            <div className="text-[11px] text-green-600 font-medium">{t('cart.saved', 'Saved')} ₹{appliedCoupon.summary.discount_applied}</div>
                         </div>
                         <button
                             onClick={handleRemoveCoupon}
                             className="text-[11px] font-bold text-red-600 hover:text-red-800 transition-colors uppercase tracking-tight ml-2 border border-red-200 hover:border-red-400 bg-white px-2 py-1 rounded"
                         >
-                            Remove
+                            {t('cart.remove', 'Remove')}
                         </button>
                     </div>
                 ) : (
                     <div className="flex gap-2 mb-2">
                         <input
                             type="text"
-                            placeholder="Enter Coupon"
+                            placeholder={t('cart.enterCoupon', 'Enter Coupon')}
                             value={couponInput}
                             onChange={(e) => setCouponInput(e.target.value)}
                             disabled={couponLoading}
@@ -148,7 +150,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({ totalPrice, originalPrice, di
                         >
                             {couponLoading ? (
                                 <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                            ) : 'Apply'}
+                            ) : t('cart.apply', 'Apply')}
                         </button>
                     </div>
                 )}
@@ -159,7 +161,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({ totalPrice, originalPrice, di
                     </p>
                 )}
 
-                <p className="text-[11px] text-gray-500 italic">Valid coupons will be applied at checkout.</p>
+                <p className="text-[11px] text-gray-500 italic">{t('cart.validCoupons', 'Valid coupons will be applied at checkout.')}</p>
             </div>
         </div>
     );

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Star } from 'lucide-react';
 import { getUserCourseReviewComments } from '../../../utils/service';
+import { useTranslation } from 'react-i18next';
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -118,6 +119,7 @@ interface StudentFeedbackProps {
 // ── review card ───────────────────────────────────────────────────────────────
 
 const ReviewCard: React.FC<{ review: Review }> = ({ review }) => {
+    const { t } = useTranslation();
     const { user, rating, created_at, approved } = review;
     const fullName = `${user.first_name} ${user.last_name}`;
 
@@ -135,7 +137,7 @@ const ReviewCard: React.FC<{ review: Review }> = ({ review }) => {
                                 <svg className="w-3 h-3" viewBox="0 0 12 12" fill="none">
                                     <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                 </svg>
-                                Verified
+                                {t('courseDetail.verified', 'Verified')}
                             </span>
                         )}
                     </div>
@@ -160,6 +162,7 @@ const ReviewCard: React.FC<{ review: Review }> = ({ review }) => {
 const REVIEWS_PER_PAGE = 5;
 
 const StudentFeedback: React.FC<StudentFeedbackProps> = ({ courseId }) => {
+    const { t } = useTranslation();
     const [reviews, setReviews] = React.useState<Review[]>([]);
     const [loading, setLoading] = React.useState(true);
     const [error, setError] = React.useState<string | null>(null);
@@ -173,7 +176,7 @@ const StudentFeedback: React.FC<StudentFeedbackProps> = ({ courseId }) => {
                 const res = await getUserCourseReviewComments(courseId);
                 setReviews(res.data);
             } catch (err) {
-                setError('Failed to fetch reviews');
+                setError(t('courseDetail.failedToFetchReviews', 'Failed to fetch reviews'));
                 console.error(err);
             } finally {
                 setLoading(false);
@@ -208,7 +211,7 @@ const StudentFeedback: React.FC<StudentFeedbackProps> = ({ courseId }) => {
     if (approvedReviews.length === 0) {
         return (
             <div className="text-center py-10 text-gray-400 text-sm italic">
-                No student feedback yet.
+                {t('courseDetail.noStudentFeedback', 'No student feedback yet.')}
             </div>
         );
     }
@@ -232,8 +235,8 @@ const StudentFeedback: React.FC<StudentFeedbackProps> = ({ courseId }) => {
                         className="text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors"
                     >
                         {showMore
-                            ? 'Show less'
-                            : `Show ${approvedReviews.length - REVIEWS_PER_PAGE} more review${approvedReviews.length - REVIEWS_PER_PAGE !== 1 ? 's' : ''}`}
+                            ? t('courseDetail.showLess', 'Show less')
+                            : `${t('courseDetail.show', 'Show')} ${approvedReviews.length - REVIEWS_PER_PAGE} ${approvedReviews.length - REVIEWS_PER_PAGE !== 1 ? t('courseDetail.moreReviews', 'more reviews') : t('courseDetail.moreReview', 'more review')}`}
                     </button>
                 </div>
             )}

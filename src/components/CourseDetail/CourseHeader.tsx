@@ -1,8 +1,10 @@
 import { Star, CheckCircle2 } from 'lucide-react';
 import { useAppSelector } from '../../hooks/useRedux';
 import type { RootState } from '../../store/store';
+import { useTranslation } from 'react-i18next';
 
 const CourseHeader = () => {
+    const { t } = useTranslation();
     const { courseDetail, loading, error } = useAppSelector((state: RootState) => state.courseDetail);
     const { enrolledCourses } = useAppSelector((state: RootState) => state.myLearning);
     const { isAuthenticated } = useAppSelector((state: RootState) => state.auth);
@@ -46,7 +48,7 @@ const CourseHeader = () => {
                 }
                 {purchasedCourse && (
                     <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-sm bg-green-100 text-green-800 border border-green-200 flex items-center gap-1.5">
-                        <CheckCircle2 className="w-3 h-3 text-green-700" /> Purchased
+                        <CheckCircle2 className="w-3 h-3 text-green-700" /> {t('courseDetail.purchased', 'Purchased')}
                     </span>
                 )}
             </div>
@@ -108,7 +110,7 @@ const CourseHeader = () => {
                         }
                     </div>
                     <div>
-                        <p className="text-xs text-gray-500">Created by:</p>
+                        <p className="text-xs text-gray-500">{t('courseDetail.createdBy', 'Created by:')}</p>
                         <p className="text-sm font-semibold text-gray-900">
                             {courseDetail?.instrcutor_info.map((avtar: any, index: number) => (
                                 <span key={index}>
@@ -133,7 +135,7 @@ const CourseHeader = () => {
                         ))}
                     </div>
                     <span className="font-bold text-gray-900 text-sm">4.8</span>
-                    <span className="text-gray-500 text-xs">(451,444 Rating)</span>
+                    <span className="text-gray-500 text-xs">(451,444 {t('courseDetail.reviews', 'reviews')})</span>
                 </div>
             </div>
         </div>

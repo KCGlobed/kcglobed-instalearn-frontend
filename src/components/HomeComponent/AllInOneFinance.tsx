@@ -5,6 +5,7 @@ import { fetchTags } from "../../store/slices/tagSlice";
 import SkeltonLoader from "../Loader/SkeltonLoader";
 import { fetchCoursesById } from "../../store/slices/courseSlice";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -37,6 +38,7 @@ interface CourseItem {
 // CourseCard — extracted to avoid re-creating the component on every render
 // ---------------------------------------------------------------------------
 const CourseCard = memo(({ course }: { course: CourseItem }) => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     const info = course.courses;
@@ -104,7 +106,7 @@ const CourseCard = memo(({ course }: { course: CourseItem }) => {
                     </div>
                     <div className="text-[12px] text-[#4E5566]">
                         <span className="font-semibold">{info?.enrolled_students ?? "100k"}</span>{" "}
-                        students
+                        {t('home.students', 'students')}
                     </div>
                 </div>
             </div>
@@ -146,6 +148,7 @@ const CourseGridSkeleton = () => (
 // Main component
 // ---------------------------------------------------------------------------
 const AllInOneFinance = () => {
+    const { t } = useTranslation();
     const dispatch = useAppDispatch();
     const { tags, loading: tagsLoading } = useAppSelector((state) => state.tag);
     const { courses, loading: courseLoading } = useAppSelector((state) => state.course);
@@ -184,10 +187,10 @@ const AllInOneFinance = () => {
                 {/* Heading */}
                 <div className="text-center mb-12">
                     <h2 className="text-[32px] md:text-[36px] font-bold text-[#1D2026] mb-4">
-                        Finance, Accounting &amp; More, All in one place.
+                        {t('home.financeTitle', 'Finance, Accounting & More, All in one place.')}
                     </h2>
                     <p className="text-[#6E7485] text-[16px]">
-                        From fundamentals to advanced concepts - learn it all here.
+                        {t('home.financeSubtitle', 'From fundamentals to advanced concepts - learn it all here.')}
                     </p>
                 </div>
 
