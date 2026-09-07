@@ -6,6 +6,7 @@ import { loadRazorpayScript } from '../utils/razorpayLoader';
 import type { CheckoutFormData, CheckoutErrors, Plan, CheckoutCalculation } from '../components/EnrollTeamComponent/types';
 import { TAX_RATE, MOCK_COUPON_CODE, COUPON_DISCOUNT_PERCENT } from '../components/EnrollTeamComponent/constants';
 import toast from 'react-hot-toast';
+import { VITE_RAZORPAY_KEY_ID } from '../utils/apiEndpoints';
 
 export const useSubscriptionCheckout = (planId: string | null) => {
   const navigate = useNavigate();
@@ -199,7 +200,7 @@ export const useSubscriptionCheckout = (planId: string | null) => {
       const orderAmount = total_amount || amount || calculations.total;
 
       const options: any = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID || '',
+        key: VITE_RAZORPAY_KEY_ID || '',
         amount: Math.round(orderAmount * 100), // in paise
         currency: startResponse.data.currency || plan.currency || 'INR',
         name: 'InstaLearn',

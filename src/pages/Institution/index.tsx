@@ -1,4 +1,5 @@
 import CareerAcademySection from "../../components/InstitutionComponent/CareerAcademy"
+import GetTouchSection from "../../components/InstitutionComponent/GetTouch"
 import InstituteBanner from "../../components/InstitutionComponent/InstituteBanner"
 import ProffesionalCertificate from "../../components/InstitutionComponent/ProffesionalCertificate"
 import Footer from "../../layouts/Footer"
@@ -15,6 +16,7 @@ const Institution = () => {
             <InstituteBanner />
             <CareerAcademySection />
             <ProffesionalCertificate />
+            <GetTouchSection />
             <Footer />
         </div>
     )

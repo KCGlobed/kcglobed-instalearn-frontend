@@ -12,8 +12,9 @@ import ScrollToTop from './hooks/ScrollToTop.tsx'
 import QuickContactButton from './components/UI/QuickContactButton.tsx'
 import { ModalProvider } from "./components/Modals/ModalContext";
 import { GoogleOAuthProvider } from '@react-oauth/google'
+import { VITE_GOOGLE_CLIENT_ID } from './utils/apiEndpoints.tsx'
 
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID as string;
+const GOOGLE_CLIENT_ID = VITE_GOOGLE_CLIENT_ID as string;
 
 createRoot(document.getElementById('root')!).render(
 

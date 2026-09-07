@@ -464,6 +464,21 @@ export const downloadStudentReminderReportExcelApi = async (userId: number | str
   return await apiRequest(`${API_ENDPOINTS.GET_STUDENT_REMINDER_LISTING_REPORT_EXCEL}/${userId}/${courseId}`, 'GET');
 }
 
+export const unversityRegister = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.UNIVERSITY_REQUESTS, 'POST', payload);
+}
+
+export const getUniversityJobRolesApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.UNIVERSITY_JOB_ROLE, 'GET');
+}
+
+export const getUniversityInstitutionTypesApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.UNIVERSITY_INSTITUTION_TYPES, 'GET');
+}
+
+
+
+
 
 
 

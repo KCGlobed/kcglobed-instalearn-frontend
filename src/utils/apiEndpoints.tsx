@@ -1,5 +1,9 @@
+export const VITE_RAZORPAY_KEY_ID = "rzp_test_SJwVcVbZRxm162"
+export const VITE_GOOGLE_CLIENT_ID = "610747130982-p8h1omr7oh9uo531kgofoagp6obe3o18.apps.googleusercontent.com"
+export const API_BASE_URL = "https://devapi-instalearn.kcglobed.com/api/";
 
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+
 export const API_ENDPOINTS = {
     HOMEPAGE_CATEGORY: "course/homepage-category-list/",
     LOGIN: "user/login/",
@@ -112,6 +116,9 @@ export const API_ENDPOINTS = {
     GET_STUDENT_REMINDER_LISTING: "user_study/get-student-reminder-listing",
     GET_STUDENT_REMINDER_LISTING_REPORT_PDF: "user_study/get-student-reminder-listing-report-pdf",
     GET_STUDENT_REMINDER_LISTING_REPORT_EXCEL: "user_study/get-student-reminder-listing-report-excel",
+    UNIVERSITY_REQUESTS: "university/submit-university-requests/",
+    UNIVERSITY_JOB_ROLE: "university/get-job-roles/",
+    UNIVERSITY_INSTITUTION_TYPES: "university/get-institution-types/",
 
 }
 

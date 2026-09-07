@@ -111,7 +111,7 @@ const InstituteBanner = () => {
             {/* Stats Section */}
             <div className="absolute left-0 right-0 bottom-0 translate-y-[50%] w-full px-4 md:px-8 xl:px-0 z-30">
                 <div className="max-w-[1200px] mx-auto">
-                    <div className="bg-[#111115] rounded-[10px] md:rounded-[12px] flex flex-col md:flex-row py-8 lg:py-10 px-4 md:px-6 lg:px-8 shadow-[0_20px_40px_rgba(0,0,0,0.15)]">
+                    <div className="bg-[#143958] rounded-[10px] md:rounded-[12px] flex flex-col md:flex-row py-8 lg:py-10 px-4 md:px-6 lg:px-8 shadow-[0_20px_40px_rgba(0,0,0,0.15)]">
 
                         {/* Stat 1 */}
                         <div className="flex-1 flex flex-col md:flex-row items-center md:items-start relative py-6 md:py-0 px-4 md:px-6 lg:px-8">

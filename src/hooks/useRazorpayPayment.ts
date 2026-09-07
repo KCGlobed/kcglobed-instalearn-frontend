@@ -5,6 +5,7 @@ import { loadRazorpayScript } from '../utils/razorpayLoader';
 import toast from 'react-hot-toast';
 import type { RazorpayOptions, RazorpaySuccessResponse } from '../types/razorpay';
 import { getDeviceId } from '../store/slices/courseCartSlice';
+import { VITE_RAZORPAY_KEY_ID } from '../utils/apiEndpoints';
 
 export type PaymentStatus = 'idle' | 'initializing' | 'paying' | 'verifying' | 'success' | 'failed';
 
@@ -61,7 +62,7 @@ export const useRazorpayPayment = () => {
       } = startResponse.data;
 
       const options: RazorpayOptions = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID || '',
+        key: VITE_RAZORPAY_KEY_ID || '',
         amount: Math.round(total_amount * 100),
         currency: 'INR',
         name: 'InstaLearn',
