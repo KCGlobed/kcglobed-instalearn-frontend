@@ -36,7 +36,7 @@ jobs:
 
       - name: Install Dependencies
         if: hashFiles('package.json') != ''
-        run: npm ci
+        run: npm Install
 
       ######################################################
       # Build React
