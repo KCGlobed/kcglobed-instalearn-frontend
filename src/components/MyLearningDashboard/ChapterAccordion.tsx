@@ -55,13 +55,12 @@ export default function ChapterAccordion({
     <div className="border-b border-[#d1d7dc] bg-white">
       <button
         onClick={() => setOpen(!open)}
-        className={`w-full flex items-center justify-between px-4 py-4 text-left transition-all ${
-          open ? "bg-[#f7f9fa]" : "hover:bg-[#f7f9fa]/80"
-        }`}
+        className={`w-full flex items-center justify-between px-4 py-4 text-left transition-all ${open ? "bg-[#f7f9fa]" : "hover:bg-[#f7f9fa]/80"
+          }`}
       >
         <div className="flex-1 min-w-0 pr-4">
           <h3 className="text-[14px] font-bold text-[#2d2f31] leading-snug tracking-tight">
-            Section {chapterId}: {chapter.chapter_info.name}
+            {chapter.chapter_info.name}
           </h3>
           <div className="flex items-center gap-1 mt-1.5 text-[11px] font-bold text-[#6a6f73]">
             <span>{completedLectures} / {totalLectures} | {formatDuration(totalDuration)}</span>

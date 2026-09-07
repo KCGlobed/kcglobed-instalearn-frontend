@@ -28,7 +28,10 @@ const CourseTabs: React.FC = () => {
 
     const tabsWithCounts: Tab[] = TABS.map((t) => {
         if (t.label === 'Reviews')    return { ...t, count: courseDetail?.total_reviews ?? 0 };
-        if (t.label === 'Curriculum') return { ...t, count: courseDetail?.sample_videos?.length ?? 0 };
+        if (t.label === 'Curriculum') {
+            const chapters = courseDetail?.course_chapters ?? courseDetail?.chapters ?? [];
+            return { ...t, count: chapters.length };
+        }
         if (t.label === 'Featured')   return { ...t, count: courseDetail?.feature_json?.length ?? 0 };
         return t;
     });

@@ -1,9 +1,13 @@
 import Footer from "../../layouts/Footer";
 import MainHeader from "../../layouts/MainHeader";
+import TopHeader from "../../layouts/TopHeader";
+import PromoStrip from "../../layouts/PromoStrip";
 
 const ComingSoon = () => {
     return (
         <>
+            <PromoStrip />
+            <TopHeader />
             <MainHeader />
             <div className="flex items-center justify-center min-h-[500px] bg-gray-100">
                 <div className="text-center">

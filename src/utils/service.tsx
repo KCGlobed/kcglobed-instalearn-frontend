@@ -297,6 +297,215 @@ export const getCampaignApi = async (): Promise<any> => {
   return await apiRequest(API_ENDPOINTS.CAMPAIGN, 'GET');
 };
 
+export const getChapterQuizApi = async (chapterInfoId: string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_CHAPTER_QUIZZES_LIST}${chapterInfoId}`, 'GET');
+}
+
+export const startChapterQuizApi = async (payload: { course_id: number; quiz_id: number }): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.START_QUIZ, 'POST', payload);
+}
+
+export const submitChapterQuizApi = async (payload: { test_id: number; answers: { test_question_id: number; selected_option_id: number }[] }): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.SUBMIT_QUIZ, 'POST', payload);
+}
+
+// Per-question submission (called on every Next / Finish click)
+export const submitQuizAnswerApi = async (payload: {
+  practice_test_id: number;
+  question_id: number;
+  selected_option_id: number;
+  time_taken: number;
+  is_completed: 0 | 1;
+}): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.SUBMIT_QUIZ, 'POST', payload);
+}
+
+export const getQuizResultApi = async (testId: number): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_QUIZ_RESULT}${testId}`, 'GET');
+}
+
+export const getQuizHistoryApi = async (courseId: number, chapterId: number, quizId: number): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.QUIZ_HISTORY}${courseId}/${chapterId}/${quizId}`, 'GET');
+}
+
+export const getSubscriptionPlansApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.SUBSCRIPTION_PLANS, 'GET');
+}
+
+export const startSubscriptionApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.START_SUBSCRIPTION, 'POST', payload);
+}
+
+export const completeSubscriptionApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.COMPLETE_SUBSCRIPTION, 'POST', payload);
+}
+
+export const getMyActiveSubscriptionApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.MY_ACTIVE_SUBSCRIPTION, 'GET');
+}
+
+export const cancelActiveSubscriptionApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.CANCEL_SUBSCRIPTION, 'POST', payload);
+}
+
+
+export const getCorporateUsersListApi = async (page?: number): Promise<any> => {
+  const url = page ? `${API_ENDPOINTS.GET_CORPORATE_USERS_LIST}?page=${page}` : API_ENDPOINTS.GET_CORPORATE_USERS_LIST;
+  return await apiRequest(url, 'GET');
+}
+
+export const shareCourseAccessApi = async (payload: {
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  course_id: number[];
+}): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.SHARE_COURSE_ACCESS, 'POST', payload);
+}
+
+export const courseCatalogListApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.COURSE_CATALOG_LIST, 'GET');
+}
+
+export const courseAssignToMember = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.ASSIGN_COURSE_TO_STUDENTS, 'POST', payload);
+}
+
+export const courseRemoveToMember = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.REMOVE_COURSE_TO_STUDENTS, 'POST', payload);
+}
+
+export const getCorporateDashboardCountersApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.GET_CORPORATE_DASHBOARD_COUNTERS, 'GET');
+}
+
+export const getUserStudyProgressApi = async (period: string = 'daily'): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_USER_STUDY_PROGRESS}?period=${period}`, 'GET');
+}
+
+export const getCorporateAssignedCoursesApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.GET_USER_COURSES_PROGRESS, 'GET');
+}
+
+export const reshareUserLoginDetail = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.RESHARE_USER_LOGIN_DETAIL, 'POST', payload);
+}
+
+export const getUserRole = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.GET_USER_ROLE, 'POST', payload);
+}
+
+export const getCorporateUserListApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.GET_CORPORATE_STUDENTS_LIST, 'GET');
+}
+
+export const assignSingleCourseToStudentsApi = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.ASSIGN_SINGLE_COURSE_TO_STUDENTS, 'POST', payload);
+}
+
+export const viewCorporateUserDetailApi = async (userId: number | string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.VIEW_CORPORATE_USER_DETAIL}${userId}`, 'GET');
+}
+
+export const viewStudentVideoReportApi = async (userId: number | string, courseId: number | string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.VIEW_STUDENT_VIDEO_REPORT}/${userId}/${courseId}`, 'GET');
+}
+
+export const getStudentNotesListingApi = async (userId: number | string, courseId: number | string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_STUDENT_NOTES_LISTING}/${userId}/${courseId}`, 'GET');
+}
+
+export const getAttemptedQuizListApi = async (userId: number | string, courseId: number | string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_ATTEMPTED_QUIZ_LIST}/${userId}/${courseId}`, 'GET');
+}
+
+export const downloadStudentVideoReportApi = async (userId: number | string, courseId: number | string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.DOWNLOAD_STUDENT_VIDEO_REPORT}/${userId}/${courseId}`, 'GET');
+}
+
+export const downloadStudentVideoReportExcelApi = async (userId: number | string, courseId: number | string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.DOWNLOAD_STUDENT_VIDEO_REPORT_EXCEL}/${userId}/${courseId}`, 'GET');
+}
+
+export const downloadStudentNotesReportPdfApi = async (userId: number | string, courseId: number | string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.DOWNLOAD_STUDENT_NOTES_REPORT_PDF}/${userId}/${courseId}`, 'GET');
+}
+
+export const downloadStudentNotesReportExcelApi = async (userId: number | string, courseId: number | string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.DOWNLOAD_STUDENT_NOTES_REPORT_EXCEL}/${userId}/${courseId}`, 'GET');
+}
+
+export const getStudentLoginActivityApi = async (userId: number | string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_STUDENT_LOGIN_ACTIVITY}/${userId}`, 'GET');
+}
+
+export const getCorporateStudentsActivityLogLatestApi = async (): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_CORPORATE_STUDENTS_ACTIVITY_LOG_LATEST}`, 'GET');
+}
+
+export const getCorporateStudentsActivityLogApi = async (userId: number | string, page: number = 1): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_CORPORATE_STUDENTS_ACTIVITY_LOG}/${userId}?page=${page}`, 'GET');
+}
+
+export const getCoursesWiseUserProgressApi = async (): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_COURSES_WISE_USER_PROGRESS}`, 'GET');
+}
+
+export const getStudentReminderListingApi = async (userId: number | string, courseId: number | string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_STUDENT_REMINDER_LISTING}/${userId}/${courseId}`, 'GET');
+}
+
+export const downloadStudentReminderReportPdfApi = async (userId: number | string, courseId: number | string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_STUDENT_REMINDER_LISTING_REPORT_PDF}/${userId}/${courseId}`, 'GET');
+}
+
+export const downloadStudentReminderReportExcelApi = async (userId: number | string, courseId: number | string): Promise<any> => {
+  return await apiRequest(`${API_ENDPOINTS.GET_STUDENT_REMINDER_LISTING_REPORT_EXCEL}/${userId}/${courseId}`, 'GET');
+}
+
+export const unversityRegister = async (payload: any): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.UNIVERSITY_REQUESTS, 'POST', payload);
+}
+
+export const getUniversityJobRolesApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.UNIVERSITY_JOB_ROLE, 'GET');
+}
+
+export const getUniversityInstitutionTypesApi = async (): Promise<any> => {
+  return await apiRequest(API_ENDPOINTS.UNIVERSITY_INSTITUTION_TYPES, 'GET');
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

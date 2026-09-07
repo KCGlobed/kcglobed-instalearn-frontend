@@ -10,6 +10,10 @@ import SkeltonLoader from "../Loader/SkeltonLoader";
 import { getCourseCertificate } from "../../utils/service";
 import toast from "react-hot-toast";
 import { fetchMyCoursesAction } from "../../store/slices/myLearningSlice";
+import { toggleWishlistAction, viewWishlistAction } from "../../store/slices/courseWishList";
+import { useIsCorporate } from "../../hooks/useIsCorporate";
+import { useModal } from "../Modals/ModalContext";
+import AssignTeamMemberForm from "../Forms/AssignTeamMemberForm";
 
 const getPlainTextFromHtml = (html?: string) => {
     if (!html) return "";
@@ -26,16 +30,22 @@ const RecentlyAddedCourses = () => {
     const { cartItems, loading: cartLoading } = useAppSelector((state: RootState) => state.cart);
     const { enrolledCourses } = useAppSelector((state: RootState) => state.myLearning);
     const { isAuthenticated } = useAppSelector((state: RootState) => state.auth);
+    const { wishListItems } = useAppSelector((state: RootState) => state.wishList);
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+    const { showModal } = useModal();
+    const isCorporate = useIsCorporate();
 
     // Track which course certificate is being downloaded
     const [downloadingCertId, setDownloadingCertId] = useState<number | null>(null);
+    // Track which course wishlist is being toggled
+    const [wishlistTogglingIds, setWishlistTogglingIds] = useState<Record<number, boolean>>({});
 
     useEffect(() => {
         dispatch(fetchHomepageRecentlyAdded());
         if (isAuthenticated) {
             dispatch(fetchMyCoursesAction());
+            dispatch(viewWishlistAction());
         }
     }, [dispatch, isAuthenticated]);
 
@@ -50,10 +60,68 @@ const RecentlyAddedCourses = () => {
         }
     };
 
-    const handleAddToCart = (e: React.MouseEvent, courseId: number) => {
+    const handleAddToCart = async (e: React.MouseEvent, courseId: number) => {
         e.stopPropagation();
         if (!courseId) return;
-        dispatch(addToCartAction({ course_id: courseId }));
+
+        const isInCart = cartItems?.some(
+            (item: any) => item?.course_info?.id === courseId
+        );
+        if (isInCart) {
+            navigate("/cart");
+            return;
+        }
+
+        try {
+            await dispatch(addToCartAction({ course_id: courseId })).unwrap();
+            const isWishlisted = isAuthenticated && wishListItems?.some(
+                (item: any) => (item?.course_info?.id || item?.course_id || item?.id) === courseId
+            );
+            if (isWishlisted) {
+                await dispatch(toggleWishlistAction({ course_id: courseId })).unwrap();
+            }
+        } catch (err: any) {
+            toast.error(err || "Failed to add to cart");
+        }
+    };
+
+    const handleWishList = async (e: React.MouseEvent, courseId: number) => {
+        e.stopPropagation();
+        if (!isAuthenticated) {
+            toast.error("Please login to wishlist courses.");
+            navigate("/login");
+            return;
+        }
+
+        const isInCart = cartItems?.some(
+            (item: any) => item?.course_info?.id === courseId
+        );
+        if (isInCart) {
+            toast.error("This course is already in your cart.");
+            return;
+        }
+
+        setWishlistTogglingIds(prev => ({ ...prev, [courseId]: true }));
+        try {
+            await dispatch(toggleWishlistAction({ course_id: courseId })).unwrap();
+            toast.success("Wishlist updated successfully");
+        } catch (err: any) {
+            toast.error(err || "Failed to update wishlist");
+        } finally {
+            setWishlistTogglingIds(prev => ({ ...prev, [courseId]: false }));
+        }
+    };
+
+    const handleAssignCourse = (course: any) => {
+        if (!course) return;
+        showModal({
+            content: (
+                <AssignTeamMemberForm
+                    courseId={course.id}
+                />
+            ),
+            size: "lg"
+        });
     };
 
     // Navigate to learning dashboard or commitment page based on course_started
@@ -159,6 +227,10 @@ const RecentlyAddedCourses = () => {
 
                                 const isInCart = cartItems?.some(
                                     (item: any) => item?.course_info?.id === course.id
+                                );
+
+                                const isWishlisted = isAuthenticated && wishListItems?.some(
+                                    (item: any) => (item?.course_info?.id || item?.course_id || item?.id) === course.id
                                 );
 
                                 // Check if this course is already purchased (enrolled)
@@ -332,12 +404,19 @@ const RecentlyAddedCourses = () => {
                                                                         </>
                                                                     )}
                                                                 </div>
-                                                                <button
-                                                                    onClick={(e) => e.stopPropagation()}
-                                                                    className="w-8 h-8 flex items-center justify-center bg-[#EBEBFF]/60 text-[#FF6636] rounded-sm hover:bg-[#EBEBFF] transition-colors flex-shrink-0"
-                                                                >
-                                                                    <Heart className="w-4 h-4" />
-                                                                </button>
+                                                                {!isCorporate && isAuthenticated && (
+                                                                    <button
+                                                                        onClick={(e) => handleWishList(e, course.id)}
+                                                                        disabled={wishlistTogglingIds[course.id]}
+                                                                        className="w-8 h-8 flex items-center justify-center bg-[#EBEBFF]/60 text-[#FF6636] rounded-sm hover:bg-[#EBEBFF] transition-colors flex-shrink-0 disabled:opacity-50"
+                                                                    >
+                                                                        {wishlistTogglingIds[course.id] ? (
+                                                                            <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-[#FF6636]" />
+                                                                        ) : (
+                                                                            <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-current' : ''}`} />
+                                                                        )}
+                                                                    </button>
+                                                                )}
                                                             </div>
                                                         )}
 
@@ -362,6 +441,15 @@ const RecentlyAddedCourses = () => {
                                                                     {purchasedCourse.progress > 0 ? "Continue Learning" : "Start Learning"}
                                                                 </button>
 
+                                                                {isCorporate && (
+                                                                    <button
+                                                                        onClick={(e) => { e.stopPropagation(); handleAssignCourse(course); }}
+                                                                        className="w-full py-2.5 bg-[#5624D0] text-white flex items-center justify-center gap-2 font-bold hover:bg-[#481fad] transition-all text-sm"
+                                                                    >
+                                                                        Assign to Team Member
+                                                                    </button>
+                                                                )}
+
                                                                 {/* Download Certificate — only when progress ≥ 50% */}
                                                                 {purchasedCourse.progress >= 50 && (
                                                                     <button
@@ -375,36 +463,45 @@ const RecentlyAddedCourses = () => {
                                                                 )}
                                                             </>
                                                         ) : (
-                                                            // ── Not purchased: show cart buttons ──
-                                                            <>
-                                                                {!isInCart ? (
-                                                                    <button
-                                                                        onClick={(e) => handleAddToCart(e, course.id)}
-                                                                        disabled={cartLoading}
-                                                                        className="w-full py-2.5 bg-[#5624D0] text-white flex items-center justify-center gap-2 font-bold hover:bg-[#481fad] transition-all disabled:bg-gray-400 text-sm"
-                                                                    >
-                                                                        {cartLoading ? (
-                                                                            <div className="flex items-center gap-2">
-                                                                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-                                                                                <span>Adding...</span>
-                                                                            </div>
-                                                                        ) : (
-                                                                            <>
-                                                                                <ShoppingCart className="w-4 h-4" />
-                                                                                Add To Cart
-                                                                            </>
-                                                                        )}
-                                                                    </button>
-                                                                ) : (
-                                                                    <button
-                                                                        onClick={(e) => { e.stopPropagation(); navigate("/cart"); }}
-                                                                        className="w-full py-2.5 bg-green-600 text-white font-bold hover:bg-green-700 transition-all flex items-center justify-center gap-2 text-sm"
-                                                                    >
-                                                                        <ShoppingCart className="w-4 h-4" />
-                                                                        Go to Cart
-                                                                    </button>
-                                                                )}
-                                                            </>
+                                                            // ── Not purchased: show cart buttons or assign course button ──
+                                                            isCorporate ? (
+                                                                <button
+                                                                    onClick={(e) => { e.stopPropagation(); handleAssignCourse(course); }}
+                                                                    className="w-full py-2.5 bg-[#5624D0] text-white flex items-center justify-center gap-2 font-bold hover:bg-[#481fad] transition-all text-sm"
+                                                                >
+                                                                    Assign to Team Member
+                                                                </button>
+                                                            ) : (
+                                                                <>
+                                                                    {!isInCart ? (
+                                                                        <button
+                                                                            onClick={(e) => handleAddToCart(e, course.id)}
+                                                                            disabled={cartLoading}
+                                                                            className="w-full py-2.5 bg-[#5624D0] text-white flex items-center justify-center gap-2 font-bold hover:bg-[#481fad] transition-all disabled:bg-gray-400 text-sm"
+                                                                        >
+                                                                            {cartLoading ? (
+                                                                                <div className="flex items-center gap-2">
+                                                                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                                                                                    <span>Adding...</span>
+                                                                                </div>
+                                                                            ) : (
+                                                                                <>
+                                                                                    <ShoppingCart className="w-4 h-4" />
+                                                                                    Add To Cart
+                                                                                </>
+                                                                            )}
+                                                                        </button>
+                                                                    ) : (
+                                                                        <button
+                                                                            onClick={(e) => { e.stopPropagation(); navigate("/cart"); }}
+                                                                            className="w-full py-2.5 bg-green-600 text-white font-bold hover:bg-green-700 transition-all flex items-center justify-center gap-2 text-sm"
+                                                                        >
+                                                                            <ShoppingCart className="w-4 h-4" />
+                                                                            Go to Cart
+                                                                        </button>
+                                                                    )}
+                                                                </>
+                                                            )
                                                         )}
 
                                                         {/* Always visible: Course Detail link */}

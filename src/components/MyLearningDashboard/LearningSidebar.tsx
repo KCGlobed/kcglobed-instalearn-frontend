@@ -9,9 +9,11 @@ import type { Lecture } from "../../store/slices/courseDashboardLectureSlice";
 import ChapterAccordion from "./ChapterAccordion";
 import SkeltonLoader from "../Loader/SkeltonLoader";
 
-interface CourseSidebarProps {}
+interface CourseSidebarProps {
+  onClose?: () => void;
+}
 
-export default function CourseSidebar({}: CourseSidebarProps) {
+export default function CourseSidebar({ onClose }: CourseSidebarProps) {
   const { chapters, loading, error } = useAppSelector(
     (state: RootState) => state.courseDashboardChapter
   );
@@ -21,7 +23,7 @@ export default function CourseSidebar({}: CourseSidebarProps) {
       {/* Sidebar Header */}
       <div className="px-4 py-3.5 border-b border-[#d1d7dc] bg-white shrink-0 flex items-center justify-between">
         <h2 className="text-base font-bold text-[#2d2f31] tracking-tight">Course content</h2>
-        <button className="p-1 hover:bg-[#f7f9fa] rounded transition-colors text-[#2d2f31]">
+        <button onClick={onClose} className="p-1 hover:bg-[#f7f9fa] rounded transition-colors text-[#2d2f31]" title="Close content sidebar">
           <X size={20} />
         </button>
       </div>

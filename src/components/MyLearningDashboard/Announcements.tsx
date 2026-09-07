@@ -115,7 +115,7 @@ const Announcements = () => {
                 email: userProfile?.email || ""
             },
             content: content,
-            created_at: new Date().toISOString().replace('T', ' ').slice(0, 19)
+            created_at: new Date().toISOString()
         };
         dispatch(addCommentOnAnnouncements({
             announcement_id: announcementId,

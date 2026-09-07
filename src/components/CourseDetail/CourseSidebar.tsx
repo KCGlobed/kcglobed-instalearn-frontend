@@ -21,12 +21,15 @@ import { useAppSelector } from '../../hooks/useRedux';
 import toast from 'react-hot-toast';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { addToCartAction, viewCartDetails } from '../../store/slices/courseCartSlice';
-import SkeltonLoader from '../Loader/SkeltonLoader';
 import { useNavigate } from 'react-router-dom';
+import SkeltonLoader from '../Loader/SkeltonLoader';
+import { useIsCorporate } from '../../hooks/useIsCorporate';
 import SocialShare from '../UI/SocialShare';
 import { toggleWishlistAction } from '../../store/slices/courseWishList';
 import { toggleCourseWishlistStatus } from '../../store/slices/courseDetailSlice';
 import { getCourseCertificate } from '../../utils/service';
+import { useModal } from '../Modals/ModalContext';
+import AssignTeamMemberForm from '../Forms/AssignTeamMemberForm';
 
 const CourseSidebar = () => {
     const { courseDetail, loading, error } = useAppSelector((state: RootState) => state.courseDetail);
@@ -34,7 +37,9 @@ const CourseSidebar = () => {
     const { wishListItems, loading: wishlistLoading } = useAppSelector((state: RootState) => state.wishList);
     const { isAuthenticated } = useAppSelector((state: RootState) => state.auth);
     const { enrolledCourses } = useAppSelector((state: RootState) => state.myLearning);
+    const { showModal } = useModal();
     const navigate = useNavigate();
+    const isCorporate = useIsCorporate();
 
     const dispatch = useAppDispatch();
 
@@ -87,7 +92,7 @@ const CourseSidebar = () => {
             link.click();
             document.body.removeChild(link);
             window.URL.revokeObjectURL(downloadUrl);
-            
+
             toast.success("Downloaded successfully!", { id: loadToast });
         } catch (error: any) {
             console.error("Failed to download directly:", error);
@@ -123,9 +128,9 @@ const CourseSidebar = () => {
         const courseId = courseDetail.id;
         const lastChapterIdStr = localStorage.getItem(`course_last_chapter_${courseId}`);
         const lastLectureIdStr = localStorage.getItem(`course_last_lecture_${courseId}`);
-        
+
         const chapters = courseDetail.chapters ?? (courseDetail as any).course_chapters ?? [];
-        
+
         if (lastLectureIdStr) {
             const lastLectureId = Number(lastLectureIdStr);
             for (const chapter of chapters) {
@@ -140,7 +145,7 @@ const CourseSidebar = () => {
                 }
             }
         }
-        
+
         // Fallback to first lecture of first chapter if none in localStorage
         if (chapters.length > 0) {
             const firstChapter = chapters[0];
@@ -154,23 +159,13 @@ const CourseSidebar = () => {
                 return { lectureName, chapterName };
             }
         }
-        
+
         return null;
     }, [courseDetail, purchasedCourse]);
     // Safely compute prices — price and discount default to 0 while courseDetail is null
     const price = courseDetail?.price ?? 0;
     const discountPct = courseDetail?.discount ?? 0;
     const discountedPrice = price - (price * discountPct) / 100;
-
-
-    const addCourseToCart = () => {
-        if (!courseDetail?.id) return;
-        const data = {
-            course_id: courseDetail.id,
-        }
-        dispatch(addToCartAction(data));
-
-    }
 
 
     const isCart = useMemo(() => {
@@ -183,19 +178,46 @@ const CourseSidebar = () => {
         return wishListItems.some((item: any) => item?.course_info?.id === courseDetail.id);
     }, [wishListItems, courseDetail?.id]);
 
+    const addCourseToCart = async () => {
+        if (!courseDetail?.id) return;
+
+        if (isCart) {
+            navigate('/cart');
+            return;
+        }
+
+        const data = {
+            course_id: courseDetail.id,
+        };
+        try {
+            await dispatch(addToCartAction(data)).unwrap();
+            if (isWishlist) {
+                await dispatch(toggleWishlistAction(data)).unwrap();
+                dispatch(toggleCourseWishlistStatus());
+            }
+        } catch (err: any) {
+            toast.error(err || "Failed to add to cart");
+        }
+    };
 
     const handleWishList = async () => {
         try {
             if (!courseDetail?.id) return;
+
+            if (isCart) {
+                toast.error("This course is already in your cart.");
+                return;
+            }
+
             const data = {
                 course_id: courseDetail.id,
-            }
+            };
             await dispatch(toggleWishlistAction(data)).unwrap();
             dispatch(toggleCourseWishlistStatus());
         } catch (error) {
             toast.error(error as string);
         }
-    }
+    };
 
 
     const formatDuration = (seconds: string | number | null | undefined) => {
@@ -216,6 +238,18 @@ const CourseSidebar = () => {
 
     const gotoCart = () => {
         navigate('/cart');
+    }
+
+    const handleAssignCourse = () => {
+        if (!courseDetail) return;
+        showModal({
+            content: (
+                <AssignTeamMemberForm
+                    courseId={courseDetail.id}
+                />
+            ),
+            size: "lg"
+        });
     }
 
 
@@ -349,7 +383,13 @@ const CourseSidebar = () => {
                                 <PlayCircle className="w-5 h-5" />
                                 {purchasedCourse.progress > 0 ? "Continue Learning" : "Start Learning"}
                             </button>
-                            
+
+                            {isCorporate && (
+                                <button onClick={() => handleAssignCourse()} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98]">
+                                    Assign to Team Member
+                                </button>
+                            )}
+
                             {purchasedCourse.progress >= 50 && (
                                 <button
                                     onClick={handleDownloadCertificate}
@@ -362,40 +402,46 @@ const CourseSidebar = () => {
                             )}
                         </>
                     ) : (
-                        <>
-                            {
-                                !isCart ?
+                        isCorporate ? (
+                            <button onClick={() => handleAssignCourse()} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98]">
+                                Assign to Team Member
+                            </button>
+                        ) : (
+                            <>
+                                {
+                                    !isCart ?
 
-                                    <button onClick={() => addCourseToCart()} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98]">
-                                        {cartLoading ?
-                                            <div className="flex items-center gap-2 justify-center">
-                                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                                                <span>Adding to cart...</span>
-                                            </div>
+                                        <button onClick={() => addCourseToCart()} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98]">
+                                            {cartLoading ?
+                                                <div className="flex items-center gap-2 justify-center">
+                                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                                    <span>Adding to cart...</span>
+                                                </div>
 
-                                            : "Add To Cart"}
-                                    </button>
-                                    :
-                                    <button onClick={() => gotoCart()} className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98]">
-                                        Go To Cart
-                                    </button>
-                            }
-                            {isAuthenticated && (
-                                <div className="flex gap-2">
-                                    <button onClick={() => handleWishList()} disabled={wishlistLoading} className={`flex-1 flex items-center justify-center gap-2 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-all text-sm font-semibold ${isWishlist ? 'text-rose-600' : 'text-gray-700'}`}>
-                                        {wishlistLoading ? (
-                                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600"></div>
-                                        ) : (
-                                            <Heart className={`w-4 h-4 ${isWishlist ? 'fill-current' : ''}`} />
-                                        )}
-                                        {isWishlist ? 'Wishlisted' : 'Add To Wishlist'}
-                                    </button>
-                                    <button disabled={true} className="flex-1 flex items-center justify-center gap-2 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-all text-sm font-semibold">
-                                        <Gift className="w-4 h-4" /> Gift Course
-                                    </button>
-                                </div>
-                            )}
-                        </>
+                                                : "Add To Cart"}
+                                        </button>
+                                        :
+                                        <button onClick={() => gotoCart()} className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98]">
+                                            Go To Cart
+                                        </button>
+                                }
+                                {isAuthenticated && (
+                                    <div className="flex gap-2">
+                                        <button onClick={() => handleWishList()} disabled={wishlistLoading} className={`flex-1 flex items-center justify-center gap-2 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-all text-sm font-semibold ${isWishlist ? 'text-rose-600' : 'text-gray-700'}`}>
+                                            {wishlistLoading ? (
+                                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600"></div>
+                                            ) : (
+                                                <Heart className={`w-4 h-4 ${isWishlist ? 'fill-current' : ''}`} />
+                                            )}
+                                            {isWishlist ? 'Wishlisted' : 'Add To Wishlist'}
+                                        </button>
+                                        <button disabled={true} className="flex-1 flex items-center justify-center gap-2 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-all text-sm font-semibold">
+                                            <Gift className="w-4 h-4" /> Gift Course
+                                        </button>
+                                    </div>
+                                )}
+                            </>
+                        )
                     )}
                 </div>
 

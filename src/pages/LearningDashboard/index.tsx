@@ -21,6 +21,9 @@ import LearningReminder from "../../components/MyLearningDashboard/LearningRemin
 import ReviewsPanel from "../../components/CourseDetail/tabs/ReviewsPanel";
 import Certificate from "../../components/MyLearningDashboard/Certificate";
 import SkeltonLoader from "../../components/Loader/SkeltonLoader";
+import QuizCard from "../../components/QuizComponent/QuizCard";
+import QuizSection from "../../components/QuizComponent/QuizSection";
+
 
 export default function LMSCoursePage() {
   const dispatch = useAppDispatch();
@@ -31,6 +34,11 @@ export default function LMSCoursePage() {
   const { courseDetail, loading: CourseDetailLoading, error: CourseDetailError } = useAppSelector((state: RootState) => state.courseDetail);
   const { chapters, loading: chaptersLoading } = useAppSelector((state: RootState) => state.courseDashboardChapter);
   const { activeLesson, lecturesByChapter, loadingChapters } = useAppSelector((state: RootState) => state.courseDashboardLecture);
+  //----quiz state ----//
+  const [quizState, setQuizState] = useState<"idle" | "starter" | "active" | "result">("idle");
+  const [selectedQuizId, setSelectedQuizId] = useState<number | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
 
   // Fetch Chapters on Mount
   useEffect(() => {
@@ -166,26 +174,45 @@ export default function LMSCoursePage() {
   }, [slug]);
 
 
+  const currentChapter = chapters.find(ch => ch.chapter_info.id === activeLesson?.chapter) ?? null;
+  console.log("chapter get ", currentChapter);
+
+  const handleStartCurrentQuiz = (qId: any) => {
+    console.log(qId, "check current quiz main");
+    setSelectedQuizId(qId);
+    setQuizState("starter");
+  }
 
 
 
   return (
     <div className="fixed inset-0 overflow-hidden bg-[#f7f9fa] flex flex-col font-sans selection:bg-[#a435f0]/30 text-[#2d2f31]">
-      <Header courseName={courseProgress?.name ?? ""} progress={courseProgress?.percentage ?? 0} courseTitle={courseTitle} />
+      <Header
+        courseName={courseProgress?.name ?? ""}
+        progress={courseProgress?.percentage ?? 0}
+        courseTitle={courseTitle}
+        sidebarOpen={isSidebarOpen}
+        toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+      />
 
       <div className="flex flex-1 overflow-hidden">
         <main className="flex-1 h-full overflow-y-auto bg-[#f7f9fa] flex flex-col [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
 
           {/* Player Section - Kept dark for cinematic focus */}
           <div className="w-full bg-[#1c1d1f] shrink-0 shadow-lg relative z-10">
-            <MediaViewerSection
-              activeLesson={activeLesson}
-              loading={chaptersLoading}
-              isEmpty={chapters.length === 0}
-              prevLesson={prevLesson}
-              nextLesson={nextLesson}
-              onNavigate={handleNavigate}
-            />
+            {
+              quizState !== "idle" ?
+                <QuizSection currentChapter={currentChapter} state={quizState} quizId={selectedQuizId} setQuizState={setQuizState} courseId={Number(slug)} /> :
+                <MediaViewerSection
+                  activeLesson={activeLesson}
+                  loading={chaptersLoading}
+                  isEmpty={chapters.length === 0}
+                  prevLesson={prevLesson}
+                  nextLesson={nextLesson}
+                  onNavigate={handleNavigate}
+                />
+            }
+
           </div>
 
           {/* Bottom Tabs Section */}
@@ -230,6 +257,11 @@ export default function LMSCoursePage() {
                     <Certificate courseId={Number(slug)} progress={courseProgress?.percentage ?? 0} courseName={courseProgress?.name ?? ""} />
                   )
                 }
+                {
+                  activeTab === "Quiz" && (
+                    <QuizCard currentChapter={currentChapter} onStartQuiz={(qId) => { handleStartCurrentQuiz(qId); }} />
+                  )
+                }
 
                 {/* {activeTab !== "Overview" && (
                   <div className="py-24 text-center border-2 border-dashed border-[#d1d7dc] rounded-xl bg-[#f7f9fa]/50">
@@ -246,7 +278,7 @@ export default function LMSCoursePage() {
           </div>
         </main>
 
-        <CourseSidebar />
+        {isSidebarOpen && <CourseSidebar onClose={() => setIsSidebarOpen(false)} />}
       </div>
     </div>
   );

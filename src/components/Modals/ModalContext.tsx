@@ -10,6 +10,7 @@ interface ModalData {
     content: ReactNode;
     type?: ModalType;
     size?: ModalSize;
+    hideCloseButton?: boolean;
 }
 
 interface ModalContextType {
@@ -83,15 +84,17 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
                                 : 'bg-white overflow-y-auto'
                             } ${getSizeClass(modalData.size)}`}
                     >
-                        <button
-                            onClick={hideModal}
-                            className={`absolute cursor-pointer top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full text-sm font-bold transition-colors ${modalData.type === 'custom'
-                                    ? 'bg-white/10 text-white hover:bg-white/20'
-                                    : 'text-gray-400 hover:text-black hover:bg-gray-100'
-                                }`}
-                        >
-                            ✕
-                        </button>
+                        {!modalData.hideCloseButton && (
+                            <button
+                                onClick={hideModal}
+                                className={`absolute cursor-pointer top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full text-sm font-bold transition-colors ${modalData.type === 'custom'
+                                        ? 'bg-white/10 text-white hover:bg-white/20'
+                                        : 'text-gray-400 hover:text-black hover:bg-gray-100'
+                                    }`}
+                            >
+                                ✕
+                            </button>
+                        )}
                         {modalData.title && (
                             <h2 className="text-xl font-semibold mb-4 text-center px-6 pt-6">{modalData.title}</h2>
                         )}

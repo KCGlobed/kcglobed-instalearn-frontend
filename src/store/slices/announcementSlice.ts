@@ -141,8 +141,8 @@ const announcementSlice = createSlice({
             );
             if (announcement) {
                 announcement.announcement_comments = [
-                    ...announcement.announcement_comments,
                     comment,
+                    ...announcement.announcement_comments,
                 ];
             }
         },
