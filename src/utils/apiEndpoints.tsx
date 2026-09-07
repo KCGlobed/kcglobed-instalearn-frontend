@@ -1,5 +1,6 @@
 export const VITE_RAZORPAY_KEY_ID = "rzp_test_SJwVcVbZRxm162"
-export const VITE_GOOGLE_CLIENT_ID = "610747130982-p8h1omr7oh9uo531kgofoagp6obe3o18.apps.googleusercontent.com"
+// export const VITE_GOOGLE_CLIENT_ID = "610747130982-p8h1omr7oh9uo531kgofoagp6obe3o18.apps.googleusercontent.com"
+export const VITE_GOOGLE_CLIENT_ID = "2386165778-6c5s3576aaaq80enjqor989l6fcrs8oe.apps.googleusercontent.com"
 export const API_BASE_URL = "https://devapi-instalearn.kcglobed.com/api/";
 
 
