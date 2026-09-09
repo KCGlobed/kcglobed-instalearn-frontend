@@ -775,7 +775,7 @@ const MainHeader = () => {
 
                     {/* Icons */}
                     <div className="flex items-center gap-2 shrink-0">
-                        <NotificationDropdown />
+                        {isLoggedIn && <NotificationDropdown />}
                         {!isCorporate && isLoggedIn && <WishlistDropdown />}
                         {!isCorporate && <CartDropdown />}
 
@@ -823,7 +823,7 @@ const MainHeader = () => {
 
                     {/* Right actions */}
                     <div className="flex items-center gap-1 shrink-0 ml-auto">
-                        <NotificationDropdown />
+                        {isLoggedIn && <NotificationDropdown />}
                         {!isCorporate && isLoggedIn && <WishlistDropdown />}
                         {!isCorporate && <CartDropdown />}
 
