@@ -240,9 +240,9 @@ const CheckoutPage = () => {
                                     error={errors.phone?.message}
                                 />
 
-                                {!isLogin && (
+                                {/* {!isLogin && (
                                     <p className="text-sm font-bold text-[#2d2f31]">No password required</p>
-                                )}
+                                )} */}
                             </div>
                         </section>
 
